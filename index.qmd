@@ -1,0 +1,33 @@
+---
+title: "Análisis geoespacial de California durante marzo de 2024"
+lang: es
+author: 
+  - name: "Luna Katerin Díaz Casallas"
+    email: "ldiazca@unal.edu.co"
+  - name: "Camilo Alejandro Raba Gómez"
+    email: "craba@unal.edu.co"
+institute: "Departamento de Estadística - Universidad Nacional de Colombia"
+date: today
+format:
+  html:
+    toc: True
+    toc-title: "Tabla de contenidos"
+    toc-depth: 3  # Profundidad de los encabezados a enumerar
+    number-sections: true  # Activa la numeración de secciones
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Ver código"
+    link-external-newwindow: true
+    css: styles.css
+    theme:
+      light: flatly
+      dark: darkly
+    include-after-body: footer.html
+editor_options:
+  chunk_output_type: console
+---
+
+# Acerca de
+
+Este proyecto fue realizado para la materia de Estadística Espacial.
+

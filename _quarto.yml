@@ -1,0 +1,39 @@
+project:
+  type: website
+  
+execute:
+  freeze: true
+  
+website:
+  title: "Estadística Espacial"
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - text: "Acerca de"
+        href: index.qmd
+        
+      - section: "Análisis Geoestadístico"
+        contents:
+          - text: "Análisis Univariado" 
+            href: Geo_uni.qmd
+            
+lang: es
+author: 
+  - name: "Luna Katerin Díaz Casallas"
+    email: "ldiazca@unal.edu.co"
+  - name: "Camilo Alejandro Raba Gómez"
+    email: "craba@unal.edu.co"
+institute: "Departamento de Estadística - Universidad Nacional de Colombia"
+date: today
+format:
+  html:
+    embed-resources: false
+    css: styles.css
+    theme:
+      light: flatly
+      dark: darkly
+    include-after-body: footer.html
+editor_options:
+  chunk_output_type: console
+

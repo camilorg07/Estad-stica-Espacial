@@ -1,0 +1,4 @@
+- source: project
+  netlify:
+    - id: 3e4b8f8c-3f54-4ca2-a00b-59a932961dd1
+      url: https://strong-boba-d5da05.netlify.app
