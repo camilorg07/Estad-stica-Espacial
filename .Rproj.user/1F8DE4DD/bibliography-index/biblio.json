@@ -1,0 +1,25 @@
+{
+    "sources": [
+        {
+            "URL": "https://files.airnowtech.org/",
+            "author": [
+                {
+                    "literal": "United States Environmental Protection Agency (EPA)"
+                }
+            ],
+            "id": "EPA2024",
+            "issued": {
+                "date-parts": [
+                    [
+                        2024
+                    ]
+                ]
+            },
+            "note": "Accedido: 19 de septiembre de 2025",
+            "title": "AirNow: Air quality data",
+            "title-short": "AirNow",
+            "type": "webpage"
+        }
+    ],
+    "project_biblios": []
+}

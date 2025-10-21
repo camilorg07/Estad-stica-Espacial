@@ -1,0 +1,207 @@
+---
+title: null 
+author: null
+date: null
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r, echo=F, warning=F, message=F}
+
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(readxl)
+library(geoR)
+library(glmtoolbox)
+library(mgcv)
+
+```
+
+\begin{titlepage}
+    \begin{center}
+        % Logo de la universidad
+        \includegraphics[width=0.2\textwidth]{Escudo_de_la_Universidad_Nacional_de_Colombia_(2016).svg.png}\\[1cm]
+
+        \Large \textbf{Universidad Nacional de Colombia}\\[0.5cm]
+
+        \Large Facultad de Ciencias\\
+        \Large Departamento de Estadística\\[1cm]
+
+        
+        \Huge \textbf{Análisis geoespacial de la calidad del aire en California durante marzo de 2024}\\[0.5cm]
+        \LARGE \textbf{Estadística Espacial}\\[1cm]
+
+
+        Camilo Alejandro Raba Gomez\\
+        Luna Katerin Diaz Casallas\\[0.8cm]
+
+
+        \textbf{Docente}\\
+        Martha Patricia Bohorquez Castañeda\\[0.5cm]
+
+
+        \Large Septiembre 2025
+    \end{center}
+\end{titlepage}
+\newpage
+\section{Introducción}
+
+La calidad del aire es un factor clave para la salud pública, el bienestar social y la sostenibilidad ambiental, y California se destaca como uno de los estados más afectados de Estados Unidos por la contaminación atmosférica. La combinación de alta densidad poblacional, intensa actividad industrial y vehicular, junto con fenómenos naturales como incendios forestales, ha llevado a que varias de sus ciudades figuren entre las más contaminadas del país. Ante esta situación, resulta necesario realizar un análisis geoespacial de la calidad del aire en California, con el fin de identificar diferencias regionales y localizar áreas críticas de contaminación.
+
+\section{Descripción}
+
+Los datos objeto de este estudio provienen de la \textbf{Agencia de Protección Ambiental (EPA)} de los Estados Unidos y corresponden a registros horarios obtenidos de 25 estaciones de monitoreo durante el mes de marzo de 2024. En partícular, se analizan las variables \textbf{Monóxido de Carbono (CO)}, \textbf{Dióxido de Nitrógeno ($NO_2$)} y \textbf{Ozono ($O_3$)}.
+
+\subsection{Unidades}
+\begin{itemize}
+\item Monóxido de Carbono: Medido en partes por billón (ppb) con una intensidad horaria.
+\item Dióxido de Nitrógeno: Medido en partes por billón (ppb) con una intensidad horaria.
+\item Ozono: Medido en partes por billón (ppb) con una intensidad horaria.
+\end{itemize}
+
+\section{Mapa}
+
+```{r, echo=F}
+sh_mundos<-st_read("C:/Users/Lenovo/OneDrive - Universidad Nacional de Colombia/Documentos/Caso Bayesiana 2025 - I/admin00.shp",quiet=TRUE)
+
+Estaciones <- read_excel("AirNow_California.xlsx", sheet = "Estaciones")
+
+est_sf <- st_as_sf(Estaciones, 
+                   coords = c("Longitude", "Latitude"), 
+                   crs = 4326) 
+
+sh_mundos <- sh_mundos %>% filter(CNTRY_NAME=="United States")
+sh_mundos <- sh_mundos %>% filter(ADMIN_NAME=="California")
+
+  ggplot() +
+      geom_sf(data = sh_mundos, 
+              color = "#1E1E1E", 
+              size = 0.125, 
+              linetype = "solid", 
+              fill = "white") +
+      geom_sf(data = est_sf,
+              color = "red", 
+              size = 2, 
+              shape = 21, 
+              fill = "yellow")+
+  labs(title = "Mapa de estaciones de monitoreo en California") +
+  theme_minimal()
+```
+
+\section{Análisis de estacionariedad en media}
+
+Para el primer análisis se selecciona el intervalo correspondiente a las 12:00 p.m. del 1 de marzo de 2024.
+
+\subsection{Variable Ozono}
+Se transformo los datos a un archivo tipo GeoData:
+
+```{r, echo=F, warning=F, message=F}
+Ozone <- read_excel("AirNow_California.xlsx", sheet = "OZONE")
+
+
+
+y <- Ozone[1,]
+y <- cbind(colnames(y),t(y[1,]))
+y <- y[-1,]
+y <- as.data.frame(y)
+y <- inner_join(y, Estaciones, by=c("V1"="AQSID"))
+datos1 <- y[,c(13,14,2)]
+colnames(datos1)=c("x","y","z")
+datos1$z <- as.numeric(datos1$z)
+ozone <- as.geodata(datos1) 
+summary(ozone)
+
+
+```
+
+Se revisa el gráfico del archivo GeoData:
+
+```{r, echo=FALSE}
+
+plot(ozone, qt.col = c("purple",
+                          "pink",
+                          "green",
+                          "yellow"),
+     scatter3d=T)
+
+```
+El gráfico muestra una relación polinomial de la variable Ozono con respecto a las coordenadas en y. Se prueba con varios modelos hasta encontrar aquel que mitigue el efecto espacial.
+
+```{r}
+fit <- lm(z~x+I(y^2), data = datos1)
+```
+
+```{r, echo=F}
+summary(fit)
+```
+
+Para este modelo se observa el siguiente comportamiento residual:
+
+```{r, echo=F, message=F, warning=F}
+residuals2(fit, plot.it = T)
+```
+
+En la siguiente figura se observa como el modelo ayudó a mitigar el efecto espacial:
+
+```{r fig.align='center', out.width='50%', echo=FALSE}
+
+datos1$Residuos <- fit$residuals
+
+plot(datos1$x~datos1$Residuos, xlab="Este", ylab="Residuos")
+plot(datos1$y~datos1$Residuos, xlab="Norte", ylab="Residuos")
+```
+
+
+\subsection{Variable Dióxido de Nitrógeno}
+
+Los datos se trabajan en un archivo tipo GeoData:
+
+```{r, echo=FALSE}
+
+NO2 <- read_excel("AirNow_California.xlsx", sheet = "NO2")
+
+
+
+y <- NO2[1,]
+y <- cbind(colnames(y),t(y[1,]))
+y <- y[-1,]
+y <- as.data.frame(y)
+y <- inner_join(y, Estaciones, by=c("V1"="AQSID"))
+datos2 <- y[,c(13,14,2)]
+colnames(datos2)=c("x","y","z")
+datos2$z <- as.numeric(datos2$z)
+no2 <- as.geodata(datos2) 
+summary(no2)
+
+```
+
+Nuevamente se observo un patrón con las coordenadas en $Y$, como se ejemplifica en la siguiente figura:
+
+```{r, echo=F}
+plot(no2, qt.col = c("purple",
+                    "pink",
+                    "green",
+                    "yellow"),
+     scatter3d=T)
+```
+
+El modelo que mejor se ajustó a los datos fue:
+
+```{r}
+fit2 <- lm(z ~ log(y), data = datos2)
+```
+
+```{r, echo=F}
+summary(fit2)
+```
+
+En los siguientes gráficos se observa como el modelo ajustado sirvió para extraer la tendencia espacial:
+
+```{r fig.align='center', out.width='50%', echo=F}
+
+datos2$Residuos <- fit2$residuals
+
+plot(datos2$x~datos2$Residuos, xlab="Este", ylab="Residuos")
+plot(datos2$y~datos2$Residuos, xlab="Norte", ylab="Residuos")
+```
