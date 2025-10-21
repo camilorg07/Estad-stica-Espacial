@@ -1,0 +1,68 @@
+/* css styles */
+
+.kable th {
+    background-color: #ffffff; /* Fondo claro para encabezados */
+    color: #000000; /* Texto blanco */ /* Espaciado interno */
+}
+
+footer a {
+    color: blue; /* Cambia 'blue' por el color que prefieras */
+    text-decoration: none; /* Elimina el subrayado, si deseas */
+}
+
+footer a:hover {
+    color: blue;
+    text-decoration: underline; /* Agrega subrayado al pasar el ratón */
+}
+
+.custom-footer {
+  position: relative;
+  left: 0;
+  width: 100vw;         /* ocupa todo el ancho */
+  max-width: 100%;      /* evita overflow */
+  overflow-x: hidden;   /* no scrollbar horizontal */
+  
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  
+  font-size: 0.85em;
+  padding: 10px 15px;
+  border-top: 1px solid;
+  box-sizing: border-box;
+}
+
+/* Modo claro */
+body.quarto-light .custom-footer {
+  background-color: #f8f9fa;
+  color: #444;
+  border-color: #ddd;
+}
+
+/* Modo oscuro */
+body.quarto-dark .custom-footer {
+  background-color: #222;
+  color: #bbb;
+  border-color: #444;
+}
+
+/* Logo */
+.footer-logo img {
+  height: 60px;
+  width: auto;
+  margin-right: 10px;
+}
+
+.logo-dark {
+  display: none;
+}
+
+body.quarto-dark .logo-light {
+  display: none;
+}
+
+body.quarto-dark .logo-dark {
+  display: inline;
+}
+
+
