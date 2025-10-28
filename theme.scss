@@ -1,0 +1,10 @@
+/* theme.scss */
+
+/* Redefine la variable del color principal de Bootstrap (por ejemplo, a un azul más oscuro) */
+$primary: #004c99; 
+
+/* Redefine el color de los encabezados para que sea más oscuro */
+$headings-color: #1a1a1a;
+
+/* Carga las variables y estilos de Quarto/Bootstrap */
+@import "sass/theme";

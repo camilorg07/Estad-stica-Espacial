@@ -1,32 +1,5 @@
 ---
 title: "Análisis geoestadístico del ozono y la temperatura en California durante marzo de 2024"
-lang: es
-author: 
-  - name: "Luna Katerin Díaz Casallas"
-    email: "ldiazca@unal.edu.co"
-  - name: "Camilo Alejandro Raba Gómez"
-    email: "craba@unal.edu.co"
-institute: "Departamento de Estadística - Universidad Nacional de Colombia"
-date: today
-format:
-  html:
-    toc: True
-    toc-title: "Tabla de contenidos"
-    toc-depth: 3  # Profundidad de los encabezados a enumerar
-    number-sections: true  # Activa la numeración de secciones
-    html-math-method: katex
-    code-fold: true
-    code-summary: "Ver código"
-    link-external-newwindow: true
-    css: styles.css
-    theme:
-      light: flatly
-      dark: darkly
-    include-after-body: footer.html
-editor_options:
-  chunk_output_type: console
-bibliography: referencias.bib
-nocite: '@*'
 ---
 
 # Introducción
@@ -44,7 +17,8 @@ Los datos objeto de este estudio provienen de la [Agencia de Protección Ambient
 -   *Ozono:* Medido en partes por billón (ppb) con una intensidad horaria.
 
 ```{r, warning=FALSE, message=F}
-#Librerias necesarias
+#Librerias necesarias ------------------------------------
+
 library(dplyr)
 library(geoR)
 library(sp)
@@ -58,55 +32,48 @@ library(leaflet)
 library(raster)
 library(stars)
 
-#Carga de datos
-Cali_Marz <- read.csv("AirNow_Marzo_California.csv", colClasses = c("AQSID"="character"))
+#Variale Temperatura --------------------------------------
 
-Ozone <- Cali_Marz %>% filter(Variable=="OZONE") 
-NO2 <- Cali_Marz %>% filter(Variable=="NO2")
-Temp <- read.csv("Temperatura.csv", colClasses = c("AQSID"="character"))
+Temp <- read_excel("GeoEst_Cali.xlsx", sheet = "Temperatura")
+colnames(Temp)[-1] <- as.numeric(colnames(Temp)[-1])
+EstacionesT <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
+EstacionesT <- EstacionesT %>% mutate(AQSID = as.numeric(AQSID))
+EstacionesT <- EstacionesT %>% filter(AQSID %in% colnames(Temp)[-1])
 
-Ozone <- Ozone %>% mutate(DateTime = paste(Date, Hour, sep = " "))
-NO2 <- NO2 %>% mutate(DateTime = paste(Date, Hour, sep = " "))
-Temp <- Temp[,-1]
+#Variable Ozono ------------------------------------------
 
-#Para el mapa de California
+Ozono <- read_excel("GeoEst_Cali.xlsx", sheet = "Ozono")
+colnames(Ozono)[-1] <- as.numeric(colnames(Ozono)[-1])
+EstacionesOz <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
+EstacionesOz <- EstacionesOz %>% mutate(AQSID = as.numeric(AQSID))
+EstacionesOz <- EstacionesOz %>% filter(AQSID %in% colnames(Ozono)[-1])
+
+#Para el mapa de California -------------------------------
+
 sh_mundos<-st_read("admin00.shp",quiet=TRUE)
 sh_mundos <- sh_mundos %>% filter(CNTRY_NAME=="United States")
 sh_mundos <- sh_mundos %>% filter(ADMIN_NAME=="California")
 
-#Datos de las estaciones
-data <- read.csv("HourlyAQObs_2024010101.dat")
-data <- data %>% filter(CountryCode=="US")
-data <- data %>% filter(StateName=="CA")
-
 CRS_UTM_NY = "+init=epsg:3310"
-
-Ozone_Matrix <- Ozone %>%
-  dplyr::select(DateTime, AQSID, Value) %>%
-  pivot_wider(names_from = AQSID, values_from = Value) 
-
-Temp_Matrix <- Temp %>%
-  dplyr::select(DateTime, AQSID, Value) %>%
-  pivot_wider(names_from = AQSID, values_from = Value) 
-
-#Para el mapa
 
 sh_mundos_wgs84 <- st_transform(sh_mundos, crs = 4326)
 
 sh_mundos_utm <- st_transform(sh_mundos, crs = CRS("EPSG:3310"))
-
-new <- sp::spsample(as(sh_mundos_utm, "Spatial"), n = 50000, type = "regular")
-
-proj4string(new) <- CRS("EPSG:3310")
-coordinates(new) ~ Este + Norte
-colnames(new@coords) <- c("Este", "Norte")
 
 sh_mundos_sp_utm <- as(sh_mundos_utm, "Spatial")
 
 sh_mundos_utm_simple <- st_union(sh_mundos_utm)
 sh_mundos_sp_utm_simple <- as(sh_mundos_utm_simple, "Spatial")
 
-#Gráficos de dispersión
+#Grilla para hacer kriging ------------------------------
+
+new <- sp::spsample(as(sh_mundos_utm, "Spatial"), n = 50000, type = "regular")
+
+proj4string(new) <- CRS("EPSG:3310")
+invisible(coordinates(new) ~ Este + Norte)
+colnames(new@coords) <- c("Este", "Norte")
+
+#Gráficos de dispersión ----------------------------------
 
 simple_scatter_plot <- function(datos, variable1, variable2) {
 
@@ -135,50 +102,27 @@ simple_scatter_plot <- function(datos, variable1, variable2) {
 Se tomaron los datos de Temperatura de la madrugada el primero de marzo de 2024:
 
 ```{r, message=F, warning=F}
-EstacionesOz <- data %>% filter(AQSID %in% colnames(Ozone_Matrix)[-1])
-EstacionesOz <- EstacionesOz[,c(1:10,13)]
 
-est_sf_Oz <- st_as_sf(EstacionesOz, 
-                   coords = c("Longitude", "Latitude"), 
-                   crs = 4326)
-est_sf_utm_O <- st_transform(est_sf_Oz, crs = 3310)
-deci_coord_O = SpatialPoints(cbind(EstacionesOz$Longitude,
-                                 EstacionesOz$Latitude),
-                           proj4string = CRS("+proj=longlat"))
-utm_coord_O = spTransform(deci_coord_O, CRS("EPSG:3310"))
-utm_coord_df_O = as.data.frame(utm_coord_O)
-EstacionesOz$x <- utm_coord_df_O$coords.x1
-EstacionesOz$y <- utm_coord_df_O$coords.x2
-
-y_oz <- Ozone_Matrix[1,] #Tomar una fecha
+y_oz <- Ozono[1,] #Tomar una fecha
 y_oz <- cbind(colnames(y_oz),t(y_oz[1,]))
 y_oz <- y_oz[-1,]
 y_oz <- as.data.frame(y_oz)
 y_oz <- na.omit(y_oz)
+y_oz$V1 <- as.numeric(y_oz$V1)
 y_oz <- inner_join(y_oz, EstacionesOz, by=c("V1"="AQSID"))
-datosOZ <- y_oz[,c(13,14,2)] #Datos1 es la base con coordenadas + variable
+datosOZ <- y_oz[,c(13,14,2)] #DatosOz es la base con coordenadas + variable
 colnames(datosOZ)=c("Este","Norte","Ozono")
 datosOZ$Ozono <- as.numeric(datosOZ$Ozono)
 
-coords_3310O <- st_coordinates(est_sf_utm_O)
-est_sf_utm_O$Este <- coords_3310O[, "X"]
-est_sf_utm_O$Norte <- coords_3310O[, "Y"]
+datosOZ_sf <- st_as_sf(datosOZ, coords = c("Este", "Norte"), crs = 3310)
 
-datosO_sf_utm <- merge(est_sf_utm_O, y_oz[, c("V1", "V2")], by.x = "AQSID", by.y = "V1")
-datosO_sf_utm$Ozono <- as.numeric(datosO_sf_utm$V2)
-
-datosO_sf_wgs84 <- merge(est_sf_Oz, y_oz[, c("V1", "V2")], by.x = "AQSID", by.y = "V1")
-datosO_sf_wgs84$Ozono <- as.numeric(datosO_sf_wgs84$V2)
-
-
+datosO_sf_wgs84 <- st_transform(datosOZ_sf, crs = 4326)
 
 palO <- colorNumeric(palette = "viridis", domain = datosO_sf_wgs84$Ozono)
 
 leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  # Contorno de California
   addPolygons(data = sh_mundos_wgs84, fill = FALSE, color = "black", weight = 2) %>%
-  # Puntos de temperatura
   addCircleMarkers(data = datosO_sf_wgs84,
                    fillColor = ~palO(Ozono),
                    fillOpacity = 0.8,
@@ -258,8 +202,9 @@ plot(ozone, qt.col = c("purple",
 
 A continuación, se presenta la estimación del semivariograma obtenida con la función variog. Se muestran dos gráficos comparativos: el primero corresponde a los datos originales (sin eliminar la tendencia) y el segundo a los residuales obtenidos tras ajustar el modelo de regresión, lo que permite observar el efecto de remover la tendencia en la estructura espacial.
 
-```{r, message=FALSE}
+```{r, message=FALSE, results='hide'}
 vg_O <- variog(ozone,estimator.type = "modulus", pairs.min=50) #Sin tendencia espacial
+
 vg1_O <- variog(ozone, trend = ~I(Norte^2)+I(Norte^3)+Este, estimator.type = "modulus", pairs.min=50)
 ```
 
@@ -652,11 +597,9 @@ legend("topleft",
 
 Usando el modelo esférico:
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, results='hide'}
 
-#| message: false
-#| warning: false
-#| results: 'hide'
+#Se ajusta el mejor modelo -------------------------------
 
 best_model_O <- gstat::vgm(psill = fitvar3_es_O$cov.pars[1],
                            model = "Sph",
@@ -664,6 +607,8 @@ best_model_O <- gstat::vgm(psill = fitvar3_es_O$cov.pars[1],
                            nugget = fitvar3_es_O$nugget
                            
 )
+
+# Se crea un objeto en gstat ------------------------------
 
 coordinates(datosOZ) <- ~Este + Norte
 proj4string(datosOZ) <- CRS("EPSG:3310")
@@ -673,19 +618,19 @@ g_obj<-gstat::gstat(id="Ozono",
              model = best_model_O,
              data = datosOZ)
 
-predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=fitvar3_es_O$cov.pars[2])
+#Kriging ------------------------------------------------
 
-prediction <- data.frame(predic)
+invisible(predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=fitvar3_es_O$cov.pars[2]))
 
-#Mapas de predicción
+
+#Mapas de predicción -------------------------------------
 
 gridded(predic) <- TRUE
 
-#1. Mapa de Kriging
+#1. Mapa de Kriging --------------------------------------
 
 predic_raster_utm <- raster(predic, layer = "Ozono.pred")
 
-# 2. Asegurarse de que el CRS del ráster se asigne correctamente (EPSG:3310)
 crs(predic_raster_utm) <- "+init=epsg:3310"
 
 predic_raster_wgs84 <- raster::projectRaster(
@@ -709,10 +654,8 @@ pal_pred <- colorBin(
 
 mapa_kriging_leaflet <- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  
-  # Añadir la capa ráster de Predicción Kriging
   addRasterImage(
-    predic_raster_wgs84, # Usamos el objeto raster reproyectado
+    predic_raster_wgs84, 
     colors = pal_pred, 
     opacity = 0.7,
     group = "Predicción Kriging"
@@ -742,7 +685,6 @@ mapa_kriging_leaflet <- leaflet() %>%
 
 var_raster_utm <- raster(predic, layer = "Ozono.var")
 
-# 2. Asegurarse de que el CRS del ráster se asigne correctamente (EPSG:3310)
 crs(var_raster_utm) <- "+init=epsg:3310"
 
 var_raster_wgs84 <- raster::projectRaster(
@@ -766,10 +708,8 @@ pal_var <- colorBin(
 
 mapa_var_leaflet <- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  
-  # Añadir la capa ráster de Predicción Kriging
   addRasterImage(
-    var_raster_wgs84, # Usamos el objeto raster reproyectado
+    var_raster_wgs84,
     colors = pal_var, 
     opacity = 0.7,
     group = "Predicción Kriging"
@@ -792,10 +732,8 @@ crs(cv_raster_utm) <- "+init=epsg:3310"
 
 cv_raster_masked_utm <- raster::mask(cv_raster_utm, sh_mundos_sp_utm_simple)
 
-# 2. Aplicar CROP (Recorte físico del rectángulo)
 cv_raster_cropped_utm <- raster::crop(cv_raster_masked_utm, sh_mundos_sp_utm_simple)
 
-# 3. Reproyectar el objeto MÁS PEQUEÑO a WGS84
 cv_raster_wgs84 <- raster::projectRaster(
     cv_raster_cropped_utm, 
     crs = "+init=epsg:4326", 
@@ -811,26 +749,24 @@ pal_cv <- colorBin(
   domain = cv_range,
   na.color = "transparent",
   bins = bincv,
-  reverse = TRUE # ¡Esto es CRUCIAL! Para que el Verde sea BAJA incertidumbre.
+  reverse = TRUE
 )
 
 mapa_cv_leaflet <- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  
-  # Añadir la capa ráster de Predicción Kriging
   addRasterImage(
-    cv_raster_wgs84, # Usamos el objeto raster reproyectado
+    cv_raster_wgs84,
     colors = pal_cv, 
     opacity = 0.7,
     group = "Predicción Kriging"
   ) %>%
-  
   addLegend(
     pal = pal_cv, 
     values = cv_range,
     title = "Coeficiente de Variación",
     position = "topright"
   )
+
 ```
 
 ::: panel-tabset
@@ -859,54 +795,27 @@ mapa_cv_leaflet
 Se tomaron los datos de Temperatura de la madrugada el primero de marzo de 2024:
 
 ```{r, message=F, warning=F}
-EstacionesT <- data %>% filter(AQSID %in% colnames(Temp_Matrix)[-1])
-EstacionesT <- EstacionesT[,c(1:10,13)]
-
-est_sf_T <- st_as_sf(EstacionesT, 
-                      coords = c("Longitude", "Latitude"), 
-                      crs = 4326)
-
-est_sf_utm_T <- st_transform(est_sf_T, crs = 3310)
-deci_coord_T = SpatialPoints(cbind(EstacionesT$Longitude,
-                                 EstacionesT$Latitude),
-                           proj4string = CRS("+proj=longlat"))
-utm_coord_T = spTransform(deci_coord_T, CRS("EPSG:3310"))
-utm_coord_df_T = as.data.frame(utm_coord_T)
-EstacionesT$x <- utm_coord_df_T$coords.x1
-EstacionesT$y <- utm_coord_df_T$coords.x2
-
-y_T <- Temp_Matrix[1,] #Tomar una fecha
+y_T <- Temp[1,] #Tomar una fecha
 y_T <- cbind(colnames(y_T),t(y_T[1,]))
 y_T <- y_T[-1,]
 y_T <- as.data.frame(y_T)
 y_T <- na.omit(y_T)
 y_T <- y_T[-which.min(y_T$V2),]
+y_T$V1 <- as.numeric(y_T$V1)
 y_T <- inner_join(y_T, EstacionesT, by=c("V1"="AQSID"))
-datosT <- y_T[,c(13,14,2)] #Datos1 es la base con coordenadas + variable
+datosT <- y_T[,c(13,14,2)]
 colnames(datosT)=c("Este","Norte","Temperatura")
 datosT$Temperatura <- as.numeric(datosT$Temperatura)
 
-coords_3310 <- st_coordinates(est_sf_utm_T)
-est_sf_utm_T$Este <- coords_3310[, "X"]
-est_sf_utm_T$Norte <- coords_3310[, "Y"]
+datosT_sf <- st_as_sf(datosT, coords = c("Este", "Norte"), crs = 3310)
 
-
-# 4. Crear el objeto final de datos (combinando temperatura con las coordenadas UTM)
-datosT_sf_utm <- merge(est_sf_utm_T, y_T[, c("V1", "V2")], by.x = "AQSID", by.y = "V1")
-datosT_sf_utm$Temperatura <- as.numeric(datosT_sf_utm$V2)
-
-datosT_sf_wgs84 <- merge(est_sf_T, y_T[, c("V1", "V2")], by.x = "AQSID", by.y = "V1")
-datosT_sf_wgs84$Temperatura <- as.numeric(datosT_sf_wgs84$V2)
-
-
+datosT_sf_wgs84 <- st_transform(datosT_sf, crs = 4326)
 
 pal <- colorNumeric(palette = "viridis", domain = datosT_sf_wgs84$Temperatura)
 
 leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  # Contorno de California
   addPolygons(data = sh_mundos_wgs84, fill = FALSE, color = "black", weight = 2) %>%
-  # Puntos de temperatura
   addCircleMarkers(data = datosT_sf_wgs84,
                    fillColor = ~pal(Temperatura),
                    fillOpacity = 0.8,
@@ -987,8 +896,9 @@ plot(temp, qt.col = c("purple",
 
 p¿Presentamos la estimación del semivariograma obtenida mediante la función variog para la variable temperatura. Se comparan los resultados al calcularlo directamente sobre los datos originales (sin remover la tendencia) y al utilizar los residuales de un modelo de regresión, con el objetivo de analizar cómo influye la presencia de tendencia en la estructura espacial.
 
-```{r}
+```{r, results='hide'}
 vg_T <- variog(temp, estimator.type = "modulus", pairs.min=50) #Sin tendencia espacial
+
 vg1_T <- variog(temp, trend = ~Norte+I(Norte^2),
                 estimator.type = "modulus", pairs.min=50)
 
@@ -1877,17 +1787,17 @@ El modelo con menor MSE es el modelo Gausiano. Sin embargo, dada la inestabilida
 
 Usando el modelo esférico:
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, results='hide'}
 
-#| message: false
-#| warning: false
-#| results: 'hide'
+#Se escoge el mejor modelo --------------------------------
 
 best_model_T <- gstat::vgm(psill = res_es_T$`1/n`$Optimizados[2],
                            model = "Sph",
                            range = res_es_T$`1/n`$Optimizados[3],
                            nugget = res_es_T$`1/n`$Optimizados[1]
 )
+
+#Se crea un objeto en gstat -------------------------------
 
 coordinates(datosT) <- ~Este + Norte
 proj4string(datosT) <- CRS("EPSG:3310")
@@ -1897,19 +1807,18 @@ g_obj<-gstat::gstat(id="Temperatura",
              model = best_model_T,
              data = datosT)
 
-predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=74809.84)
+#Kriging -------------------------------------------------
 
-prediction <- data.frame(predic)
+suppressMessages(predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=74809.84))
 
-#Mapas de predicción
+#Mapas de predicción --------------------------------------
 
 gridded(predic) <- TRUE
 
-#1. Mapa de Kriging
+#1. Mapa de Kriging ---------------------------------------
 
 predic_raster_utm <- raster(predic, layer = "Temperatura.pred")
 
-# 2. Asegurarse de que el CRS del ráster se asigne correctamente (EPSG:3310)
 crs(predic_raster_utm) <- "+init=epsg:3310"
 
 predic_raster_wgs84 <- raster::projectRaster(
@@ -1933,10 +1842,8 @@ pal_pred <- colorBin(
 
 mapa_kriging_leaflet <- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  
-  # Añadir la capa ráster de Predicción Kriging
   addRasterImage(
-    predic_raster_wgs84, # Usamos el objeto raster reproyectado
+    predic_raster_wgs84,
     colors = pal_pred, 
     opacity = 0.7,
     group = "Predicción Kriging"
@@ -1948,14 +1855,12 @@ mapa_kriging_leaflet <- leaflet() %>%
                    weight = 1,
                    radius = 6,
                    popup = ~paste("Temp:", Temperatura, "°C")) %>% 
-  
   addLegend(
     pal = pal_pred, 
     values = pred_range,
     title = "Predicción T (°C)",
     position = "topright"
   ) %>%
-  
   addLegend(pal = pal,
             values = datosT_sf_wgs84$Temperatura,
             title = "Temperatura Observada",
@@ -1966,7 +1871,6 @@ mapa_kriging_leaflet <- leaflet() %>%
 
 var_raster_utm <- raster(predic, layer = "Temperatura.var")
 
-# 2. Asegurarse de que el CRS del ráster se asigne correctamente (EPSG:3310)
 crs(var_raster_utm) <- "+init=epsg:3310"
 
 var_raster_wgs84 <- raster::projectRaster(
@@ -1990,10 +1894,8 @@ pal_var <- colorBin(
 
 mapa_var_leaflet <- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  
-  # Añadir la capa ráster de Predicción Kriging
   addRasterImage(
-    var_raster_wgs84, # Usamos el objeto raster reproyectado
+    var_raster_wgs84, 
     colors = pal_var, 
     opacity = 0.7,
     group = "Predicción Kriging"
@@ -2016,10 +1918,10 @@ crs(cv_raster_utm) <- "+init=epsg:3310"
 
 cv_raster_masked_utm <- raster::mask(cv_raster_utm, sh_mundos_sp_utm_simple)
 
-# 2. Aplicar CROP (Recorte físico del rectángulo)
+
 cv_raster_cropped_utm <- raster::crop(cv_raster_masked_utm, sh_mundos_sp_utm_simple)
 
-# 3. Reproyectar el objeto MÁS PEQUEÑO a WGS84
+
 cv_raster_wgs84 <- raster::projectRaster(
     cv_raster_cropped_utm, 
     crs = "+init=epsg:4326", 
@@ -2035,15 +1937,13 @@ pal_cv <- colorBin(
   domain = cv_range,
   na.color = "transparent",
   bins = bincv,
-  reverse = TRUE # ¡Esto es CRUCIAL! Para que el Verde sea BAJA incertidumbre.
+  reverse = TRUE 
 )
 
 mapa_cv_leaflet <- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  
-  # Añadir la capa ráster de Predicción Kriging
   addRasterImage(
-    cv_raster_wgs84, # Usamos el objeto raster reproyectado
+    cv_raster_wgs84, 
     colors = pal_cv, 
     opacity = 0.7,
     group = "Predicción Kriging"
@@ -2055,6 +1955,7 @@ mapa_cv_leaflet <- leaflet() %>%
     title = "Coeficiente de Variación",
     position = "topright"
   )
+
 ```
 
 ::: panel-tabset

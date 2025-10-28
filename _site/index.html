@@ -22,7 +22,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -42,8 +62,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-f3c2ea88cadbcfb37ba28ffa2c97cfc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-ae2d0dcda2edce4ab590422bb373b64f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-2194d4fcaa4fe9f9ec40d325a59504d0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bc1ed682aac23ea5254ae37856852f5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -85,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Acerca de</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Información general</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -116,7 +136,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Acerca de</span></a>
+ <span class="menu-text">Información general</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -134,7 +154,16 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Análisis Univariado</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+ <span class="menu-text">Análisis Bivariado</span>
+  </li>
       </ul>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">Análisis Espacio-Temporal</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">Análisis funcional</span>
   </li>
     </ul>
     </div>
@@ -201,9 +230,17 @@ ul.task-list li input[type="checkbox"] {
 <p>Este proyecto fue realizado para la materia de Estadística Espacial.</p>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-BohorquezCastañeda_NotasEstadisticaEspacial" class="csl-entry" role="listitem">
+Bohorquez Castañeda, Martha Patricia. 2024. <span>«Notas de clase: Estadística Espacial y Espacio-Temporal para Campos Aleatorios Escalares y Funcionales»</span>. <a href="https://sites.google.com/unal.edu.co/marthapatriciabohorquezcastaed/courses">https://sites.google.com/unal.edu.co/marthapatriciabohorquezcastaed/courses</a>.
+</div>
+<div id="ref-EPA2024" class="csl-entry" role="listitem">
+United States Environmental Protection Agency (EPA). 2024. <span>«AirNow: Air Quality Data»</span>. 2024. <a href="https://files.airnowtech.org/">https://files.airnowtech.org/</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <div class="custom-footer">
 
   <div class="footer-logo">

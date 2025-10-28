@@ -11,30 +11,42 @@ website:
     style: "floating"
     search: true
     contents:
-      - text: "Acerca de"
+      - text: "Información general"
         href: index.qmd
         
       - section: "Análisis Geoestadístico"
         contents:
           - text: "Análisis Univariado" 
             href: Geo_uni.qmd
-            
+          - text: "Análisis Bivariado"
+            #href:
+      - text: "Análisis Espacio-Temporal"
+        #href:
+      - text: "Análisis funcional"
+        #href:
 lang: es
-author: 
-  - name: "Luna Katerin Díaz Casallas"
-    email: "ldiazca@unal.edu.co"
-  - name: "Camilo Alejandro Raba Gómez"
-    email: "craba@unal.edu.co"
-institute: "Departamento de Estadística - Universidad Nacional de Colombia"
-date: today
+
 format:
   html:
-    embed-resources: false
+    toc: True
+    toc-title: "Tabla de contenidos"
+    toc-depth: 3  # Profundidad de los encabezados a enumerar
+    number-sections: true  # Activa la numeración de secciones
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Ver código"
+    code-block-bg: true
+    code-block-border-left: "#65a9e3"
+    link-external-newwindow: true
     css: styles.css
     theme:
-      light: flatly
-      dark: darkly
+      light: cosmo
+      dark: [cosmo, theme-dark.scss]
     include-after-body: footer.html
+    embed-resources: false
+    
 editor_options:
   chunk_output_type: console
+bibliography: referencias.bib
+nocite: '@*'
 

@@ -1,0 +1,53 @@
+/* theme-dark.scss */
+
+/*-- scss:defaults --*/
+
+/* Fondo principal del cuerpo */
+$body-bg: #181818; 
+
+/* Color principal del texto */
+$body-color: #cccccc; 
+
+/* Color de los enlaces */
+$link-color: #65a9e3;
+
+/* Color de los encabezados */
+$headings-color: #e5e5e5;
+
+/* Fondo y transparencia de los bloques de código (para una mejor apariencia en oscuro) */
+$code-block-bg-alpha: -.9;
+
+/* Color de las tablas (fondo más claro para contraste) */
+$table-bg: #222222;
+
+/* Color de los bordes para elementos (tablas, líneas divisorias) */
+$border-color: #444444;
+
+/* Títulos de Tabsets */
+.nav-tabs .nav-link {
+    /* Color de texto para el título del tabset no activo */
+    color: #65a9e3 !important; 
+}
+
+.nav-tabs .nav-link.active {
+    /* Color de texto para el título del tabset activo */
+    color: #ffffff !important; 
+}
+
+/* Salidas de Código (Output) */
+.cell-output .r-output, .cell-output .output, .cell-output pre.stdout {
+    color: #ffffff !important;
+}
+
+/* Bloques de texto o salida literal */
+pre code.language-text,
+pre.sourceCode.text,
+pre.text,
+pre code {
+  color: #ffffff !important; /* texto claro */
+}
+
+/* También corrige los bloques sin lenguaje explícito */
+pre:not([class]) {
+  color: #ffffff !important;
+}
