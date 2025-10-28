@@ -106,6 +106,26 @@ sh_mundos_sp_utm <- as(sh_mundos_utm, "Spatial")
 sh_mundos_utm_simple <- st_union(sh_mundos_utm)
 sh_mundos_sp_utm_simple <- as(sh_mundos_utm_simple, "Spatial")
 
+#Gráficos de dispersión
+
+simple_scatter_plot <- function(datos, variable1, variable2) {
+
+    plot1 <- ggplot(as.data.frame(datos),
+                    aes(x = .data[[variable1]], y = .data[[variable2]],
+                               color = as.factor(1))) +
+                    geom_point() +
+                    scale_colour_viridis_d() +
+                    labs(
+                        x = variable1,
+                        y = variable2
+                        ) +
+                    theme_light() +
+                    theme(legend.position = "none")
+
+    return(plot1)
+
+}
+
 ```
 
 # Análisis geoestadístico univariado
@@ -114,7 +134,7 @@ sh_mundos_sp_utm_simple <- as(sh_mundos_utm_simple, "Spatial")
 
 Se tomaron los datos de Temperatura de la madrugada el primero de marzo de 2024:
 
-```{r}
+```{r, message=F, warning=F}
 EstacionesOz <- data %>% filter(AQSID %in% colnames(Ozone_Matrix)[-1])
 EstacionesOz <- EstacionesOz[,c(1:10,13)]
 
@@ -169,7 +189,7 @@ leaflet() %>%
   addLegend(pal = palO, values = datosO_sf_wgs84$Ozono, title = "Ozono (ppb)")
 
 ozone <- as.geodata(datosOZ) 
-summary(ozone)
+pander::pander(summary(ozone))
 
 ```
 
@@ -177,10 +197,11 @@ summary(ozone)
 ### Gráficos de dispersión
 
 ```{r}
-par(mfrow=c(1,2))
+pO1 <- simple_scatter_plot(datosOZ, "Este", "Ozono")
+pO2 <- simple_scatter_plot(datosOZ, "Norte", "Ozono")
 
-plot(Ozono~Este, data = datosOZ, ylab = "Ozono", xlab="Este")
-plot(Ozono~Norte, data = datosOZ, ylab = "Ozono", xlab="Norte")
+cowplot::plot_grid(pO1,pO2)
+
 ```
 
 ### GeoR
@@ -204,7 +225,7 @@ $$Ozono = \beta_0+\beta_1 \times Norte^2 + \beta_2 \times Norte^3 + \beta_3 \tim
 
 ```{r}
 fitO <- lm(Ozono~I(Norte^2)+I(Norte^3)+Este, data = datosOZ) 
-summary(fitO)
+pander::pander(summary(fitO))
 ```
 
 Gráficamente se observa una mitigación en la tendencia espacial:
@@ -215,9 +236,11 @@ Gráficamente se observa una mitigación en la tendencia espacial:
 ```{r}
 datosOZ$Residuos <- fitO$residuals
 
-par(mfrow=c(1,2))
-plot(Residuos~Este, data = datosOZ, xlab="Este", ylab="Residuos")
-plot(Residuos~Norte, data = datosOZ, xlab="Norte", ylab="Residuos")
+pO1 <- simple_scatter_plot(datosOZ, "Este", "Residuos")
+pO2 <- simple_scatter_plot(datosOZ, "Norte", "Residuos")
+
+cowplot::plot_grid(pO1,pO2)
+
 ```
 
 #### GeoR
@@ -293,10 +316,10 @@ cov.model sigmasq      phi tausq kappa kappa2 practicalRange
 #| warning: false
 #| results: 'hide'
 
-sigma_0_mO <- 17.0
-phi_0_mO <- 440676.0
-nugget_0_mO <- 5
-kappa_0_mO <- 0.5
+sigma_0_mO <- 12.0
+phi_0_mO <- 224249.7
+nugget_0_mO <- 2.00 
+kappa_0_mO <- 0.2
 
 ini1_mat_O <- c(sigma_0_mO, phi_0_mO)
 fitvar1_mat_O <- variofit(vg1_O,
@@ -423,34 +446,34 @@ legend("topleft",
        seg.len = .5)
 ```
 
-#### Lineal
+#### Exponencial
 
 ```{r}
 #| message: false
 #| warning: false
 #| results: 'hide'
 
-sigma_0_lO <- 0.25
-phi_0_lO <- 0.32
-nugget_0_lO <- 0
+sigma_0_lO <- 10
+phi_0_lO <- 6e5
+nugget_0_lO <- 10
 
 ini1_l_O <- c(sigma_0_lO, phi_0_lO)
 fitvar1_l_O <- variofit(vg1_O,
-                    cov.model = "linear",
+                    cov.model = "exponential",
                     ini1_l_O,
                     fix.nugget = F,
                     nugget = nugget_0_lO,
                     wei = "equal")
 
 fitvar2_l_O <- variofit(vg1_O,
-                    cov.model = "linear",
+                    cov.model = "exponential",
                     ini1_l_O,
                     fix.nugget = F,
                     nugget = nugget_0_lO,
                     wei = "npairs")
 
 fitvar3_l_O <- variofit(vg1_O,
-                    cov.model = "linear",
+                    cov.model = "exponential",
                     ini1_l_O,
                     fix.nugget = F,
                     nugget = nugget_0_lO,
@@ -463,7 +486,7 @@ fitvar4_l_O <- likfit(ozone,
                   ini.cov.pars = ini1_l_O,
                   fix.nugget = F,
                   nugget = nugget_0_lO,
-                  cov.model = "linear",
+                  cov.model = "exponential",
                   lik.method = "ML")
 
 
@@ -490,10 +513,144 @@ legend("topleft",
 
 ```
 
+#### Esférico
 
+```{r}
+#| message: false
+#| warning: false
+#| results: 'hide'
+
+sigma_0_lO <- 10
+phi_0_lO <- 6e5
+nugget_0_lO <- 10
+
+ini1_l_O <- c(sigma_0_lO, phi_0_lO)
+fitvar1_es_O <- variofit(vg1_O,
+                    cov.model = "spherical",
+                    ini1_l_O,
+                    fix.nugget = F,
+                    nugget = nugget_0_lO,
+                    wei = "equal")
+
+fitvar2_es_O <- variofit(vg1_O,
+                    cov.model = "spherical",
+                    ini1_l_O,
+                    fix.nugget = F,
+                    nugget = nugget_0_lO,
+                    wei = "npairs")
+
+fitvar3_es_O <- variofit(vg1_O,
+                    cov.model = "spherical",
+                    ini1_l_O,
+                    fix.nugget = F,
+                    nugget = nugget_0_lO,
+                    wei = "cressie")
+
+fitvar4_es_O <- likfit(ozone,
+                  coords = ozone$coords,
+                  data = ozone$data,
+                  trend = ~ I(Norte^2) + I(Norte^3) + Este,
+                  ini.cov.pars = ini1_l_O,
+                  fix.nugget = F,
+                  nugget = nugget_0_lO,
+                  cov.model = "spherical",
+                  lik.method = "ML")
+
+
+plot(vg1_O,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Estimación teórica del modelo de semivariograma \n (GeoR, gstat)",
+     col.main = "#36648B", cex.main =1.3)
+lines(fitvar1_es_O, col="#FF4040", lwd=1.5)
+lines(fitvar2_es_O, col="#4169E1", lwd=1.5)
+lines(fitvar3_es_O, col="#008B00", lwd=1.5)
+lines(fitvar4_es_O, col="#FFA500", lwd=1.5)
+legend("topleft",
+       c("MCO", "1/n", "Cressie", "MLE"),#, "REML"),
+       lwd = 1,
+       lty = 3,
+       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       box.col = 9,
+       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       cex=1,
+       seg.len = .5)
+
+```
+
+#### Cúbico
+
+```{r}
+#| message: false
+#| warning: false
+#| results: 'hide'
+
+sigma_0_lO <- 10
+phi_0_lO <- 6e5
+nugget_0_lO <- 10
+
+ini1_l_O <- c(sigma_0_lO, phi_0_lO)
+fitvar1_c_O <- variofit(vg1_O,
+                    cov.model = "cubic",
+                    ini1_l_O,
+                    fix.nugget = F,
+                    nugget = nugget_0_lO,
+                    wei = "equal")
+
+fitvar2_c_O <- variofit(vg1_O,
+                    cov.model = "cubic",
+                    ini1_l_O,
+                    fix.nugget = F,
+                    nugget = nugget_0_lO,
+                    wei = "npairs")
+
+fitvar3_c_O <- variofit(vg1_O,
+                    cov.model = "cubic",
+                    ini1_l_O,
+                    fix.nugget = F,
+                    nugget = nugget_0_lO,
+                    wei = "cressie")
+
+fitvar4_c_O <- likfit(ozone,
+                  coords = ozone$coords,
+                  data = ozone$data,
+                  trend = ~ I(Norte^2) + I(Norte^3) + Este,
+                  ini.cov.pars = ini1_l_O,
+                  fix.nugget = F,
+                  nugget = nugget_0_lO,
+                  cov.model = "cubic",
+                  lik.method = "ML")
+
+
+plot(vg1_O,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Estimación teórica del modelo de semivariograma \n (GeoR, gstat)",
+     col.main = "#36648B", cex.main =1.3)
+lines(fitvar1_c_O, col="#FF4040", lwd=1.5)
+lines(fitvar2_c_O, col="#4169E1", lwd=1.5)
+lines(fitvar3_c_O, col="#008B00", lwd=1.5)
+lines(fitvar4_c_O, col="#FFA500", lwd=1.5)
+legend("topleft",
+       c("MCO", "1/n", "Cressie", "MLE"),#, "REML"),
+       lwd = 1,
+       lty = 3,
+       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       box.col = 9,
+       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       cex=1,
+       seg.len = .5)
+
+```
 :::
 
 ### Kriging
+
+Usando el modelo esférico:
 
 ```{r, message=F, warning=F}
 
@@ -501,11 +658,10 @@ legend("topleft",
 #| warning: false
 #| results: 'hide'
 
-best_model_O <- gstat::vgm(psill = fitvar1_mat_O$cov.pars[1],
-                           model = "Mat",
-                           range = fitvar1_mat_O$cov.pars[2],
-                           nugget = fitvar1_mat_O$nugget,
-                           kappa = fitvar1_mat_O$kappa
+best_model_O <- gstat::vgm(psill = fitvar3_es_O$cov.pars[1],
+                           model = "Sph",
+                           range = fitvar3_es_O$cov.pars[2],
+                           nugget = fitvar3_es_O$nugget
                            
 )
 
@@ -517,7 +673,7 @@ g_obj<-gstat::gstat(id="Ozono",
              model = best_model_O,
              data = datosOZ)
 
-predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=fitvar3_mat_O$cov.pars[2])
+predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=fitvar3_es_O$cov.pars[2])
 
 prediction <- data.frame(predic)
 
@@ -702,7 +858,7 @@ mapa_cv_leaflet
 
 Se tomaron los datos de Temperatura de la madrugada el primero de marzo de 2024:
 
-```{r}
+```{r, message=F, warning=F}
 EstacionesT <- data %>% filter(AQSID %in% colnames(Temp_Matrix)[-1])
 EstacionesT <- EstacionesT[,c(1:10,13)]
 
@@ -761,7 +917,7 @@ leaflet() %>%
   addLegend(pal = pal, values = datosT_sf_wgs84$Temperatura, title = "Temperatura (°C)")
 
 temp <- as.geodata(datosT) 
-summary(temp)
+pander::pander(summary(temp))
 
 ```
 
@@ -769,10 +925,10 @@ summary(temp)
 ### Gráficos de dispersión
 
 ```{r}
-par(mfrow=c(1,2))
+pT1 <- simple_scatter_plot(datosT, "Este", "Temperatura")
+pT2 <- simple_scatter_plot(datosT, "Norte", "Temperatura")
 
-plot(Temperatura~Este, data = datosT, ylab = "Temperatura", xlab="Este")
-plot(Temperatura~Norte, data = datosT, ylab = "Temperatura", xlab="Norte")
+cowplot::plot_grid(pT1,pT2)
 ```
 
 ### GeoR
@@ -798,7 +954,7 @@ $$
 
 ```{r}
 fitT <- lm(Temperatura~Norte+I(Norte^2), data = datosT) 
-summary(fitT)
+pander::pander(summary(fitT))
 ```
 
 Observamos el comportamiento de sus residuales podemos notar que el modelo ayudo a reducir el efecto espacial.
@@ -808,9 +964,12 @@ Observamos el comportamiento de sus residuales podemos notar que el modelo ayudo
 
 ```{r}
 datosT$Residuos <- fitT$residuals
-par(mfrow=c(1,2))
-plot(Residuos~Este, data = datosT, xlab="Este", ylab="Residuos")
-plot(Residuos~Norte, data = datosT, xlab="Norte", ylab="Residuos")
+
+pT1 <- simple_scatter_plot(datosT, "Este", "Residuos")
+pT2 <- simple_scatter_plot(datosT, "Norte", "Residuos")
+
+cowplot::plot_grid(pT1,pT2)
+
 ```
 
 #### GeoR
@@ -1715,6 +1874,8 @@ kable(resumen_es_T2, digits = 3,
 El modelo con menor MSE es el modelo Gausiano. Sin embargo, dada la inestabilidad numérica que se observa al realizar la predicción se opta por usar el modelo esférico obtenido por mínimos cuadrados ponderados usando la ponderación $1/n$, que es el segundo mejor en términos del MSE.
 
 ### Kriging
+
+Usando el modelo esférico:
 
 ```{r, message=F, warning=F}
 

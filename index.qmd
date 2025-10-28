@@ -27,7 +27,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Acerca de
+# Acerca de {-}
 
 Este proyecto fue realizado para la materia de Estadística Espacial.
 

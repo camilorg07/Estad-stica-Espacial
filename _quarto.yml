@@ -6,8 +6,9 @@ execute:
   
 website:
   title: "Estadística Espacial"
+  page-navigation: true
   sidebar:
-    style: "docked"
+    style: "floating"
     search: true
     contents:
       - text: "Acerca de"
