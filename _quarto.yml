@@ -25,7 +25,7 @@ book:
       chapters:
         - Geo_uni.qmd
         - Geo_bi.qmd
-  downloads: pdf
+  #downloads: pdf
 lang: es
 
 format:
