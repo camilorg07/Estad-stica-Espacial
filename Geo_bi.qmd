@@ -1,0 +1,522 @@
+# Análisis Bivariado
+
+Se consideran las variables **temperatura** y **velocidad del viento**: 
+
+```{r, warning=FALSE, message=FALSE}
+library(readxl)
+library(geoR)
+library(matrixcalc)
+library(dplyr)
+library(geoR)
+library(sp)
+library(readxl)
+library(tidyr)
+library(sf)
+library(ggplot2)
+library(knitr)
+library(plotly)
+library(leaflet)
+library(raster)
+library(stars)
+library(gstat)
+
+
+cov_cos <- function(sigma, h, phi){
+  sigma * cos(h/phi)
+}
+
+cos_sv <- function(nugget, sigma, h, phi){
+  nugget +  sigma *(1 - cos(h/phi))
+}
+
+#Variable Temperatura ---------------------------------------
+
+Temp <- read_excel("GeoEst_Cali.xlsx", sheet = "Temperatura")
+colnames(Temp)[-1] <- as.numeric(colnames(Temp)[-1])
+EstacionesT <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
+EstacionesT <- EstacionesT %>% mutate(AQSID = as.numeric(AQSID))
+EstacionesT <- EstacionesT %>% filter(AQSID %in% colnames(Temp)[-1])
+
+y_T <- Temp[1,] #Tomar una fecha
+y_T <- cbind(colnames(y_T),t(y_T[1,]))
+y_T <- y_T[-1,]
+y_T <- as.data.frame(y_T)
+y_T <- na.omit(y_T)
+y_T <- y_T[-which.min(y_T$V2),]
+y_T$V1 <- as.numeric(y_T$V1)
+y_T <- inner_join(y_T, EstacionesT, by=c("V1"="AQSID"))
+datosT <- y_T[,c(13,14,2)]
+colnames(datosT)=c("Este","Norte","Temperatura")
+datosT$Temperatura <- as.numeric(datosT$Temperatura)
+
+temp <- as.geodata(datosT)
+
+
+
+#Variable Velocidad del viento ------------------------------
+
+WS <- read_excel("GeoEst_Cali.xlsx", sheet = "WindSpeed")
+colnames(WS)[-1] <- as.numeric(colnames(WS)[-1])
+EstacionesWS <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
+EstacionesWS <- EstacionesWS %>% mutate(AQSID = as.numeric(AQSID))
+EstacionesWS <- EstacionesWS %>% filter(AQSID %in% colnames(WS)[-1])
+
+y_WS <- WS[1,] #Tomar una fecha
+y_WS <- cbind(colnames(y_WS),t(y_WS[1,]))
+y_WS <- y_WS[-1,]
+y_WS <- as.data.frame(y_WS)
+y_WS <- na.omit(y_WS)
+y_WS$V1 <- as.numeric(y_WS$V1)
+y_WS <- inner_join(y_WS, EstacionesWS, by=c("V1"="AQSID"))
+datosWS <- y_WS[,c(13,14,2)]
+colnames(datosWS)=c("Este","Norte","WindSpeed")
+datosWS$WindSpeed <- as.numeric(datosWS$WindSpeed)
+
+ws <- as.geodata(datosWS)
+
+```
+
+::: panel-tabset
+
+## Temperatura
+
+```{r, message=FALSE, warning=FALSE}
+pander::pander(summary(temp))
+```
+
+## Velocidad del viento
+
+```{r, message=FALSE, warning=FALSE}
+pander::pander(summary(ws))
+```
+
+:::
+
+## Modelos Univariados
+
+### Estacionariedad en Media
+
+::: panel-tabset
+
+#### Temperatura
+
+El modelo es: $$Temperatura = \beta_0 + \beta_1 \times Norte + \beta_2 \times Norte^2$$
+
+
+```{r}
+plot(temp, qt.col = c("purple",
+                    "pink",
+                    "green",
+                    "yellow"),
+     scatter3d=T, trend=~Norte+I(Norte^2))
+fitT <- lm(Temperatura~Norte+I(Norte^2), data = datosT) 
+pander::pander(summary(fitT))
+```
+
+#### Velocidad del viento
+
+El modelo es: $$WindSpeed = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte + + \beta_3 \times Este \times Norte$$
+
+```{r}
+plot(temp, qt.col = c("purple",
+                      "pink",
+                      "green",
+                      "yellow"),
+     scatter3d=T, trend=~Norte*Este)
+
+fitWS <- lm(WindSpeed~Este*Norte, data = datosWS) 
+pander::pander(summary(fitWS))
+```
+
+:::
+
+### Variogramas
+
+#### Temperatura
+
+Para esta variable ya se analizo y encontró un modelo apropiado en el capítulo 1.
+
+#### Velocidad del viento
+
+```{r, message=FALSE, warning=FALSE, results='hide'}
+vgO_WS <- variog(ws,estimator.type = "modulus", pairs.min=50)
+
+vg1_WS <- variog(ws, trend = ~Norte*Este,
+                estimator.type = "modulus", pairs.min=50)
+```
+
+::: panel-tabset
+
+##### Con tendencia
+
+```{r}
+plot(vgO_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Sin remover tendencia",
+     col.main = 4, cex.main =1.3)
+```
+
+##### Sin tendencia
+
+```{r}
+plot(vg1_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Removiendo tendencia",
+     col.main = 4, cex.main =1.3)
+```
+
+:::
+
+##### Estimación teórica del semivariograma
+
+Se asume un modelo Coseno y Wave:
+
+```{r}
+#| message: false
+#| warning: false
+#| results: 'hide'
+
+#Estimación del coseno ---------------------------------
+
+h_range <- seq(0, max(vg1_WS$u), by = 1000)
+
+MSE_ponderados <- function(par, h, gamma,kappa=NA,w, model, n, pesos){
+  nugget <- par[1]
+  sigma <- par[2]
+  phi <- par[3]
+  
+  gamma_hat <- switch(model,
+                      "exponencial" = sv_exp(nugget, sigma, h, phi),
+                      "gaussian"    = sv_gauss(nugget, sigma, h, phi),
+                      "gneiting"    = sv_gneiting(nugget, sigma, h, phi),
+                      "spherical"   = sv_spherical(nugget, sigma, h, phi),
+                      "matern"      = sv_matern(nugget, sigma, h, phi, kappa),
+                      "cos"         = cos_sv(nugget, sigma, h, phi)
+  )
+  
+  w <- switch(pesos,
+              "Cressie" = 1/(2*(2*gamma_hat)^2/n),
+              "n" = 1/n,
+              "h/n" = 1/(h/n),
+              "I" = 1)
+  
+  sum(w*(gamma - gamma_hat)^2)
+}
+
+
+loglik <- function(par, kappa=NA, z, dist_matrix, model){
+  sigma_0 <- par[1]
+  phi_0 <- par[2]
+  nugget_0 <- par[3]
+  kappa_0 <- kappa
+  
+  cov <- switch(model,
+                "exponencial" = cov_exp,
+                "gaussian"    = cov_gauss,
+                "spherical"   = cov_spherical,
+                "gneiting"    = cov_gneiting,
+                "matern"      = cov_matern,
+                "cos"         = cov_cos 
+  )
+  
+  args_cov <- names(formals(cov))
+  
+  args_list <- list(
+    sigma  = sigma_0,
+    nugget = nugget_0,
+    h      = dist_matrix,
+    phi    = phi_0,
+    kappa  = kappa_0
+  )
+  
+  args_list <- args_list[names(args_list) %in% args_cov]
+  
+  Sigma <- do.call(cov, args_list) 
+  diag(Sigma) = diag(Sigma) + nugget_0
+  
+  if (!is.positive.definite(Sigma)) {
+    Sigma <- as.matrix(nearPD(Sigma, corr = FALSE)$mat)
+  }
+  
+  # Descomposición de Cholesky (más estable que solve o det)
+  inv_Sigma <- solve(Sigma)
+  det <- log(det(Sigma))
+  
+  # Log-verosimilitud del modelo Gaussiano
+  z <- z 
+  n <- length(z)
+  ll <- -0.5 * (n * log(2 * pi) + det + crossprod(z, inv_Sigma %*% z))  # Log-verosimilitud (negativa porque optim minimiza)
+  return(-ll)
+}
+
+sv_ini <- cos_sv(1.5, 1.5, vg1_WS$u, .6e5)
+n <- vg1_WS$n
+
+variog_WS <- data.frame(h = vg1_WS$u, gamma_hat = vg1_WS$v,
+                       n = vg1_WS$n)
+
+# Cressie -------------------------------------------------
+
+WW <- (2*(2*sv_ini)^2/n)
+
+Bessel <- nls(formula = gamma_hat ~cos_sv(nugget, sigma, h, phi),
+              start = c(nugget = 1.5, sigma = 1.5, phi = .6e5),
+              weights = 1/WW,
+              lower = rep(1e-6,3),
+              data = variog_WS,
+              control = nls.control(maxiter = 500, warnOnly = TRUE))
+
+
+optim_bessel <- optim(
+  par = coef(Bessel),
+  fn = MSE_ponderados,
+  h = variog_WS$h,
+  gamma = variog_WS$gamma_hat,
+  pesos = "Cressie",
+  model = "cos",
+  n = n,
+  method = "L-BFGS-B",
+  lower = rep(1e-6,3)
+)
+
+par_optim_Bess <- optim_bessel$par[c("nugget", "sigma", "phi")]
+
+# 1/n ------------------------------------------------------
+
+W1 <- n
+
+n_pond <- nls(formula = gamma_hat ~cos_sv(nugget, sigma, h, phi),
+              start = c(nugget = 1.5, sigma = 1.5, phi = .6e5),
+              weights = 1/W1,
+              lower = rep(1e-6,3),
+              data = variog_WS,
+              control = nls.control(maxiter = 500, warnOnly = TRUE))
+
+
+optim_n <- optim(
+  par = coef(n_pond),
+  fn = MSE_ponderados,
+  h = variog_WS$h,
+  gamma = variog_WS$gamma_hat,
+  pesos = "n",
+  model = "cos",
+  n = n,
+  method = "L-BFGS-B",
+  lower = rep(1e-6,3)
+)
+
+par_optim_n <- optim_n$par[c("nugget", "sigma", "phi")]
+
+# n/h -----------------------------------------------------
+
+W2 <- variog_WS$h/n
+
+h_n_pond <- nls(formula = gamma_hat ~cos_sv(nugget, sigma, h, phi),
+              start = c(nugget = 1.5, sigma = 1.5, phi = .6e5),
+              weights = 1/W2,
+              lower = rep(1e-6,3),
+              data = variog_WS,
+              control = nls.control(maxiter = 500, warnOnly = TRUE))
+
+optim_h_n <- optim(
+  par = coef(h_n_pond),
+  fn = MSE_ponderados,
+  h = variog_WS$h,
+  gamma = variog_WS$gamma_hat,
+  pesos = "h/n",
+  model = "cos",
+  n = n,
+  method = "L-BFGS-B",
+  lower = rep(1e-6,3)
+)
+
+par_optim_h_n <- optim_h_n$par[c("nugget", "sigma", "phi")]
+
+I_pond <- nls(formula = gamma_hat ~cos_sv(nugget, sigma, h, phi),
+              start = c(nugget = 1.5, sigma = 1.5, phi = .6e5),
+              lower = rep(1e-6,3),
+              data = variog_WS,
+              control = nls.control(maxiter = 500, warnOnly = TRUE))
+
+# MCO -----------------------------------------------------
+
+optim_I <- optim(
+  par = coef(I_pond),
+  fn = MSE_ponderados,
+  h = variog_WS$h,
+  gamma = variog_WS$gamma_hat,
+  pesos = "I",
+  model = "cos",
+  n = n,
+  method = "L-BFGS-B",
+  lower = rep(1e-6,3)
+)
+
+par_optim_I <- optim_I$par[c("nugget", "sigma", "phi")]
+
+estcos_sv_Bess_WS <- do.call(cos_sv, c(as.list(par_optim_Bess), list(h = h_range)))
+estcos_sv_n_WS <- do.call(cos_sv, c(as.list(par_optim_n), list(h = h_range)))
+estcos_sv_h_n_WS <- do.call(cos_sv, c(as.list(par_optim_h_n), list(h = h_range)))
+estcos_sv_I_WS <- do.call(cos_sv, c(as.list(par_optim_I), list(h = h_range)))
+
+# Modelo wave ----------------------------------------------
+
+fitvar1 <- variofit(vg1_WS,
+                    cov.model = "wave",
+                    c(3.5,.6e5),
+                    fix.nugget = F,
+                    wei = "equal")
+fitvar2 <- variofit(vg1_WS,
+                    cov.model = "wave",
+                    c(3.5,.6e5),
+                    fix.nugget = F,
+                    wei = "npairs")
+
+fitvar3 <- variofit(vg1_WS,
+                    cov.model = "wave",
+                    c(3.5,.6e5),
+                    fix.nugget = F,
+                    wei = "cressie")
+
+fitvar4_es_T <- likfit(ws,
+                       coords = ws$coords,
+                       data = ws$data,
+                       trend = ~ Este*Norte,
+                       ini.cov.pars = c(3.5, .6e5),
+                       fix.nugget = F,
+                       nugget = 1.5,
+                       cov.model = "wave",
+                       lik.method = "ML")
+
+```
+
+::: panel-tabset
+
+###### Coseno (Optim)
+
+```{r}
+plot(vg1_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Removiendo tendencia",
+     col.main = 4, cex.main =1.3)
+lines(h_range, estcos_sv_Bess_WS, col="#FF4040", lwd=1.5)
+lines(h_range, estcos_sv_n_WS, col="#4169E1", lwd=1.5)
+lines(h_range, estcos_sv_h_n_WS, col="#008B00", lwd=1.5)
+lines(h_range, estcos_sv_I_WS, col="#FFA500", lwd=1.5)
+legend("topleft",
+       c("Cressie", "1/n", "n/h", "MCO"),#, "REML"),
+       lwd = 1,
+       lty = 3,
+       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       box.col = 9,
+       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       cex=1,
+       seg.len = .5)
+
+```
+
+###### Wave (GeoR)
+
+```{r, message=FALSE, warning=FALSE}
+
+plot(vg1_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Removiendo tendencia",
+     col.main = 4, cex.main =1.3)
+
+lines(fitvar1, col="#FF4040", lwd=1.5)
+lines(fitvar2, col="#4169E1", lwd=1.5)
+lines(fitvar3, col="#008B00", lwd=1.5)
+lines(fitvar4_es_T, col="#FFA500", lwd=1.5)
+
+legend("topleft",
+       c("MCO", "1/n", "Cressie", "MLE"),#, "REML"),
+       lwd = 1,
+       lty = 3,
+       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       box.col = 9,
+       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       cex=1,
+       seg.len = .5)
+
+
+```
+
+:::
+
+## Modelo cruzado de semivarianza
+
+Considerando un modelo esférico para Temperatura y un modelo Wave para WS, las matrices para el modelo de coregionalización son: 
+
+```{r}
+#| code-fold: false
+
+mat1 <- cbind(c(8, 3.5),
+              c(3.5, 1))
+
+mat2 <-cbind(c(8, 3.5),
+             c(3.5, 1))
+```
+
+```{r,, message=FALSE, warning=FALSE}
+
+datosT1 <- datosT
+datosWS1 <- datosWS
+invisible(coordinates(datosT1) <- ~ Este + Norte)
+invisible(coordinates(datosWS1) <- ~ Este + Norte)
+
+
+vgmntemp <- vgm(psill = mat1[1, 1],
+              model = "Sph",
+              range = 2e5,
+              nugget = .5,
+              add.to = vgm(psill = mat2[1, 1],
+                           model = "Wav",
+                           range = .5e5, nugget = 2))
+
+vgmws <- vgm(psill = mat1[2, 2],
+             model = "Sph",
+             range = 2e5,
+             nugget = .5,
+             add.to = vgm(psill = mat2[2, 2],
+                          model = "Wav",
+                          range = .5e5, nugget = 2))
+
+
+vgmntemp_sv <- vgm(psill = mat1[1, 2], model = "Sph",
+                 range = 2e5,
+                 nugget = .5,
+                 add.to = vgm(psill = mat2[1, 2],
+                              model = "Wav",
+                              range = .5e5, nugget = 2))
+
+
+
+g <- gstat(NULL, id="Temp", formula=Temperatura~Norte+I(Norte^2),
+           data=datosT1, model = vgmntemp)
+g <- gstat(g, id="W_speed", formula=WindSpeed~Norte*Este,
+           data=datosWS1, model = vgmws)
+g <- gstat(g, c("Temp","W_speed"), model = vgmntemp_sv)
+
+plot(variogram(g),
+     model = g$model,
+     pl = F,
+     xlab = "Distancias",
+     ylab = "Semivarianza")
+
+```
+
+
+# Referencias {-}

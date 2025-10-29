@@ -19,7 +19,30 @@
             "title": "AirNow: Air quality data",
             "title-short": "AirNow",
             "type": "webpage"
+        },
+        {
+            "URL": "https://sites.google.com/unal.edu.co/marthapatriciabohorquezcastaed/courses",
+            "author": [
+                {
+                    "family": "Bohorquez Castañeda",
+                    "given": "Martha Patricia"
+                }
+            ],
+            "id": "BohorquezCastañeda_NotasEstadisticaEspacial",
+            "issued": {
+                "date-parts": [
+                    [
+                        2024
+                    ]
+                ]
+            },
+            "note": "Accedido: 29 de agosto de 2025",
+            "title": "Notas de clase: Estadística espacial y espacio-temporal para campos aleatorios escalares y funcionales",
+            "title-short": "Notas de clase",
+            "type": ""
         }
     ],
-    "project_biblios": []
+    "project_biblios": [
+        "referencias.bib"
+    ]
 }

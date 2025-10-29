@@ -1,16 +1,15 @@
----
-title: "Análisis geoestadístico del ozono y la temperatura en California durante marzo de 2024"
----
 
-# Introducción
+# Análisis Univariado
+
+## Introducción
 
 La calidad del aire es un factor clave para la salud pública, el bienestar social y la sostenibilidad ambiental, y California se destaca como uno de los estados más afectados de Estados Unidos por la contaminación atmosférica. La combinación de una alta densidad poblacional, una intensa actividad industrial y vehicular, junto con fenómenos naturales como los incendios forestales, ha hecho que varias de sus ciudades se ubiquen entre las más contaminadas del país. Al mismo tiempo, la temperatura cumple un papel fundamental en la dinámica atmosférica, ya que influye en la dispersión, concentración y formación de contaminantes, además de constituir en sí misma un aspecto crítico para comprender las condiciones ambientales regionales. Frente a este contexto, resulta necesario llevar a cabo un análisis geoespacial que considere tanto la calidad del aire como la temperatura en California, con el fin de identificar patrones espaciales, contrastes regionales y áreas críticas que permitan orientar acciones de mitigación y gestión ambiental.
 
-# Descripción
+## Descripción
 
 Los datos objeto de este estudio provienen de la [Agencia de Protección Ambiental (EPA)](https://www.epa.gov/) de los Estados Unidos y corresponden a registros horarios obtenidos de las estaciones de monitoreo durante el mes de marzo de 2024. En partícular, se analizan las variables **Temperatura** y **Ozono (**$O_3$**)**.
 
-## Unidades
+### Unidades
 
 -   *Temperatura:* Medido en grados celsius (C°) con una intensidad horaria.
 
@@ -95,9 +94,9 @@ simple_scatter_plot <- function(datos, variable1, variable2) {
 
 ```
 
-# Análisis geoestadístico univariado
+## Análisis geoestadístico univariado
 
-## Variable Ozono
+### Variable Ozono
 
 Se tomaron los datos de Temperatura de la madrugada el primero de marzo de 2024:
 
@@ -138,7 +137,7 @@ pander::pander(summary(ozone))
 ```
 
 ::: panel-tabset
-### Gráficos de dispersión
+#### Gráficos de dispersión
 
 ```{r}
 pO1 <- simple_scatter_plot(datosOZ, "Este", "Ozono")
@@ -148,7 +147,7 @@ cowplot::plot_grid(pO1,pO2)
 
 ```
 
-### GeoR
+#### GeoR
 
 ```{r}
 plot(ozone, qt.col = c("purple",
@@ -161,7 +160,7 @@ plot(ozone, qt.col = c("purple",
 
 El gráfico muestra una relación polinomial de la variable Ozono con respecto a las coordenadas en Norte. Se prueba con varios modelos hasta encontrar aquel que mitigue el efecto espacial.
 
-### Modelo de tendencia espacial
+#### Modelo de tendencia espacial
 
 El modelo que mejor atrapa el efecto de la media es:
 
@@ -175,7 +174,7 @@ pander::pander(summary(fitO))
 Gráficamente se observa una mitigación en la tendencia espacial:
 
 ::: panel-tabset
-#### Gráficos de dispersión
+##### Gráficos de dispersión
 
 ```{r}
 datosOZ$Residuos <- fitO$residuals
@@ -187,7 +186,7 @@ cowplot::plot_grid(pO1,pO2)
 
 ```
 
-#### GeoR
+##### GeoR
 
 ```{r}
 plot(ozone, qt.col = c("purple",
@@ -198,7 +197,7 @@ plot(ozone, qt.col = c("purple",
 ```
 :::
 
-### Estimación empírica del semivariograma
+#### Estimación empírica del semivariograma
 
 A continuación, se presenta la estimación del semivariograma obtenida con la función variog. Se muestran dos gráficos comparativos: el primero corresponde a los datos originales (sin eliminar la tendencia) y el segundo a los residuales obtenidos tras ajustar el modelo de regresión, lo que permite observar el efecto de remover la tendencia en la estructura espacial.
 
@@ -209,7 +208,7 @@ vg1_O <- variog(ozone, trend = ~I(Norte^2)+I(Norte^3)+Este, estimator.type = "mo
 ```
 
 ::: panel-tabset
-#### Con tendencia
+##### Con tendencia
 
 ```{r}
 plot(vg_O,
@@ -221,7 +220,7 @@ plot(vg_O,
      col.main = 4, cex.main =1.3)
 ```
 
-#### Removiendo Tendencia
+##### Removiendo Tendencia
 
 ```{r}
 plot(vg1_O,
@@ -242,7 +241,7 @@ plot(vg1_O$u, vg1_O$n, type="b",
      main="Número de pares por bin")
 ```
 
-### Estimación del Modelo Teórico de Semivariograma
+#### Estimación del Modelo Teórico de Semivariograma
 
 Los modelos obtenidos ajustanto por EyeFit, son:
 
@@ -254,7 +253,7 @@ cov.model sigmasq      phi tausq kappa kappa2 practicalRange
 ```
 ::: panel-tabset
 
-#### Matern
+##### Matern
 
 ```{r}
 #| message: false
@@ -325,7 +324,7 @@ legend("topleft",
        seg.len = .5)
 ```
 
-#### Gneiting
+##### Gneiting
 
 ```{r}
 #| message: false
@@ -391,7 +390,7 @@ legend("topleft",
        seg.len = .5)
 ```
 
-#### Exponencial
+##### Exponencial
 
 ```{r}
 #| message: false
@@ -458,7 +457,7 @@ legend("topleft",
 
 ```
 
-#### Esférico
+##### Esférico
 
 ```{r}
 #| message: false
@@ -525,7 +524,7 @@ legend("topleft",
 
 ```
 
-#### Cúbico
+##### Cúbico
 
 ```{r}
 #| message: false
@@ -593,7 +592,7 @@ legend("topleft",
 ```
 :::
 
-### Kriging
+#### Kriging
 
 Usando el modelo esférico:
 
@@ -770,19 +769,19 @@ mapa_cv_leaflet <- leaflet() %>%
 ```
 
 ::: panel-tabset
-#### Predicción
+##### Predicción
 
 ```{r}
 mapa_kriging_leaflet
 ```
 
-#### Varianza
+##### Varianza
 
 ```{r}
 mapa_var_leaflet
 ```
 
-#### Coeficiente de variación
+##### Coeficiente de variación
 
 ```{r}
 mapa_cv_leaflet
@@ -790,7 +789,7 @@ mapa_cv_leaflet
 
 :::
 
-## Variable Temperatura
+### Variable Temperatura
 
 Se tomaron los datos de Temperatura de la madrugada el primero de marzo de 2024:
 
@@ -831,7 +830,7 @@ pander::pander(summary(temp))
 ```
 
 ::: panel-tabset
-### Gráficos de dispersión
+#### Gráficos de dispersión
 
 ```{r}
 pT1 <- simple_scatter_plot(datosT, "Este", "Temperatura")
@@ -840,7 +839,7 @@ pT2 <- simple_scatter_plot(datosT, "Norte", "Temperatura")
 cowplot::plot_grid(pT1,pT2)
 ```
 
-### GeoR
+#### GeoR
 
 ```{r}
 plot(temp, qt.col = c("purple",
@@ -853,7 +852,7 @@ plot(temp, qt.col = c("purple",
 
 En el gráfico se observa un agrupamiento en las coordenadas Norte con respecto a los datos, que puede llegar a corregirse con algún polinomio. Se probará con diferentes modelos a ver si se puede llegar a disminuir el efecto espacial.
 
-### Modelo de tendencia espacial
+#### Modelo de tendencia espacial
 
 El modelo que mejor atrapa el efecto de la media es:
 
@@ -869,7 +868,7 @@ pander::pander(summary(fitT))
 Observamos el comportamiento de sus residuales podemos notar que el modelo ayudo a reducir el efecto espacial.
 
 ::: panel-tabset
-#### Gráficos de dispersión
+##### Gráficos de dispersión
 
 ```{r}
 datosT$Residuos <- fitT$residuals
@@ -881,7 +880,7 @@ cowplot::plot_grid(pT1,pT2)
 
 ```
 
-#### GeoR
+##### GeoR
 
 ```{r}
 plot(temp, qt.col = c("purple",
@@ -892,7 +891,7 @@ plot(temp, qt.col = c("purple",
 ```
 :::
 
-### Estimación empírica del semivariograma
+#### Estimación empírica del semivariograma
 
 p¿Presentamos la estimación del semivariograma obtenida mediante la función variog para la variable temperatura. Se comparan los resultados al calcularlo directamente sobre los datos originales (sin remover la tendencia) y al utilizar los residuales de un modelo de regresión, con el objetivo de analizar cómo influye la presencia de tendencia en la estructura espacial.
 
@@ -905,7 +904,7 @@ vg1_T <- variog(temp, trend = ~Norte+I(Norte^2),
 ```
 
 ::: panel-tabset
-#### Con tendencia
+##### Con tendencia
 
 ```{r}
 plot(vg_T,
@@ -917,7 +916,7 @@ plot(vg_T,
      col.main = 4, cex.main =1.3)
 ```
 
-#### Removiendo tendencia
+##### Removiendo tendencia
 
 ```{r}
 plot(vg1_T,
@@ -940,7 +939,7 @@ plot(vg1_T$u, vg1_T$n, type="b",
 
 En este caso, el último punto corresponde a menos de 25 pares de observaciones, por lo que su interpretación resulta menos confiable.
 
-### Estimación del Modelo Teórico de Semivariograma
+#### Estimación del Modelo Teórico de Semivariograma
 
 ```{r}
 
@@ -1259,7 +1258,7 @@ cov.model sigmasq      phi tausq kappa kappa2 practicalRange
 3   spherical   10.00 157832.8  2.07    NA     NA       157832.8
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 
 variog_T <- data.frame(h = vg1_T$u, gamma_hat = vg1_T$v,
                        n = vg1_T$n)
@@ -1344,10 +1343,10 @@ estsv_es_MLE_T <- do.call(sv_spherical, c(list(nugget = MLE_esT$par[3], phi = ML
 ```
 
 :::::: panel-tabset
-#### Exponencial
+##### Exponencial
 
 ::: panel-tabset
-##### Optim
+###### Optim
 
 ```{r}
 plot(vg1_T,
@@ -1395,7 +1394,7 @@ kable(resumen_exp_T, digits = 3,
       escape = F, row.names = F)
 ```
 
-##### GeoR
+###### GeoR
 
 ```{r}
 #| message: false
@@ -1489,10 +1488,10 @@ kable(resumen_exp_T2, digits = 3,
 ```
 :::
 
-#### Gaussiano
+##### Gaussiano
 
 ::: panel-tabset
-##### Optim
+###### Optim
 
 ```{r}
 plot(vg1_T,
@@ -1538,7 +1537,7 @@ kable(resumen_g_T, digits = 3,
 
 ```
 
-##### GeoR
+###### GeoR
 
 ```{r}
 #| message: false
@@ -1631,10 +1630,10 @@ kable(resumen_g_T2, digits = 3,
 ```
 :::
 
-#### Esférico
+##### Esférico
 
 ::: panel-tabset
-##### Optim
+###### Optim
 
 ```{r}
 plot(vg1_T,
@@ -1682,7 +1681,7 @@ kable(resumen_es_T, digits = 3,
       escape = F)
 ```
 
-##### GeoR
+###### GeoR
 
 ```{r}
 #| message: false
@@ -1783,7 +1782,7 @@ kable(resumen_es_T2, digits = 3,
 
 El modelo con menor MSE es el modelo Gausiano. Sin embargo, dada la inestabilidad numérica que se observa al realizar la predicción se opta por usar el modelo esférico obtenido por mínimos cuadrados ponderados usando la ponderación $1/n$, que es el segundo mejor en términos del MSE.
 
-### Kriging
+#### Kriging
 
 Usando el modelo esférico:
 
@@ -1959,23 +1958,24 @@ mapa_cv_leaflet <- leaflet() %>%
 ```
 
 ::: panel-tabset
-#### Predicción
+##### Predicción
 
 ```{r}
 mapa_kriging_leaflet
 ```
 
-#### Varianza
+##### Varianza
 
 ```{r}
 mapa_var_leaflet
 ```
 
-#### Coeficiente de variación
+##### Coeficiente de variación
 
 ```{r}
 mapa_cv_leaflet
 ```
 
-
 :::
+
+# Referencias {-}

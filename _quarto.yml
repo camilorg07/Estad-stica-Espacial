@@ -1,36 +1,38 @@
 project:
-  type: website
+  type: book
   
 execute:
   freeze: true
   
-website:
+book:
   title: "Estadística Espacial"
+  author: 
+  - name: "Luna Katerin Díaz Casallas"
+    email: "ldiazca@unal.edu.co"
+    affiliation: "Departamento de Estadística - Universidad Nacional de Colombia"
+  - name: "Camilo Alejandro Raba Gómez"
+    email: "craba@unal.edu.co"
+    affiliation: "Departamento de Estadística - Universidad Nacional de Colombia"
+  date: today
   page-navigation: true
+  bread-crumbs: false
   sidebar:
     style: "floating"
     search: true
-    contents:
-      - text: "Información general"
-        href: index.qmd
-        
-      - section: "Análisis Geoestadístico"
-        contents:
-          - text: "Análisis Univariado" 
-            href: Geo_uni.qmd
-          - text: "Análisis Bivariado"
-            #href:
-      - text: "Análisis Espacio-Temporal"
-        #href:
-      - text: "Análisis funcional"
-        #href:
+  chapters:
+    - index.qmd
+    - part: "Análisis Geoestadístico"
+      chapters:
+        - Geo_uni.qmd
+        - Geo_bi.qmd
+  downloads: pdf
 lang: es
 
 format:
   html:
     toc: True
     toc-title: "Tabla de contenidos"
-    toc-depth: 3  # Profundidad de los encabezados a enumerar
+    toc-depth: 4  # Profundidad de los encabezados a enumerar
     number-sections: true  # Activa la numeración de secciones
     html-math-method: katex
     code-fold: true
@@ -44,6 +46,8 @@ format:
       dark: [cosmo, theme-dark.scss]
     include-after-body: footer.html
     embed-resources: false
+  pdf:
+    documentclass: scrreprt
     
 editor_options:
   chunk_output_type: console
