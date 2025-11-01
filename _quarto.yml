@@ -32,13 +32,13 @@ format:
   html:
     toc: True
     toc-title: "Tabla de contenidos"
-    toc-depth: 4  # Profundidad de los encabezados a enumerar
+    toc-depth: 5  # Profundidad de los encabezados a enumerar
     number-sections: true  # Activa la numeración de secciones
     html-math-method: katex
     code-fold: true
     code-summary: "Ver código"
     code-block-bg: true
-    code-block-border-left: "#65a9e3"
+    code-block-border-left: "#2e66e4"
     link-external-newwindow: true
     css: styles.css
     theme:
@@ -51,6 +51,5 @@ format:
     
 editor_options:
   chunk_output_type: console
-bibliography: referencias.bib
-nocite: '@*'
+
 

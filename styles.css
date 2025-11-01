@@ -49,5 +49,29 @@ body.quarto-dark .logo-dark {
   display: inline;
 }
 
+/* Modo claro: Se aplica a body.quarto-light */
+body.quarto-light blockquote {
+  /* Fondo y color de texto */
+  background-color: #f8f9fa; /* Gris muy claro, similar al footer */
+  color: #444; /* Gris oscuro para el texto */
+  
+  /* Borde o barra vertical a la izquierda para distinguirlo */
+  border-left: 5px solid #2e66e4;
+}
 
+body.quarto-dark blockquote {
+  /* Fondo y color de texto */
+  background-color: #222; /* Gris oscuro para el fondo */
+  color: #bbb; /* Gris claro para el texto */
+  
+  /* Borde o barra vertical a la izquierda */
+  border-left: 5px solid #2e66e4; 
+}
 
+.titulo-presentacion {
+  font-size: 1.5em; /* 1.5 veces el tamaño normal */
+  color: #2e66e4;
+  font-weight: bold;
+  /* Espacio extra abajo para separarlo del título numerado */
+  margin-bottom: 1em; 
+}

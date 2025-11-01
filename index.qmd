@@ -1,5 +1,4 @@
 # Contenido {.unnumbered}
 
-En este documento tiene como objetivo ilustrar el recorrido de la implementación de la metodología y teoría vista durante el curso de Estadística Espacial. Se implementaran modelos de análisis geoestadístico univariados y bivariados, modelos de análisis espacio-temporar y de datos funcionales.
+En este documento tiene como objetivo ilustrar el recorrido de la implementación de la metodología y teoría vista durante el curso de Estadística Espacial. Se implementaran modelos de análisis geoestadístico univariados y bivariados, modelos de análisis espacio-temporal y de datos funcionales.
 
-# Referencias {-}
