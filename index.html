@@ -9,7 +9,7 @@
 <meta name="author" content="Luna Katerin Díaz Casallas">
 <meta name="author" content="Camilo Alejandro Raba Gómez">
 
-<title>Análisis geoespacial de California durante marzo de 2024 – Estadística Espacial</title>
+<title>Estadística Espacial</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -62,8 +62,8 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2194d4fcaa4fe9f9ec40d325a59504d0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-bc1ed682aac23ea5254ae37856852f5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-0f820aaf2898d6695fce1be48efac500.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-cc8b6e48c2768759135c34304c8ae2d8.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -105,9 +105,9 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Información general</a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title">Estadística Espacial</h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -136,7 +136,7 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Información general</span></a>
+ <span class="menu-text">Contenido</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -151,19 +151,16 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./Geo_uni.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Análisis Univariado</span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Análisis Univariado</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">Análisis Bivariado</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="./Geo_bi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Análisis Bivariado</span></span></a>
+  </div>
+</li>
       </ul>
-  </li>
-        <li class="sidebar-item">
- <span class="menu-text">Análisis Espacio-Temporal</span>
-  </li>
-        <li class="sidebar-item">
- <span class="menu-text">Análisis funcional</span>
   </li>
     </ul>
     </div>
@@ -175,7 +172,8 @@ div.csl-indent {
     <h2 id="toc-title">Tabla de contenidos</h2>
    
   <ul>
-  <li><a href="#acerca-de" id="toc-acerca-de" class="nav-link active" data-scroll-target="#acerca-de">Acerca de</a></li>
+  <li><a href="#contenido" id="toc-contenido" class="nav-link active" data-scroll-target="#contenido">Contenido</a></li>
+  <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
   </ul>
 </nav>
     </div>
@@ -184,7 +182,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Análisis geoespacial de California durante marzo de 2024</h1>
+<h1 class="title d-none d-lg-block">Estadística Espacial</h1>
 </div>
 
 
@@ -204,6 +202,9 @@ div.csl-indent {
     <p class="author">Camilo Alejandro Raba Gómez <a href="mailto:craba@unal.edu.co" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
   </div>
   <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Departamento de Estadística - Universidad Nacional de Colombia
+          </p>
       </div>
   </div>
 
@@ -213,7 +214,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Fecha de publicación</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">28 de octubre de 2025</p>
+      <p class="date">31 de octubre de 2025</p>
     </div>
   </div>
   
@@ -225,22 +226,25 @@ div.csl-indent {
 </header>
 
 
-<section id="acerca-de" class="level1 unnumbered">
-<h1 class="unnumbered">Acerca de</h1>
-<p>Este proyecto fue realizado para la materia de Estadística Espacial.</p>
-
-
-
+<section id="contenido" class="level1 unnumbered">
+<h1 class="unnumbered">Contenido</h1>
+<p>En este documento tiene como objetivo ilustrar el recorrido de la implementación de la metodología y teoría vista durante el curso de Estadística Espacial. Se implementaran modelos de análisis geoestadístico univariados y bivariados, modelos de análisis espacio-temporar y de datos funcionales.</p>
 </section>
+<section id="referencias" class="level1 unnumbered">
+<h1 class="unnumbered">Referencias</h1>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-BohorquezCastañeda_NotasEstadisticaEspacial" class="csl-entry" role="listitem">
 Bohorquez Castañeda, Martha Patricia. 2024. <span>«Notas de clase: Estadística Espacial y Espacio-Temporal para Campos Aleatorios Escalares y Funcionales»</span>. <a href="https://sites.google.com/unal.edu.co/marthapatriciabohorquezcastaed/courses">https://sites.google.com/unal.edu.co/marthapatriciabohorquezcastaed/courses</a>.
 </div>
 <div id="ref-EPA2024" class="csl-entry" role="listitem">
 United States Environmental Protection Agency (EPA). 2024. <span>«AirNow: Air Quality Data»</span>. 2024. <a href="https://files.airnowtech.org/">https://files.airnowtech.org/</a>.
 </div>
-</div></section></div></main> <!-- /main -->
+</div>
+</section>
+
+</main> <!-- /main -->
 <div class="custom-footer">
 
   <div class="footer-logo">
@@ -521,7 +525,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/camilorg07\.github\.io\/Estad-stica-Espacial\/");
+      var filterRegex = new RegExp('/' + window.location.host + '/');
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -858,7 +862,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./Geo_uni.html" class="pagination-link" aria-label="Análisis Univariado">
-        <span class="nav-page-text">Análisis Univariado</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Análisis Univariado</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
