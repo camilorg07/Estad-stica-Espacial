@@ -2,3 +2,6 @@
   netlify:
     - id: 3e4b8f8c-3f54-4ca2-a00b-59a932961dd1
       url: https://strong-boba-d5da05.netlify.app
+  quarto-pub:
+    - id: c6c2d308-823d-45ce-b8d3-6089622eb890
+      url: https://camilorg.quarto.pub/espacial

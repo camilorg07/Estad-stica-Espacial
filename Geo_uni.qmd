@@ -16,7 +16,10 @@ Los datos objeto de este estudio provienen de la [Agencia de Protección Ambient
 -   *Ozono:* Medido en partes por billón (ppb) con una intensidad horaria.
 
 ```{r, warning=FALSE, message=F}
+
 #Librerias necesarias ------------------------------------
+
+set.seed(123)
 
 library(dplyr)
 library(geoR)
@@ -30,6 +33,7 @@ library(plotly)
 library(leaflet)
 library(raster)
 library(stars)
+library(terra)
 
 #Variale Temperatura --------------------------------------
 
@@ -46,6 +50,23 @@ colnames(Ozono)[-1] <- as.numeric(colnames(Ozono)[-1])
 EstacionesOz <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
 EstacionesOz <- EstacionesOz %>% mutate(AQSID = as.numeric(AQSID))
 EstacionesOz <- EstacionesOz %>% filter(AQSID %in% colnames(Ozono)[-1])
+
+#Variable velocidad del viento ----------------------------
+
+WS <- read_excel("GeoEst_Cali.xlsx", sheet = "WindSpeed")
+colnames(WS)[-1] <- as.numeric(colnames(WS)[-1])
+EstacionesWS <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
+EstacionesWS <- EstacionesWS %>% mutate(AQSID = as.numeric(AQSID))
+EstacionesWS <- EstacionesWS %>% filter(AQSID %in% colnames(WS)[-1])
+
+#Variable presión atmosférica -----------------------------
+
+Presion <- read_excel("GeoEst_Cali.xlsx", sheet = "Presion")
+colnames(Presion)[-1] <- as.numeric(colnames(Presion)[-1])
+EstacionesPr <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
+EstacionesPr <- EstacionesPr %>% mutate(AQSID = as.numeric(AQSID))
+EstacionesPr <- EstacionesPr %>% filter(AQSID %in% colnames(Presion)[-1])
+
 
 #Para el mapa de California -------------------------------
 
@@ -94,7 +115,7 @@ simple_scatter_plot <- function(datos, variable1, variable2) {
 
 ```
 
-## Análisis geoestadístico univariado
+## Análisis geoestadístico
 
 ### Variable Ozono
 
@@ -127,7 +148,7 @@ leaflet() %>%
                    fillOpacity = 0.8,
                    color = "black",
                    weight = 1,
-                   radius = 6,
+                   radius = 3,
                    popup = ~paste("Ozono:", Ozono, "°C")) %>%
   addLegend(pal = palO, values = datosO_sf_wgs84$Ozono, title = "Ozono (ppb)")
 
@@ -160,7 +181,7 @@ plot(ozone, qt.col = c("purple",
 
 El gráfico muestra una relación polinomial de la variable Ozono con respecto a las coordenadas en Norte. Se prueba con varios modelos hasta encontrar aquel que mitigue el efecto espacial.
 
-#### Modelo de tendencia espacial
+#### Modelo para la Media
 
 El modelo que mejor atrapa el efecto de la media es:
 
@@ -197,7 +218,7 @@ plot(ozone, qt.col = c("purple",
 ```
 :::
 
-#### Estimación empírica del semivariograma
+#### Estimación Empírica del Semivariograma
 
 A continuación, se presenta la estimación del semivariograma obtenida con la función variog. Se muestran dos gráficos comparativos: el primero corresponde a los datos originales (sin eliminar la tendencia) y el segundo a los residuales obtenidos tras ajustar el modelo de regresión, lo que permite observar el efecto de remover la tendencia en la estructura espacial.
 
@@ -594,16 +615,29 @@ legend("topleft",
 
 #### Kriging
 
-Usando el modelo esférico:
+Usando el modelo exponencial:
+
+```{r}
+plot(vg1_O,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Modelo exponencial para Ozono",
+     col.main = "#36648B", cex.main =1.3)
+lines(fitvar3_l_O, col="#008B00", lwd=1.5)
+
+```
+
 
 ```{r, message=F, warning=F, results='hide'}
 
 #Se ajusta el mejor modelo -------------------------------
 
-best_model_O <- gstat::vgm(psill = fitvar3_es_O$cov.pars[1],
-                           model = "Sph",
-                           range = fitvar3_es_O$cov.pars[2],
-                           nugget = fitvar3_es_O$nugget
+best_model_O <- gstat::vgm(psill = fitvar3_l_O$cov.pars[1],
+                           model = "Exp",
+                           range = fitvar3_l_O$cov.pars[2],
+                           nugget = fitvar3_l_O$nugget
                            
 )
 
@@ -619,7 +653,7 @@ g_obj<-gstat::gstat(id="Ozono",
 
 #Kriging ------------------------------------------------
 
-invisible(predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=fitvar3_es_O$cov.pars[2]))
+invisible(predic <- predict(g_obj, newdata = new, nmin = 20))
 
 
 #Mapas de predicción -------------------------------------
@@ -641,9 +675,15 @@ predic_raster_wgs84 <- raster::projectRaster(
     method = "bilinear"
 )
 
-bins <- seq(15,55, by=5)
+min_pred <- raster::cellStats(predic_raster_wgs84, stat='min')
+max_pred <- raster::cellStats(predic_raster_wgs84, stat='max')
 
 pred_range <- c(minValue(predic_raster_wgs84), maxValue(predic_raster_wgs84))
+
+step_pred <- (max_pred-min_pred)/ 6
+
+bins <- round(seq(min_pred, max_pred, by=step_pred),0)
+
 pal_pred <- colorBin(
   palette = "viridis", # La paleta de colores
   domain = pred_range,
@@ -664,7 +704,7 @@ mapa_kriging_leaflet <- leaflet() %>%
                    fillOpacity = 0.8,
                    color = "black",
                    weight = 1,
-                   radius = 6,
+                   radius = 3,
                    popup = ~paste("Ozn:", Ozono, "ppb")) %>% 
   
   addLegend(
@@ -695,7 +735,10 @@ var_raster_wgs84 <- raster::projectRaster(
     method = "bilinear"
 )
 
-binsv <- seq(0,30, by=5)
+max_var <- raster::cellStats(var_raster_wgs84, stat='max')
+step_var <- max_var / 6
+
+binsv <- round(seq(0, max_var, by=step_var),2)
 
 var_range <- c(minValue(var_raster_wgs84), maxValue(var_raster_wgs84))
 pal_var <- colorBin(
@@ -729,17 +772,23 @@ cv_raster_utm[mapa_mayor_a_uno] <- 1
 
 crs(cv_raster_utm) <- "+init=epsg:3310"
 
-cv_raster_masked_utm <- raster::mask(cv_raster_utm, sh_mundos_sp_utm_simple)
+cv_terra <- terra::rast(cv_raster_utm)
+sh_terra <- terra::vect(sh_mundos_sp_utm_simple)
 
-cv_raster_cropped_utm <- raster::crop(cv_raster_masked_utm, sh_mundos_sp_utm_simple)
+masked_cv_terra <- terra::mask(cv_terra, sh_terra)
 
-cv_raster_wgs84 <- raster::projectRaster(
-    cv_raster_cropped_utm, 
-    crs = "+init=epsg:4326", 
-    method = "bilinear"
+cv_raster_wgs84_terra <- terra::project(
+    masked_cv_terra, 
+    y = "epsg:4326", 
+    method = "bilinear" # Similar a projectRaster
 )
 
-bincv <- seq(0,1, by=.1)
+cv_raster_wgs84 <- raster::raster(cv_raster_wgs84_terra)
+
+max_cv <- raster::cellStats(cv_raster_wgs84, stat='max')
+step_cv <- max_cv / 10
+
+bincv <- seq(0,max_cv, by=step_cv)
 
 cv_range <- c(minValue(cv_raster_wgs84), maxValue(cv_raster_wgs84))
 
@@ -820,7 +869,7 @@ leaflet() %>%
                    fillOpacity = 0.8,
                    color = "black",
                    weight = 1,
-                   radius = 6,
+                   radius = 3,
                    popup = ~paste("Temp:", Temperatura, "°C")) %>%
   addLegend(pal = pal, values = datosT_sf_wgs84$Temperatura, title = "Temperatura (°C)")
 
@@ -852,7 +901,7 @@ plot(temp, qt.col = c("purple",
 
 En el gráfico se observa un agrupamiento en las coordenadas Norte con respecto a los datos, que puede llegar a corregirse con algún polinomio. Se probará con diferentes modelos a ver si se puede llegar a disminuir el efecto espacial.
 
-#### Modelo de tendencia espacial
+#### Modelo para la Media
 
 El modelo que mejor atrapa el efecto de la media es:
 
@@ -891,7 +940,7 @@ plot(temp, qt.col = c("purple",
 ```
 :::
 
-#### Estimación empírica del semivariograma
+#### Estimación Empírica del Semivariograma
 
 p¿Presentamos la estimación del semivariograma obtenida mediante la función variog para la variable temperatura. Se comparan los resultados al calcularlo directamente sobre los datos originales (sin remover la tendencia) y al utilizar los residuales de un modelo de regresión, con el objetivo de analizar cómo influye la presencia de tendencia en la estructura espacial.
 
@@ -1018,6 +1067,38 @@ sv_matern <- function(nugget, sigma, h, phi, kappa){
   nugget + sigma - cov_matern(sigma, h, phi, kappa) #Semivarianza espacial
 }
 
+#1.6 Modelo Coseno -----------------
+
+cov_cos <- function(sigma, h, phi){
+  sigma * cos(h/phi)
+}
+
+cos_sv <- function(nugget, sigma, h, phi){
+  nugget +  sigma *(1 - cos(h/phi))
+}
+
+#1.7 Modelo wave ------
+
+
+rho_wave <- function(h, sigma, phi){
+  ifelse(h == 0,
+         1,
+         (phi / h) * sin(h / phi))
+}
+
+sv_wave <- function(nugget, sigma, h, phi) {
+  ifelse(h == 0,
+         nugget,
+         nugget + sigma - sigma * (phi / h) * sin(h / phi))
+}
+
+cov_wave <- function(h, sigma, phi, nugget) {
+  ifelse(h == 0,
+         sigma,
+         sigma * (phi / h) * sin(h / phi))
+}
+
+
 #2. Función para estimar por WLS----
 
 MSE_ponderados <- function(par, h, gamma,kappa=NA,w, model, n, pesos){
@@ -1030,7 +1111,8 @@ MSE_ponderados <- function(par, h, gamma,kappa=NA,w, model, n, pesos){
                       "gaussian"    = sv_gauss(nugget, sigma, h, phi),
                       "gneiting"    = sv_gneiting(nugget, sigma, h, phi),
                       "spherical"   = sv_spherical(nugget, sigma, h, phi),
-                      "matern"      = sv_matern(nugget, sigma, h, phi, kappa)
+                      "matern"      = sv_matern(nugget, sigma, h, phi, kappa),
+                      "cos"         = cos_sv(nugget, sigma, h, phi)
   )
   
   w <- switch(pesos,
@@ -1041,6 +1123,7 @@ MSE_ponderados <- function(par, h, gamma,kappa=NA,w, model, n, pesos){
   
   sum(w*(gamma - gamma_hat)^2)
 }
+
 
 est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
   sigma_0 <- par[1]
@@ -1054,7 +1137,8 @@ est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
                "gaussian"    = sv_gauss,
                "spherical"   = sv_spherical,
                "gneiting"    = sv_gneiting,
-               "matern"      = sv_matern
+               "matern"      = sv_matern,
+               "cos" = cos_sv
   )
   
   args_sv <- names(formals(sv))
@@ -1090,6 +1174,7 @@ est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
     Bessel <- nls(formula = formula_sv,
                   start = start_list,
                   weights = 1/WW,
+                  lower = c(0, rep(1e-6, length(start_list)-1)),
                   control = nls.control(maxiter = 500, warnOnly = TRUE))
     
     ini_Bessel<-coef(Bessel)
@@ -1105,7 +1190,7 @@ est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
       model = model,
       n = n,
       method = "L-BFGS-B",
-      lower = c(0, 0, 0)
+      lower = c(0, rep(1e-6, length(start_list)-1))
     )
     
     par_optim_Bess <- optim_bessel$par[c("nugget", "sigma", "phi")]
@@ -1117,6 +1202,7 @@ est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
     n_pond <- nls(formula = formula_sv,
                   start = start_list,
                   weights = 1/W1,
+                  lower = c(0, rep(1e-6, length(start_list)-1)),
                   control = nls.control(maxiter = 500, warnOnly = TRUE))
     
     ini_n<-coef(n_pond)
@@ -1132,7 +1218,7 @@ est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
       n = n,
       model = model,
       method = "L-BFGS-B",
-      lower = c(0, 0, 0)
+      lower = c(0, rep(1e-6, length(start_list)-1))
     )    
     
     par_optim_n <- optim_n$par[c("nugget", "sigma", "phi")]
@@ -1145,6 +1231,7 @@ est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
     h_n_pond <- nls(formula = formula_sv,
                     start = start_list,
                     weights = 1/W2,
+                    lower = c(0, rep(1e-6, length(start_list)-1)),
                     control = nls.control(maxiter = 500, warnOnly = TRUE))
     
     ini_h_n<-coef(h_n_pond)
@@ -1158,7 +1245,7 @@ est_sev_WLS <- function(par, kappa = NA, model, h, gamma, n){
       model = model,
       n = n,
       method = "L-BFGS-B",
-      lower = c(0, 0, 0)
+      lower = c(0, rep(1e-6, length(start_list)-1))
     )    
     
     par_optim_h_n <- optim_h_n$par[c("nugget", "sigma", "phi")]
@@ -1184,7 +1271,9 @@ MSE_sv <- function(gamma_hat, par, kappa, model, h){
                "gaussian"    = sv_gauss,
                "spherical"   = sv_spherical,
                "gneiting"    = sv_gneiting,
-               "matern"      = sv_matern
+               "matern"      = sv_matern,
+               "cos" = cos_sv,
+               "wave" = sv_wave
   )
   
   args_sv <- names(formals(sv))
@@ -1371,7 +1460,7 @@ legend("topleft",
        seg.len = .5)
 
 resumen_exp_T <- cbind(
-  c("Cressie", "$$1/n$$", "$$n/h$$", "MLE"),
+  c("Cressie", "1/n", "n/h", "MLE"),
   rbind(
     t(res_e_T$Bessel$Optimizados),
     t(res_e_T$`1/n`$Optimizados),
@@ -1464,7 +1553,7 @@ par3Texp <- c(fitvar3_exp_T$nugget, fitvar3_exp_T$cov.pars[1], fitvar3_exp_T$cov
 par4Texp <- c(fitvar4_exp_T$nugget, fitvar4_exp_T$cov.pars[1], fitvar4_exp_T$cov.pars[2])
 
 resumen_exp_T2 <- cbind(
-  c("MCO", "$$1/n$$", "$$Cressie$$","MLE"),
+  c("MCO", "1/n", "Cressie","MLE"),
   rbind(
     par1Texp,
     par2Texp,
@@ -1515,7 +1604,7 @@ legend("topleft",
        seg.len = .5)
 
 resumen_g_T <- cbind(
-  c("Cressie", "$$1/n$$", "$$n/h$$"),
+  c("Cressie", "1/n", "n/h"),
   rbind(
     t(res_g_T$Bessel$Optimizados),
     t(res_g_T$`1/n`$Optimizados),
@@ -1606,7 +1695,7 @@ par3Tg <- c(fitvar3_g_T$nugget, fitvar3_g_T$cov.pars[1], fitvar3_g_T$cov.pars[2]
 par4Tg <- c(fitvar4_g_T$nugget, fitvar4_g_T$cov.pars[1], fitvar4_g_T$cov.pars[2])
 
 resumen_g_T2 <- cbind(
-  c("MCO", "$$1/n$$", "$$Cressie$$","MLE"),
+  c("MCO", "1/n", "Cressie","MLE"),
   rbind(
     par1Tg,
     par2Tg,
@@ -1658,7 +1747,7 @@ legend("topleft",
        seg.len = .5)
 
 resumen_es_T <- cbind(
-  c("Cressie", "$$1/n$$", "$$n/h$$","MLE"),
+  c("Cressie", "1/n", "n/h","MLE"),
   rbind(
     t(res_es_T$Bessel$Optimizados),
     t(res_es_T$`1/n`$Optimizados),
@@ -1754,7 +1843,7 @@ par3Tes <- c(fitvar3_es_T$nugget, fitvar3_es_T$cov.pars[1], fitvar3_es_T$cov.par
 par4Tes <- c(fitvar4_es_T$nugget, fitvar4_es_T$cov.pars[1], fitvar4_es_T$cov.pars[2])
 
 resumen_es_T2 <- cbind(
-  c("MCO", "$$1/n$$", "$$Cressie$$","MLE"),
+  c("MCO", "1/n", "Cressie","MLE"),
   rbind(
     par1Tes,
     par2Tes,
@@ -1780,20 +1869,33 @@ kable(resumen_es_T2, digits = 3,
 :::
 ::::::
 
-El modelo con menor MSE es el modelo Gausiano. Sin embargo, dada la inestabilidad numérica que se observa al realizar la predicción se opta por usar el modelo esférico obtenido por mínimos cuadrados ponderados usando la ponderación $1/n$, que es el segundo mejor en términos del MSE.
+El modelo con menor MSE es el modelo Gausiano. Sin embargo, dada la inestabilidad numérica que se observa al realizar la predicción se opta por usar el modelo esférico obtenido por mínimos cuadrados ponderados usando la ponderación $h/n$, que es el segundo mejor en términos del MSE.
 
 #### Kriging
 
 Usando el modelo esférico:
 
+```{r}
+plot(vg1_T,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Modelo esférico para Temperatura",
+     col.main = "#36648B", cex.main =1.3)
+lines(range_sv_T, estsv_es_h_n_T, col="#008B00", lwd=1.5)
+
+```
+
+
 ```{r, message=F, warning=F, results='hide'}
 
 #Se escoge el mejor modelo --------------------------------
 
-best_model_T <- gstat::vgm(psill = res_es_T$`1/n`$Optimizados[2],
+best_model_T <- gstat::vgm(psill = res_es_T$`h/n`$Optimizados[2],
                            model = "Sph",
-                           range = res_es_T$`1/n`$Optimizados[3],
-                           nugget = res_es_T$`1/n`$Optimizados[1]
+                           range = res_es_T$`h/n`$Optimizados[3],
+                           nugget = res_es_T$`h/n`$Optimizados[1]
 )
 
 #Se crea un objeto en gstat -------------------------------
@@ -1808,7 +1910,7 @@ g_obj<-gstat::gstat(id="Temperatura",
 
 #Kriging -------------------------------------------------
 
-suppressMessages(predic <- predict(g_obj, newdata = new, nmin = 12, maxdist=74809.84))
+suppressMessages(predic <- predict(g_obj, newdata = new, nmin = 20))
 
 #Mapas de predicción --------------------------------------
 
@@ -1829,9 +1931,15 @@ predic_raster_wgs84 <- raster::projectRaster(
     method = "bilinear"
 )
 
-bins <- c(-5,0, 5, 8, 10, 12, 15, 20, 25)
+min_pred <- raster::cellStats(predic_raster_wgs84, stat='min')
+max_pred <- raster::cellStats(predic_raster_wgs84, stat='max')
 
 pred_range <- c(minValue(predic_raster_wgs84), maxValue(predic_raster_wgs84))
+
+step_pred <- (max_pred-min_pred)/ 6
+
+bins <- round(seq(min_pred, max_pred, by=step_pred),0)
+
 pal_pred <- colorBin(
   palette = "viridis", # La paleta de colores
   domain = pred_range,
@@ -1852,7 +1960,7 @@ mapa_kriging_leaflet <- leaflet() %>%
                    fillOpacity = 0.8,
                    color = "black",
                    weight = 1,
-                   radius = 6,
+                   radius = 3,
                    popup = ~paste("Temp:", Temperatura, "°C")) %>% 
   addLegend(
     pal = pal_pred, 
@@ -1881,7 +1989,10 @@ var_raster_wgs84 <- raster::projectRaster(
     method = "bilinear"
 )
 
-binsv <- seq(0,30, by=5)
+max_var <- raster::cellStats(var_raster_wgs84, stat='max')
+step_var <- max_var / 6
+
+binsv <- round(seq(0, max_var, by=step_var),2)
 
 var_range <- c(minValue(var_raster_wgs84), maxValue(var_raster_wgs84))
 pal_var <- colorBin(
@@ -1915,19 +2026,22 @@ cv_raster_utm[mapa_mayor_a_uno] <- 1
 
 crs(cv_raster_utm) <- "+init=epsg:3310"
 
-cv_raster_masked_utm <- raster::mask(cv_raster_utm, sh_mundos_sp_utm_simple)
+cv_terra <- terra::rast(cv_raster_utm)
 
+masked_cv_terra <- terra::mask(cv_terra, sh_terra)
 
-cv_raster_cropped_utm <- raster::crop(cv_raster_masked_utm, sh_mundos_sp_utm_simple)
-
-
-cv_raster_wgs84 <- raster::projectRaster(
-    cv_raster_cropped_utm, 
-    crs = "+init=epsg:4326", 
-    method = "bilinear"
+cv_raster_wgs84_terra <- terra::project(
+    masked_cv_terra, 
+    y = "epsg:4326", 
+    method = "bilinear" # Similar a projectRaster
 )
 
-bincv <- seq(0,1, by=.1)
+cv_raster_wgs84 <- raster::raster(cv_raster_wgs84_terra)
+
+max_cv <- raster::cellStats(cv_raster_wgs84, stat='max')
+step_cv <- max_cv / 10
+
+bincv <- seq(0,max_cv, by=step_cv)
 
 cv_range <- c(minValue(cv_raster_wgs84), maxValue(cv_raster_wgs84))
 
@@ -1977,5 +2091,1077 @@ mapa_cv_leaflet
 ```
 
 :::
+
+### Variable Velocidad del viento
+
+```{r, message=F, warning=F}
+
+y_WS <- WS[1,] #Tomar una fecha
+y_WS <- cbind(colnames(y_WS),t(y_WS[1,]))
+y_WS <- y_WS[-1,]
+y_WS <- as.data.frame(y_WS)
+y_WS <- na.omit(y_WS)
+y_WS$V1 <- as.numeric(y_WS$V1)
+y_WS <- inner_join(y_WS, EstacionesWS, by=c("V1"="AQSID"))
+datosWS <- y_WS[,c(13,14,2)]
+colnames(datosWS)=c("Este","Norte","WindSpeed")
+datosWS$WindSpeed <- as.numeric(datosWS$WindSpeed)
+
+datosWS_sf <- st_as_sf(datosWS, coords = c("Este", "Norte"), crs = 3310)
+
+datosWS_sf_wgs84 <- st_transform(datosWS_sf, crs = 4326)
+
+palWS <- colorNumeric(palette = "viridis", domain = datosWS_sf_wgs84$WindSpeed)
+
+leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = sh_mundos_wgs84, fill = FALSE, color = "black", weight = 2) %>%
+  addCircleMarkers(data = datosWS_sf_wgs84,
+                   fillColor = ~palWS(WindSpeed),
+                   fillOpacity = 0.8,
+                   color = "black",
+                   weight = 1,
+                   radius = 3,
+                   popup = ~paste("WindSpeed:", WindSpeed, "m/s")) %>%
+  addLegend(pal = palWS, values = datosWS_sf_wgs84$WindSpeed, title = "WindSpeed (m/s)")
+
+
+ws <- as.geodata(datosWS)
+pander::pander(summary(ws))
+```
+
+::: panel-tabset
+#### Gráficos de dispersión
+
+```{r}
+pWS1 <- simple_scatter_plot(datosWS, "Este", "WindSpeed")
+pWS2 <- simple_scatter_plot(datosWS, "Norte", "WindSpeed")
+
+cowplot::plot_grid(pWS1,pWS2)
+
+```
+
+#### GeoR
+
+```{r}
+plot(ws, qt.col = c("purple",
+                          "pink",
+                          "green",
+                          "yellow"),
+     scatter3d=T)
+```
+:::
+
+#### Modelo para la Media
+
+El modelo que mejor atrapa el efecto de la media es:
+
+$$WindSpeed = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte + \beta_3 \times Este \times Norte$$
+
+```{r}
+fitWS <- lm(WindSpeed~Este*Norte, data = datosWS) 
+pander::pander(summary(fitWS))
+
+```
+
+Gráficamente se observa una mitigación en la tendencia espacial:
+
+::: panel-tabset
+##### Gráficos de dispersión
+
+```{r}
+datosWS$Residuos <- fitWS$residuals
+
+pWS1 <- simple_scatter_plot(datosWS, "Este", "Residuos")
+pWS2 <- simple_scatter_plot(datosWS, "Norte", "Residuos")
+
+cowplot::plot_grid(pWS1,pWS2)
+
+```
+
+##### GeoR
+
+```{r}
+plot(temp, qt.col = c("purple",
+                      "pink",
+                      "green",
+                      "yellow"),
+     scatter3d=T, trend=~Norte*Este)
+```
+:::
+
+#### Estimación Empírica del Semivariograma
+
+```{r, message=FALSE, results='hide'}
+vgO_WS <- variog(ws,estimator.type = "modulus", pairs.min=50) 
+
+vg1_WS <- variog(ws, trend = ~Norte*Este,
+                estimator.type = "modulus", pairs.min=50)
+```
+
+::: panel-tabset
+##### Con tendencia
+
+```{r}
+plot(vgO_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Sin remover tendencia",
+     col.main = 4, cex.main =1.3)
+```
+
+##### Removiendo Tendencia
+
+```{r}
+plot(vg1_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Removiendo tendencia",
+     col.main = 4, cex.main =1.3)
+```
+:::
+
+##### Asintropía
+
+```{r, message=FALSE, warning=FALSE,results='hide'}
+par(mfrow = c(2, 2),
+    mar = c(3, 3, 1, 1),
+    mgp = c(2, 1, 0))
+
+vg1_WS_0 <- variog(ws, trend = ~Norte*Este,
+                estimator.type = "modulus", pairs.min=50,
+                direction = 0)
+vg1_WS_45 <- variog(ws, trend = ~Norte*Este,
+                estimator.type = "modulus", pairs.min = 20,
+                direction = pi / 4)
+vg1_WS_90 <- variog(ws, trend = ~Norte*Este,
+                estimator.type = "modulus", pairs.min=50,
+                direction = pi / 2)
+vg1_WS_135 <- variog(ws, trend = ~Norte*Este,
+                estimator.type = "modulus", pairs.min=50,
+                direction = 3 * pi / 4)
+
+plot(vg1_WS_0,
+     xlab = "h",
+     ylab = "Semivarianza",
+     main = "0°",
+     col.main = 4)
+plot(vg1_WS_45,
+     xlab = "h",
+     ylab = "Semivarianza",
+     main = "45°",
+     col.main = 4)
+plot(vg1_WS_90,
+     xlab = "h",
+     ylab = "Semivarianza",
+     main = "90°",
+     col.main = 4)
+plot(vg1_WS_135,
+     xlab = "h",
+     ylab = "Semivarianza",
+     main = "135°",
+     col.main = 4)
+
+```
+
+
+#### Estimación del Modelo Teórico de Semivariograma
+
+```{r}
+#| message: false
+#| warning: false
+#| results: 'hide'
+
+variog_WS <- data.frame(h = vg1_WS$u, gamma_hat = vg1_WS$v,
+                       n = vg1_WS$n)
+
+range_sv_WS <- seq(1,max(variog_WS$h), by=1000)
+
+#Modelo Coseno---------------------------------------------
+
+sigma_0_cosWS <- 1.5
+phi_0_cosWS <- .6e5
+nugget_0_cosWS <- 1.5
+
+#MCO -------
+I_pond_WS <- nls(formula = gamma_hat ~cos_sv(nugget, sigma, h, phi),
+              start = c(nugget = nugget_0_cosWS, sigma = sigma_0_cosWS, phi = phi_0_cosWS),
+              lower = rep(1e-6,3),
+              data = variog_WS,
+              control = nls.control(maxiter = 500, warnOnly = TRUE))
+
+optim_I_WS <- optim(
+  par = coef(I_pond_WS),
+  fn = MSE_ponderados,
+  h = variog_WS$h,
+  gamma = variog_WS$gamma_hat,
+  pesos = "I",
+  model = "cos",
+  n = n,
+  method = "L-BFGS-B",
+  lower = rep(1e-6,3)
+)
+
+par_optim_I_WS <- optim_I_WS$par[c("nugget", "sigma", "phi")]
+
+estsv_cos_I_WS <- do.call(cos_sv, c(as.list(par_optim_I_WS), list(h = range_sv_WS)))
+
+
+#WLS -------
+
+par_cosWS <- c(sigma_0_cosWS, phi_0_cosWS, nugget_0_cosWS)
+
+res_cos_WS <- est_sev_WLS(par=par_cosWS, kappa = NA,
+                       model="cos",
+                       h=variog_WS$h,
+                       gamma = variog_WS$gamma_hat,
+                       n = variog_WS$n)
+
+estsv_cos_Bess_WS <- do.call(cos_sv, c(as.list(res_cos_WS$Bessel$Optimizados), list(h = range_sv_WS)))
+estsv_cos_n_WS <- do.call(cos_sv, c(as.list(res_cos_WS$`1/n`$Optimizados), list(h = range_sv_WS)))
+estsv_cos_h_n_WS <- do.call(cos_sv, c(as.list(res_cos_WS$`h/n`$Optimizados), list(h = range_sv_WS)))
+
+#Modelo Wave ---------------------------------------------
+
+nugget_0_wvWS <- 1.5
+
+par_wvWS <- c(3.5,.6e5)
+
+fitvar1_cos_WS <- variofit(vg1_WS,
+                    cov.model = "wave",
+                    par_wvWS,
+                    fix.nugget = F,
+                    nugget = nugget_0_wvWS,
+                    wei = "equal")
+fitvar2_cos_WS <- variofit(vg1_WS,
+                    cov.model = "wave",
+                    par_wvWS,
+                    fix.nugget = F,
+                    nugget = nugget_0_wvWS,
+                    wei = "npairs")
+
+fitvar3_cos_WS <- variofit(vg1_WS,
+                    cov.model = "wave",
+                    par_wvWS,
+                    fix.nugget = F,
+                    nugget = nugget_0_wvWS,
+                    wei = "cressie")
+
+fitvar4_cos_WS <- likfit(ws,
+                       coords = ws$coords,
+                       data = ws$data,
+                       trend = ~ Este*Norte,
+                       ini.cov.pars = par_wvWS,
+                       fix.nugget = F,
+                       nugget = nugget_0_wvWS,
+                       cov.model = "wave",
+                       lik.method = "ML")
+```
+
+::: panel-tabset
+
+###### Coseno (Optim)
+
+```{r}
+plot(vg1_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Estimación teórica del modelo de semivariograma \n (optim)",
+     col.main = 4, cex.main =1.3)
+lines(range_sv_WS, estsv_cos_Bess_WS, col="#FF4040", lwd=1.5)
+lines(range_sv_WS, estsv_cos_n_WS, col="#4169E1", lwd=1.5)
+lines(range_sv_WS, estsv_cos_h_n_WS, col="#008B00", lwd=1.5)
+lines(range_sv_WS, estsv_cos_I_WS, col="#FFA500", lwd=1.5)
+legend("topleft",
+       c("Cressie", "1/n", "n/h", "MCO"),#, "REML"),
+       lwd = 1,
+       lty = 3,
+       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       box.col = 9,
+       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       cex=1,
+       seg.len = .5)
+
+resumen_cos_SV <- cbind(
+  c("Cressie", "1/n", "n/h", "MCO"),
+  rbind(
+    t(res_cos_WS$Bessel$Optimizados),
+    t(res_cos_WS$`1/n`$Optimizados),
+    t(res_cos_WS$`h/n`$Optimizados),
+    par_optim_I_WS
+  ),
+  MSE = c(
+    MSE_sv(variog_WS$gamma_hat, res_cos_WS$Bessel$Optimizados, NA, model = "cos", variog_WS$h),
+    MSE_sv(variog_WS$gamma_hat, res_cos_WS$`1/n`$Optimizados, NA, model = "cos", variog_WS$h),
+    MSE_sv(variog_WS$gamma_hat, res_cos_WS$`h/n`$Optimizados, NA, model = "cos", variog_WS$h),
+    MSE_sv(variog_WS$gamma_hat, par_optim_I_WS, NA, model = "cos", variog_WS$h)
+  )
+)
+
+resumen_cos_SV <- as.data.frame(resumen_cos_SV)
+resumen_cos_SV[ , -1] <- lapply(resumen_cos_SV[ , -1], function(x) round(as.numeric(x), 3))
+
+kable(resumen_cos_SV, digits = 3,
+      col.names = c("Método", "Nugget", "Sigma", "Phi", "MSE"),
+      escape = F, row.names = F)
+```
+
+###### Wave (GeoR)
+
+```{r, message=FALSE, warning=FALSE}
+
+plot(vg1_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Estimación teórica del modelo de semivariograma \n (GeoR, gstat)",
+     col.main = 4, cex.main =1.3)
+
+lines(fitvar1_cos_WS, col="#FF4040", lwd=1.5)
+lines(fitvar2_cos_WS, col="#4169E1", lwd=1.5)
+lines(fitvar3_cos_WS, col="#008B00", lwd=1.5)
+lines(fitvar4_cos_WS, col="#FFA500", lwd=1.5)
+
+legend("topleft",
+       c("MCO", "1/n", "Cressie", "MLE"),#, "REML"),
+       lwd = 1,
+       lty = 3,
+       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       box.col = 9,
+       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       cex=1,
+       seg.len = .5)
+
+```
+
+```{r}
+par1WScos <- c(fitvar1_cos_WS$nugget, fitvar1_cos_WS$cov.pars[1], fitvar1_cos_WS$cov.pars[2])
+par2WScos <- c(fitvar2_cos_WS$nugget, fitvar2_cos_WS$cov.pars[1], fitvar2_cos_WS$cov.pars[2])
+par3WScos <- c(fitvar3_cos_WS$nugget, fitvar3_cos_WS$cov.pars[1], fitvar3_cos_WS$cov.pars[2])
+par4WScos <- c(fitvar4_cos_WS$nugget, fitvar4_cos_WS$cov.pars[1], fitvar4_cos_WS$cov.pars[2])
+
+resumen_wv_WS <- cbind(
+  c("MCO", "1/n", "Cressie","MLE"),
+  rbind(
+    par1WScos,
+    par2WScos,
+    par3WScos,
+    par4WScos
+  ),
+  MSE = c(
+    MSE_sv(variog_WS$gamma_hat, par1WScos, NA, model = "wave", variog_WS$h),
+    MSE_sv(variog_WS$gamma_hat, par2WScos, NA, model = "wave", variog_WS$h),
+    MSE_sv(variog_WS$gamma_hat, par3WScos, NA, model = "wave", variog_WS$h),
+    MSE_sv(variog_WS$gamma_hat, par4WScos, NA, model = "wave", variog_WS$h)
+  )
+)
+
+resumen_wv_WS <- as.data.frame(resumen_wv_WS)
+resumen_wv_WS[ , -1] <- lapply(resumen_wv_WS[ , -1], function(x) round(as.numeric(x), 3))
+
+kable(resumen_wv_WS, digits = 3,
+      col.names = c("Método", "Nugget", "Sigma", "Phi", "MSE"),
+      escape = F, row.names = F)
+
+```
+
+:::
+
+#### Kriging
+
+Usando el modelo wave:
+
+```{r}
+plot(vg1_WS,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Modelo wave para WindSpeed",
+     col.main = 4, cex.main =1.3)
+lines(fitvar2_cos_WS, col="#4169E1", lwd=1.5)
+```
+
+
+```{r, message=F, warning=F, results='hide'}
+
+#Se escoge el mejor modelo --------------------------------
+
+best_model_WS <- gstat::vgm(psill = par2WScos[2],
+                           model = "Wav",
+                           range = par2WScos[3],
+                           nugget = par2WScos[1]
+)
+
+#Se crea un objeto en gstat -------------------------------
+
+coordinates(datosWS) <- ~Este + Norte
+proj4string(datosWS) <- CRS("EPSG:3310")
+
+g_obj<-gstat::gstat(id="WindSpeed",
+             formula = WindSpeed ~ Norte*Este,
+             model = best_model_WS,
+             data = datosWS)
+
+#Kriging -------------------------------------------------
+
+suppressMessages(predic <- predict(g_obj, newdata = new, nmin = 20))
+
+#Mapas de predicción --------------------------------------
+
+gridded(predic) <- TRUE
+
+#1. Mapa de Kriging ---------------------------------------
+
+predic_raster_utm <- raster(predic, layer = "WindSpeed.pred")
+
+crs(predic_raster_utm) <- "+init=epsg:3310"
+
+predic_raster_wgs84 <- raster::projectRaster(
+    raster::mask(
+        predic_raster_utm, 
+        sh_mundos_sp_utm_simple
+    ),
+    crs = "+init=epsg:4326", 
+    method = "bilinear"
+)
+
+min_pred <- raster::cellStats(predic_raster_wgs84, stat='min')
+max_pred <- raster::cellStats(predic_raster_wgs84, stat='max')
+
+pred_range <- c(minValue(predic_raster_wgs84), maxValue(predic_raster_wgs84))
+
+step_pred <- (max_pred-min_pred)/ 6
+
+bins <- round(seq(min_pred, max_pred, by=step_pred),0)
+
+pal_pred <- colorBin(
+  palette = "viridis", # La paleta de colores
+  domain = pred_range,
+  bins = bins,
+  na.color = "transparent"
+)
+
+mapa_kriging_leaflet <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addRasterImage(
+    predic_raster_wgs84,
+    colors = pal_pred, 
+    opacity = 0.7,
+    group = "Predicción Kriging"
+  ) %>%
+    addCircleMarkers(data = datosWS_sf_wgs84,
+                   fillColor = ~palWS(WindSpeed),
+                   fillOpacity = 0.8,
+                   color = "black",
+                   weight = 1,
+                   radius = 3,
+                   popup = ~paste("WS:", WindSpeed, "m/s")) %>% 
+  addLegend(
+    pal = pal_pred, 
+    values = pred_range,
+    title = "Predicción WS (m/s)",
+    position = "topright"
+  ) %>%
+  addLegend(pal = palWS,
+            values = datosWS_sf_wgs84$WindSpeed,
+            title = "WS Observada",
+    position = "topleft"
+  ) 
+
+#2 Mapa Varianza------------------------------------------
+
+var_raster_utm <- raster(predic, layer = "WindSpeed.var")
+
+crs(var_raster_utm) <- "+init=epsg:3310"
+
+var_raster_wgs84 <- raster::projectRaster(
+    raster::mask(
+        var_raster_utm, 
+        sh_mundos_sp_utm_simple
+    ),
+    crs = "+init=epsg:4326", 
+    method = "bilinear"
+)
+
+max_var <- raster::cellStats(var_raster_wgs84, stat='max')
+step_var <- max_var / 6
+
+binsv <- round(seq(0, max_var, by=step_var),2)
+
+var_range <- c(minValue(var_raster_wgs84), maxValue(var_raster_wgs84))
+pal_var <- colorBin(
+  palette = "Spectral", # La paleta de colores
+  domain = var_range,
+  bins = binsv,
+  na.color = "transparent"
+)
+
+mapa_var_leaflet <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addRasterImage(
+    var_raster_wgs84, 
+    colors = pal_var, 
+    opacity = 0.7,
+    group = "Predicción Kriging"
+  ) %>%
+  addLegend(
+    pal = pal_var, 
+    values = var_range,
+    title = "Varianza",
+    position = "topright"
+  ) 
+
+#3. Mapa Cv ----------------------------------------------
+
+predic$cv <- sqrt(predic$WindSpeed.var) / pmax(abs(predic$WindSpeed.pred), 1e-6)
+
+predic$cv[predic$cv > 1] <- 1
+
+cv_raster_utm <- raster(predic, layer = "cv")
+
+crs(cv_raster_utm) <- "+init=epsg:3310"
+
+cv_terra <- terra::rast(cv_raster_utm)
+
+masked_cv_terra <- terra::mask(cv_terra, sh_terra)
+
+cv_raster_wgs84_terra <- terra::project(
+    masked_cv_terra, 
+    y = "epsg:4326", 
+    method = "bilinear" # Similar a projectRaster
+)
+
+cv_raster_wgs84 <- raster::raster(cv_raster_wgs84_terra)
+
+max_cv <- raster::cellStats(cv_raster_wgs84, stat='max')
+step_cv <- max_cv / 10
+
+bincv <- seq(0,max_cv, by=step_cv)
+
+cv_range <- c(minValue(cv_raster_wgs84), maxValue(cv_raster_wgs84))
+
+
+pal_cv <- colorBin(
+  palette = "RdYlGn", # Rojo-Amarillo-Verde
+  domain = cv_range,
+  na.color = "transparent",
+  bins = bincv,
+  reverse = TRUE 
+)
+
+mapa_cv_leaflet <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addRasterImage(
+    cv_raster_wgs84, 
+    colors = pal_cv, 
+    opacity = 0.7,
+    group = "Predicción Kriging"
+  ) %>%
+  
+  addLegend(
+    pal = pal_cv, 
+    values = cv_range,
+    title = "Coeficiente de Variación",
+    position = "topright"
+  )
+
+```
+
+::: panel-tabset
+##### Predicción
+
+```{r}
+mapa_kriging_leaflet
+```
+
+##### Varianza
+
+```{r}
+mapa_var_leaflet
+```
+
+##### Coeficiente de variación
+
+```{r}
+mapa_cv_leaflet
+```
+
+:::
+
+### Variable presión atmosférica
+
+```{r, message=F, warning=F}
+
+y_Pr <- Presion[1,] #Tomar una fecha
+y_Pr <- cbind(colnames(y_Pr),t(y_Pr[1,]))
+y_Pr <- y_Pr[-1,]
+y_Pr <- as.data.frame(y_Pr)
+y_Pr <- na.omit(y_Pr)
+y_Pr$V1 <- as.numeric(y_Pr$V1)
+y_Pr <- y_Pr[-which.min(y_Pr$V2),]
+y_Pr <- y_Pr[-which.min(y_Pr$V2),]
+y_Pr <- inner_join(y_Pr, EstacionesPr, by=c("V1"="AQSID"))
+datosPr <- y_Pr[,c(13,14,2)]
+colnames(datosPr)=c("Este","Norte","Presion")
+datosPr$Presion <- as.numeric(datosPr$Presion)
+
+datosPr_sf <- st_as_sf(datosPr, coords = c("Este", "Norte"), crs = 3310)
+
+datosPr_sf_wgs84 <- st_transform(datosPr_sf, crs = 4326)
+
+palPr <- colorNumeric(palette = "viridis", domain = datosPr_sf_wgs84$Presion)
+
+leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = sh_mundos_wgs84, fill = FALSE, color = "black", weight = 2) %>%
+  addCircleMarkers(data = datosPr_sf_wgs84,
+                   fillColor = ~palPr(Presion),
+                   fillOpacity = 0.8,
+                   color = "black",
+                   weight = 1,
+                   radius = 3,
+                   popup = ~paste("Presion:", Presion, "mb")) %>%
+  addLegend(pal = palPr, values = datosPr_sf_wgs84$Presion, title = "Presión Barométrica mb")
+
+
+presion <- as.geodata(datosPr)
+pander::pander(summary(presion))
+
+```
+
+::: panel-tabset
+#### Gráficos de dispersión
+
+```{r}
+pPr1 <- simple_scatter_plot(datosPr, "Este", "Presion")
+pPr2 <- simple_scatter_plot(datosPr, "Norte", "Presion")
+
+cowplot::plot_grid(pPr1,pPr2)
+
+```
+
+#### GeoR
+
+```{r}
+plot(presion, qt.col = c("purple",
+                          "pink",
+                          "green",
+                          "yellow"),
+     scatter3d=T)
+```
+:::
+
+#### Modelo para la Media
+
+El modelo que mejor atrapa el efecto de la media es:
+
+$$Presion = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte $$
+
+```{r}
+fitPr <- lm(Presion~Este+Norte, data=datosPr)
+pander::pander(summary(fitPr))
+
+```
+
+Gráficamente se observa una mitigación en la tendencia espacial:
+
+::: panel-tabset
+##### Gráficos de dispersión
+
+```{r}
+datosPr$Residuos <- fitPr$residuals
+
+pPr1 <- simple_scatter_plot(datosPr, "Este", "Residuos")
+pPr2 <- simple_scatter_plot(datosPr, "Norte", "Residuos")
+
+cowplot::plot_grid(pPr1,pPr2)
+
+```
+
+##### GeoR
+
+```{r}
+plot(presion, qt.col = c("purple",
+                      "pink",
+                      "green",
+                      "yellow"),
+     scatter3d=T, trend=~Norte+Este)
+```
+:::
+
+#### Estimación Empírica del Semivariograma
+
+```{r, message=FALSE, results='hide'}
+vgO_Pr <- variog(presion,estimator.type = "modulus", pairs.min=50) 
+
+vg1_Pr <- variog(presion, trend = ~Norte+Este,
+                estimator.type = "modulus", pairs.min=50)
+```
+
+::: panel-tabset
+##### Con tendencia
+
+```{r}
+plot(vgO_Pr,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Sin remover tendencia",
+     col.main = 4, cex.main =1.3)
+```
+
+##### Removiendo Tendencia
+
+```{r}
+plot(vg1_Pr,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Removiendo tendencia",
+     col.main = 4, cex.main =1.3)
+```
+:::
+
+#### Estimación del Modelo Teórico de Semivariograma
+
+Los modelos obtenidos ajustanto por EyeFit, son:
+
+``` text
+
+cov.model sigmasq      phi tausq kappa kappa2 practicalRange
+1 exponential 1056.47 126360.8 132.06    NA     NA       378543.2
+```
+
+##### Exponencial
+
+```{r, message=FALSE, warning=FALSE, results='hide'}
+
+variog_Pr <- data.frame(h = vg1_Pr$u, gamma_hat = vg1_Pr$v,
+                       n = vg1_Pr$n)
+
+nugget_0_ePr <- 132.06
+
+par_ePr <- c(1056.47,126360.8)
+
+fitvar1_exp_Pr <- variofit(vg1_Pr,
+                    cov.model = "exponential",
+                    par_ePr,
+                    fix.nugget = F,
+                    nugget = nugget_0_ePr,
+                    wei = "equal")
+
+fitvar2_exp_Pr <- variofit(vg1_Pr,
+                    cov.model = "exponential",
+                    par_ePr,
+                    fix.nugget = F,
+                    nugget = nugget_0_ePr,
+                    wei = "npairs")
+
+fitvar3_exp_Pr <- variofit(vg1_Pr,
+                    cov.model = "exponential",
+                    par_ePr,
+                    fix.nugget = F,
+                    nugget = nugget_0_ePr,
+                    wei = "cressie")
+
+fitvar4_exp_Pr <- likfit(presion,
+                       coords = presion$coords,
+                       data = presion$data,
+                       trend = ~ Este+Norte,
+                       ini.cov.pars = par_ePr,
+                       fix.nugget = F,
+                       nugget = nugget_0_ePr,
+                       cov.model = "exponential",
+                       lik.method = "ML")
+
+plot(vg1_Pr,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Estimación teórica del modelo de semivariograma \n (GeoR, gstat)",
+     col.main = "#36648B", cex.main =1.3)
+lines(fitvar1_exp_Pr, col="#FF4040", lwd=1.5)
+lines(fitvar2_exp_Pr, col="#4169E1", lwd=1.5)
+lines(fitvar3_exp_Pr, col="#008B00", lwd=1.5)
+lines(fitvar4_exp_Pr, col="#FFA500", lwd=1.5)
+legend("topleft",
+       c("MCO", "1/n", "Cressie", "MLE"),#, "REML"),
+       lwd = 1,
+       lty = 3,
+       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       box.col = 9,
+       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
+       cex=1,
+       seg.len = .5)
+
+```
+
+```{r}
+par1Prexp <- c(fitvar1_exp_Pr$nugget, fitvar1_exp_Pr$cov.pars[1], fitvar1_exp_Pr$cov.pars[2])
+par2Prexp <- c(fitvar2_exp_Pr$nugget, fitvar2_exp_Pr$cov.pars[1], fitvar2_exp_Pr$cov.pars[2])
+par3Prexp <- c(fitvar3_exp_Pr$nugget, fitvar3_exp_Pr$cov.pars[1], fitvar3_exp_Pr$cov.pars[2])
+par4Prexp <- c(fitvar4_exp_Pr$nugget, fitvar4_exp_Pr$cov.pars[1], fitvar4_exp_Pr$cov.pars[2])
+
+resumen_exp_Pr <- cbind(
+  c("MCO", "1/n", "Cressie","MLE"),
+  rbind(
+    par1Prexp,
+    par2Prexp,
+    par3Prexp,
+    par4Prexp
+  ),
+  MSE = c(
+    MSE_sv(variog_Pr$gamma_hat, par1Prexp, NA, model = "exponencial", variog_Pr$h),
+    MSE_sv(variog_Pr$gamma_hat, par2Prexp, NA, model = "exponencial", variog_Pr$h),
+    MSE_sv(variog_Pr$gamma_hat, par3Prexp, NA, model = "exponencial", variog_Pr$h),
+    MSE_sv(variog_Pr$gamma_hat, par4Prexp, NA, model = "exponencial", variog_Pr$h)
+  )
+)
+
+resumen_exp_Pr <- as.data.frame(resumen_exp_Pr)
+resumen_exp_Pr[ , -1] <- lapply(resumen_exp_Pr[ , -1], function(x) round(as.numeric(x), 3))
+kable(resumen_exp_Pr, digits = 3,
+      col.names = c("Método", "Nugget", "Sigma", "Phi", "MSE"),
+      escape = F, row.names = F)
+```
+
+#### Kriging
+
+Usando el modelo exponencial:
+
+```{r}
+plot(vg1_Pr,
+     xlab = "h",
+     ylab = "Semivarianza",
+     cex.lab = 1.3,
+     cex.axis = 1.2,
+     main = "Modelo exponencial para Presión",
+     col.main = "#36648B", cex.main =1.3)
+lines(fitvar1_exp_Pr, col="#FF4040", lwd=1.5)
+
+
+```
+
+
+```{r, message=F, warning=F, results='hide'}
+
+#Se ajusta el mejor modelo -------------------------------
+
+best_model_Pr <- gstat::vgm(psill = fitvar1_exp_Pr$cov.pars[1],
+                           model = "Exp",
+                           range = fitvar1_exp_Pr$cov.pars[2],
+                           nugget = fitvar1_exp_Pr$nugget
+                           
+)
+
+# Se crea un objeto en gstat ------------------------------
+
+coordinates(datosPr) <- ~Este + Norte
+proj4string(datosPr) <- CRS("EPSG:3310")
+
+g_obj<-gstat::gstat(id="Presion",
+             formula = Presion ~ Norte + Este,
+             model = best_model_Pr,
+             data = datosPr)
+
+#Kriging ------------------------------------------------
+
+invisible(predic <- predict(g_obj, newdata = new))
+
+
+#Mapas de predicción -------------------------------------
+
+gridded(predic) <- TRUE
+
+#1. Mapa de Kriging --------------------------------------
+
+predic_raster_utm <- raster(predic, layer = "Presion.pred")
+
+crs(predic_raster_utm) <- "+init=epsg:3310"
+
+predic_raster_wgs84 <- raster::projectRaster(
+    raster::mask(
+        predic_raster_utm, 
+        sh_mundos_sp_utm_simple
+    ),
+    crs = "+init=epsg:4326", 
+    method = "bilinear"
+)
+
+min_pred <- raster::cellStats(predic_raster_wgs84, stat='min')
+max_pred <- raster::cellStats(predic_raster_wgs84, stat='max')
+
+pred_range <- c(minValue(predic_raster_wgs84), maxValue(predic_raster_wgs84))
+
+step_pred <- (max_pred-min_pred)/ 6
+
+bins <- round(seq(min_pred, max_pred, by=step_pred),0)
+
+pal_pred <- colorBin(
+  palette = "viridis", # La paleta de colores
+  domain = pred_range,
+  bins = bins,
+  na.color = "transparent"
+)
+
+mapa_kriging_leaflet <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addRasterImage(
+    predic_raster_wgs84, 
+    colors = pal_pred, 
+    opacity = 0.7,
+    group = "Predicción Kriging"
+  ) %>%
+    addCircleMarkers(data = datosPr_sf_wgs84,
+                   fillColor = ~palPr(Presion),
+                   fillOpacity = 0.8,
+                   color = "black",
+                   weight = 1,
+                   radius = 3,
+                   popup = ~paste("Presión:", Presion, "mb")) %>% 
+  
+  addLegend(
+    pal = pal_pred, 
+    values = pred_range,
+    title = "Predicción Presión mb",
+    position = "topright"
+  ) %>%
+  
+  addLegend(pal = palPr,
+            values = datosPr_sf_wgs84$Presion,
+            title = "Presión Observada",
+    position = "topleft"
+  ) 
+
+#2 Mapa Varianza------------------------------------------
+
+var_raster_utm <- raster(predic, layer = "Presion.var")
+
+crs(var_raster_utm) <- "+init=epsg:3310"
+
+var_raster_wgs84 <- raster::projectRaster(
+    raster::mask(
+        var_raster_utm, 
+        sh_mundos_sp_utm_simple
+    ),
+    crs = "+init=epsg:4326", 
+    method = "bilinear"
+)
+
+max_var <- raster::cellStats(var_raster_wgs84, stat='max')
+step_var <- max_var / 6
+
+binsv <- round(seq(0, max_var, by=step_var),2)
+
+var_range <- c(minValue(var_raster_wgs84), maxValue(var_raster_wgs84))
+pal_var <- colorBin(
+  palette = "Spectral", # La paleta de colores
+  domain = var_range,
+  bins = binsv,
+  na.color = "transparent"
+)
+
+mapa_var_leaflet <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addRasterImage(
+    var_raster_wgs84,
+    colors = pal_var, 
+    opacity = 0.7,
+    group = "Predicción Kriging"
+  ) %>%
+  addLegend(
+    pal = pal_var, 
+    values = var_range,
+    title = "Varianza",
+    position = "topright"
+  ) 
+
+#3. Mapa Cv ----------------------------------------------
+
+cv_raster_utm <- sqrt(var_raster_utm) / abs(predic_raster_utm)
+
+mapa_mayor_a_uno <- cv_raster_utm > 1
+cv_raster_utm[mapa_mayor_a_uno] <- 1
+
+crs(cv_raster_utm) <- "+init=epsg:3310"
+
+cv_terra <- terra::rast(cv_raster_utm)
+sh_terra <- terra::vect(sh_mundos_sp_utm_simple)
+
+masked_cv_terra <- terra::mask(cv_terra, sh_terra)
+
+cv_raster_wgs84_terra <- terra::project(
+    masked_cv_terra, 
+    y = "epsg:4326", 
+    method = "bilinear" # Similar a projectRaster
+)
+
+cv_raster_wgs84 <- raster::raster(cv_raster_wgs84_terra)
+
+max_cv <- raster::cellStats(cv_raster_wgs84, stat='max')
+step_cv <- max_cv / 10
+
+bincv <- seq(0,max_cv, by=step_cv)
+
+cv_range <- c(minValue(cv_raster_wgs84), maxValue(cv_raster_wgs84))
+
+pal_cv <- colorBin(
+  palette = "RdYlGn", # Rojo-Amarillo-Verde
+  domain = cv_range,
+  na.color = "transparent",
+  bins = bincv,
+  reverse = TRUE
+)
+
+mapa_cv_leaflet <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addRasterImage(
+    cv_raster_wgs84,
+    colors = pal_cv, 
+    opacity = 0.7,
+    group = "Predicción Kriging"
+  ) %>%
+  addLegend(
+    pal = pal_cv, 
+    values = cv_range,
+    title = "Coeficiente de Variación",
+    position = "topright"
+  )
+
+```
+
+::: panel-tabset
+##### Predicción
+
+```{r}
+mapa_kriging_leaflet
+```
+
+##### Varianza
+
+```{r}
+mapa_var_leaflet
+```
+
+##### Coeficiente de variación
+
+```{r}
+mapa_cv_leaflet
+```
+
+:::
+
+## Conclusiones
 
 # Referencias {-}
