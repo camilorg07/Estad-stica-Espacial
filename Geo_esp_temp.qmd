@@ -1,0 +1,729 @@
+---
+bibliography: referencias.bib
+nocite: '@*'
+---
+
+::: {style="font-size: 1.5em; font-weight: bold; margin-bottom: 0.8em; margin-top: 0.5em;"}
+Análisis Geoestadístico Espacio Temporal de la Temperatura en el Estado de California durante marzo de 2024
+:::
+
+# Análisis Geoestadístico Espacio Temporal
+
+## Planteamiento del problema
+
+### Introducción
+
+La calidad del aire es un elemento fundamental para la salud pública, el bienestar de las comunidades y el equilibrio de los ecosistemas. El deterioro de este recurso no solo incrementa el riesgo de enfermedades respiratorias y cardiovasculares, sino que también afecta la productividad, la calidad de vida y el funcionamiento de los sistemas naturales. En los últimos años, la preocupación por la contaminación atmosférica ha crecido debido a la combinación de factores antropogénicos y ambientales que intensifican la presencia de compuestos dañinos en la atmósfera, entre ellos el ozono troposférico y las variaciones extremas de temperatura.
+
+En el estado de California, esta problemática adquiere una dimensión particular. Su elevada densidad poblacional, el tránsito vehicular, la actividad industrial y ciertos fenómenos naturales, como los incendios forestales, cada vez más frecuentes, contribuyen a que numerosas ciudades presenten niveles críticos de contaminación. Estas condiciones hacen necesario un análisis más profundo de la dinámica espacial y temporal de los contaminantes atmosféricos. En este contexto, el uso de herramientas estadísticas avanzadas, como el análisis espacio temporal, se convierte en un enfoque útil para comprender los patrones subyacentes y apoyar la toma de decisiones en materia ambiental.
+
+### Descripción de los datos
+
+Los datos objeto de este estudio provienen de la [Agencia de Protección Ambiental (EPA)](https://www.epa.gov/) de los Estados Unidos y corresponden a registros horarios obtenidos de las estaciones de monitoreo durante el mes de marzo de 2024. En particular, se analiza las variable **Temperatura ambiente (Temp)**.
+
+#### Unidades
+
+-   **Temperatura ambiente:** Medida en grados celsius (C°) con una intensidad horaria.
+
+### Objetivos
+
+#### Objetivo general
+
+Modelar y predecir la distribución tridimensional (espacio y tiempo) de la Temperatura en el estado de California durante el periodo de 24 horas del 3 de marzo de 2024. Este análisis se realizará mediante el Kriging Espacio-Temporal, utilizando datos de 127 estaciones, con el fin de caracterizar la variabilidad espacio-temporal de la variable y generar un modelo de predicción.
+
+#### Objetivos específicos
+
+1.  Analizar la autocorrelación espacio-temporal de la Temperatura en California a lo largo de 24 horas mediante la construcción y análisis del semivariograma espacio-temporal empírico, y ajustar un modelo de semivariograma Teorico separable o no separable, que permita definir explícitamente la estructura de dependencia combinada entre las distancias espaciales y temporales.
+2.  Implementar Kriging Espacio Temporal para generar mapas de predicción espacial y mapas de incertidumbre, utilizando l estructura de covarianza estimada, con el fin de representar la distribución esperada de las variables y evaluar la precisión de las estimaciones.
+
+## Análisis Geoestadístico Espacio Temporal
+
+En el análisis se consideran los datos de la **Temperatura** del periodo de 24 horas del 3 de marzo de 2024.
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+
+set.seed(123)
+
+#Librerias necesarias ------
+library(dplyr)
+library(geoR)
+library(sp)
+library(readxl)
+library(tidyr)
+library(sf)
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+library(spacetime)
+library(gstat)
+library(GeoModels)
+library(rcartocolor)
+
+#Variable Temperatura--------------------
+
+Temp <- read_excel("Temp_imp.xlsx", sheet = "Temperatura")
+Temp <- as.data.frame(Temp)
+EstacionesT <- read_excel("Temp_imp.xlsx", sheet = "Estaciones")
+EstacionesT$AQSID<-as.character(EstacionesT$AQSID)
+EstacionesT <- EstacionesT[,c(1,12,13)]
+Temp_long <- Temp %>% pivot_longer(cols = -DateTime, names_to = "AQSID",
+                                   values_to = "value") %>%  mutate(AQSID = as.character(AQSID))
+Temp_long<-Temp_long %>% 
+  filter(as.Date(dmy_hms(Temp_long$DateTime)) == as.Date("2024-01-03"))
+Data_ST <- Temp_long %>% left_join(EstacionesT, by = "AQSID")
+Data_ST$DateTime <- dmy_hms(Data_ST$DateTime)
+Data_ST$Hora <- hour(Data_ST$DateTime)
+
+#Para el mapa de California -------------------------------
+
+sh_mundos<-st_read("admin00.shp",quiet=TRUE)
+sh_mundos <- sh_mundos %>% filter(CNTRY_NAME=="United States")
+sh_mundos <- sh_mundos %>% filter(ADMIN_NAME=="California")
+
+CRS_UTM_NY = "+init=epsg:3310"
+
+sh_mundos_wgs84 <- st_transform(sh_mundos, crs = 4326)
+
+sh_mundos_utm <- st_transform(sh_mundos, crs = CRS("EPSG:3310"))
+
+sh_mundos_sp_utm <- as(sh_mundos_utm, "Spatial")
+
+sh_mundos_utm_simple <- st_union(sh_mundos_utm)
+sh_mundos_sp_utm_simple <- as(sh_mundos_utm_simple, "Spatial")
+
+#Grilla para hacer kriging ------------------------------
+
+new <- sp::spsample(as(sh_mundos_utm, "Spatial"), n = 5000, type = "regular")
+
+proj4string(new) <- CRS("EPSG:3310")
+invisible(coordinates(new) ~ Este + Norte)
+colnames(new@coords) <- c("Este", "Norte")
+```
+
+### Variable Temperatura
+
+En el siguiente bloque se muestra el código utilizado para imputar los valores faltantes en las 127 estaciones de California a lo largo de las 744 observaciones temporales. A partir de los modelos ajustados en el [Análisis Univariado](#cap1), se estimó un semivariograma para cada instante en el tiempo, seleccionando el modelo adecuado según el criterio de MSE. Finalmente, la predicción espacial se llevó a cabo mediante la función `krige()` del paquete `gstat`.
+
+```{r}
+#| eval: FALSE
+#| code-fold: false
+
+krig_list <- list()
+
+Progress <- txtProgressBar(min = 0, max = nrow(Temp), style = 3)
+
+for (i in 1:nrow(Temp)){
+  
+  y_T <- Temp[i,] #Tomar una fecha
+  y_T <- cbind(colnames(y_T),t(y_T[1,]))
+  y_T <- y_T[-1,]
+  y_T <- as.data.frame(y_T)
+  y_T <- na.omit(y_T)
+  y_T$V1 <- as.numeric(y_T$V1)
+  y_T <- inner_join(y_T, EstacionesT, by=c("V1"="AQSID"))
+  datosT <- y_T[,c(13,14,2)]
+  colnames(datosT)=c("Este","Norte","Temperatura")
+  datosT$Temperatura <- as.numeric(datosT$Temperatura)
+  temp <- as.geodata(datosT)
+  vg <- quiet(
+        variog(temp, trend = ~Norte+Este+I(Este^2)+I(Este^3),
+               estimator.type = "modulus", pairs.min=50,
+               max.dist=7e5))
+  
+  est1 <- quiet(
+          variofit(vg, cov.model = "exponential", ini=ini1_exp_T,
+                   fix.nugget = F,
+                   wei = "cressie"))
+
+  est3 <- quiet(
+          variofit(vg, cov.model = "spherical", ini=ini1_es_T,
+                   fix.nugget = F,
+                   wei = "cressie"))
+  
+  par1 <- c(est1$nugget, est1$cov.pars[1], est1$cov.pars[2])
+  par3 <- c(est3$nugget, est3$cov.pars[1], est3$cov.pars[2])
+  
+  mse1 <- MSE_sv(vg$v, par1, NA, model = "exponencial", vg$u)
+  mse3 <- MSE_sv(vg$v, par3, NA, model = "spherical", vg$u)
+  
+  mse_values <- c(exponential = mse1, spherical = mse3)
+  best_model <- names(which.min(mse_values))
+  
+  best_fit <- switch(best_model,
+                     exponential = est1,
+                     gaussian = est2,
+                     spherical = est3)
+  
+  model_gstat <- switch(best_model,
+                        exponential = "Exp",
+                        gaussian = "Gau",
+                        spherical = "Sph")
+  
+  vgm_best <- gstat::vgm(psill = best_fit$cov.pars[1],
+                  model = model_gstat,
+                  range = best_fit$cov.pars[2],
+                  nugget = best_fit$nugget)
+
+  y_T_NA <- Temp[i, ]
+  y_T_NA <- cbind(colnames(y_T_NA), t(y_T_NA[1,]))
+  y_T_NA <- y_T_NA[-1,]
+  y_T_NA <- as.data.frame(y_T_NA)
+  y_T_NA <- y_T_NA[is.na(y_T_NA$V2), ]  # Filtrar las estaciones sin dato
+  y_T_NA$V1 <- as.numeric(y_T_NA$V1)
+  Estaciones <- y_T_NA$V1 
+  y_T_NA <- inner_join(y_T_NA, EstacionesT, by = c("V1" = "AQSID"))
+  y_T_NA <- y_T_NA[,c(13,14,2)]
+  colnames(y_T_NA)=c("Este","Norte","Temperatura")
+  
+  if (nrow(y_T_NA)==0) {
+    warning(paste("No valores faltantes a estimar", i))
+    next
+  }
+                       
+  pred_grid <- y_T_NA[, c("Este", "Norte")]
+  coordinates(datosT) <- ~Este+Norte
+  coordinates(pred_grid) <- ~Este + Norte
+  
+  krig_result <- quiet(gstat::krige(
+    formula = Temperatura ~ Norte + Este + I(Este^2) + I(Este^3),
+    locations = ~ Norte + Este,
+    data = as.data.frame(datosT),
+    newdata = pred_grid,
+    model = vgm_best,
+    nmin =20
+  ))
+  
+  Temp[i, as.character(Estaciones)] <- t(krig_result@data[["var1.pred"]])
+  
+  setTxtProgressBar(Progress, i)
+}
+
+Temp[,-1] <- lapply(Temp[ , -1], function(x) round(as.numeric(x), 1))
+```
+
+#### Análisis de Estacionariedad en Media
+
+Para mitigar el efecto espacial en la media de la variable se uso el mismo modelo de regresión que se encontro en el [Análisis Univariado](#cap1):
+
+$$Temperatura = \beta_0 + \beta_1 \times Norte + \beta_2 \times Norte^2$$
+
+```{r}
+Temp.st.res <- as.data.frame(Data_ST) %>%
+  group_by(DateTime) %>% 
+  mutate(value = resid(lm(value ~ Norte+I(Norte^2)))) %>%
+  ungroup()
+
+dataTemp.ST <- Data_ST%>% 
+  arrange(AQSID, DateTime) %>%
+  dplyr::select(value)
+
+
+time.index <- sort(unique(Data_ST$DateTime))
+
+Temp.stations.sp <- EstacionesT %>% arrange(AQSID)
+
+Temp.stations.sp <- SpatialPoints(Temp.stations.sp[,c("Este", "Norte")])
+
+
+datostime <- STFDF(Temp.stations.sp, time.index, dataTemp.ST)
+stplot(datostime, main = "Temperatura en las 24 horas de 2024-01-03")
+IDs <- unique(EstacionesT$AQSID)
+sel <- NULL; for(i in 1:20) sel<-c(sel,which(IDs==IDs[i]))
+
+stplot(datostime[sel, "2024-01-03", "value"], mode="xt", scaleX=0,
+       col.regions=terrain.colors(100), main = "Temperatura")
+
+stplot(datostime[sel, "2024-01-03", "value"], mode="ts",
+       main = "Temperatura")
+```
+
+#### Estudio del Semivariograma
+
+##### Estimación Empírica del Semivariograma
+
+Mediante la función `GeoVariogram()` del paquete `GeoModels` se estimó el semivariograma empírico, su versión suavizada y los correspondientes semivariogramas marginales. Los resultados se presentan a continuación.
+
+```{r}
+geoMatrix <- Temp.st.res %>% 
+  dplyr::select(DateTime, AQSID, value) %>%
+  tidyr::pivot_wider(names_from = AQSID, values_from = value) %>%
+  arrange(DateTime) %>%  
+  dplyr::select(-DateTime) %>%  
+  as.matrix()
+
+geovgm <- GeoVariogram(data = geoMatrix, 
+                       coordx = as.matrix(EstacionesT[,c("Este", "Norte")]),
+                       coordt = unique(Data_ST$Hora - min(Data_ST$Hora)),
+                       distance = "Eucl", 
+                       type= "variogram", 
+                       maxdist = 8e+05)
+
+plot(geovgm)
+```
+
+##### Estimación del Modelo Teórico de Semivariograma
+
+Mediante la función `GeoFit()` de la libreria `GeoModels()` se llevó a cabo la estimación del modelo teórico para el semivariograma espacio–temporal. Debido a las altas demandas computacionales asociadas al proceso de optimización, se decidió almacenar el resultado final en un archivo `.RData`. No obstante, en el siguiente bloque se presenta el código empleado para obtener dicha estimación.
+
+```{r}
+#| eval: FALSE
+#| code-fold: false
+
+#Parámetros iniciales
+
+init.ST_gne <- list(
+  scale_s = 1e5,
+  power_s = 1,
+  scale_t = 1,
+  power_t = 1,
+  sep     = 0.5,
+  sill    = 9,
+  nugget  = 0.1
+)
+
+#Mínimos de la grilla para la estimación
+lower.ST_gne <- list(
+  scale_s = 0.001,
+  power_s = 0.1,
+  scale_t = 0.001,
+  power_t = 0.1,
+  sep     = 0.01,
+  sill    = 0.001,
+  nugget  = 0
+)
+
+#Máximos de la grilla para la estimación
+upper.ST_gne <- list(
+  scale_s = 3e6,
+  power_s = 2,
+  scale_t = 12,
+  power_t = 2,
+  sep     = 0.99,
+  sill    = 20,
+  nugget  = 1
+)
+
+geofit_gne <- GeoFit(data = geoMatrix, 
+                     coordx = as.matrix(EstacionesT[,c("Este", "Norte")]),
+                     coordt = unique(Data_ST$Hora - min(Data_ST$Hora)),
+                     distance = "Eucl", 
+                     maxdist = 8e+05, 
+                     maxtime =7, 
+                     model = "Gaussian", 
+                     corrmodel = "Gneiting", 
+                     start = init.ST_gne, 
+                     optimizer = "L-BFGS-B",
+                     fixed = fixed.ST_gne,
+                     lower = lower.ST_gne,
+                     upper = upper.ST_gne)
+```
+
+```{r}
+#Carga del Optim
+
+load("geofitST3.RData")
+geocgvm<- GeoCovariogram(fitted = geofitST$Gneiting3, 
+                         answer.vario = TRUE,
+                         show.vario = TRUE, 
+                         add.vario = TRUE,
+                         vario = geovgm, 
+                         invisible = TRUE)
+```
+
+#### Kriging Espacio Temporal
+
+Para calcular las predicciones se hizo uso de la función `GeoKrig` de `GeoModels`. Debido a las altas demandas computacionales asociadas al proceso de optimización, se decidió almacenar el resultado final en un archivo `.xlsx`. No obstante, en el siguiente bloque se presenta el código empleado para obtener las predicciones:
+
+```{r}
+#| eval: FALSE
+#| code-fold: false
+
+pr <- GeoKrig(geofitST$Gneiting3, 
+              loc = as.matrix(new@coords[,]), 
+              time = c(24:29),
+              mse = TRUE)
+
+pred <- pr$pred #Exportar los residuos predichos
+
+#Tomar todos los coeficientes de la regresión para cada tiempo
+
+coefs <- as.data.frame(Data_ST) %>%
+  group_by(DateTime) %>%
+  do({
+    mod <- lm(value ~ Norte + I(Norte^2), data = .)
+    
+    # Residuales + fitted + datos originales
+    aug <- augment(mod)
+    
+    # Coeficientes
+    coef <- tidy(mod) %>%
+      mutate(DateTime = unique(.$DateTime))
+    
+    # Empaquetar: residuales + coeficientes replicados por fila
+    cbind(aug,
+          coef_intercept = coef$estimate[coef$term == "(Intercept)"],
+          coef_Norte     = coef$estimate[coef$term == "Norte"],
+          coef_Norte2    = coef$estimate[coef$term == "I(Norte^2)"])
+  }) %>%
+  ungroup()
+
+coefs <- coefs %>% distinct(coef_intercept, coef_Norte, coef_Norte2)
+
+#Juntar todo en una misma matriz
+
+melt_s <- data.frame(
+  t1 = pred[1,],
+  t2 = pred[2,],
+  t3 = pred[3,],
+  t4 = pred[4,],
+  t5 = pred[5,],
+  t6 = pred[6,],
+  X = new@coords[,1], 
+  Y = new@coords[,2],
+  coef_intercept = mean(coefs$coef_intercept),
+  coef_Norte     = mean(coefs$coef_Norte),
+  coef_Norte2    = mean(coefs$coef_Norte2)
+)
+
+#Transformar a los valores reales
+
+melt_s <- melt_s %>% mutate(
+                            t1 = t1 + coef_intercept+
+                              coef_Norte * Y + coef_Norte2*Y^2,
+                            t2 = t2 + coef_intercept+
+                              coef_Norte * Y + coef_Norte2*Y^2,
+                            t3 = t3 + coef_intercept+
+                              coef_Norte * Y + coef_Norte2*Y^2,
+                            t4 = t4 + coef_intercept+
+                              coef_Norte * Y + coef_Norte2*Y^2,
+                            t5 = t5 + coef_intercept+
+                              coef_Norte * Y + coef_Norte2*Y^2,
+                            t6 = t6 + coef_intercept+
+                              coef_Norte * Y + coef_Norte2*Y^2,
+)
+
+#Escribir el archivo
+write.csv(melt_s, "pred_funcional.csv")
+
+## Para el MSE
+MSE<-pr$mse
+
+MSE_s <- data.frame(
+  MSE1 = MSE[1,],
+  MSE2 = MSE[2,],
+  MSE3 = MSE[3,],
+  MSEt4 = MSE[4,],
+  MSE5 = MSE[5,],
+  MSE6 = MSE[6,],
+  X = new@coords[,1], 
+  Y = new@coords[,2]
+)
+
+write.csv(MSE_s, "mse_spac_time.csv")
+
+```
+
+En seguida se presentan predicciones para $t=6$ tiempos a futuro.
+
+```{r, message=FALSE, warning=FALSE}
+pred <- read.csv("pred_funcional.csv")
+pred <- st_as_sf(pred,
+                   coords = c("X", "Y"),
+                   crs = CRS_UTM_NY)
+error <- read.csv("mse_spac_time.csv")
+error <- st_as_sf(error,
+                   coords = c("X", "Y"),
+                   crs = CRS_UTM_NY)
+```
+
+::::::::: panel-tabset
+##### Primer Momento
+
+::: panel-tabset
+###### Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = pred, 
+    aes(col = t1), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_color_carto_c(palette = 'Prism', na.value = '#111111') +
+  labs(
+    title = "Tiempo 1",
+    color = "Temperatura"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+###### Error de Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = error, 
+    aes(col = MSE1), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1) +
+  labs(
+    title = "Tiempo 1",
+    color = "Error de predicción"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+:::
+
+##### Segundo Momento
+
+::: panel-tabset
+###### Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = pred, 
+    aes(col = t2), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_color_carto_c(palette = 'Prism', na.value = '#111111') +
+  labs(
+    title = "Tiempo 2",
+    color = "Temperatura"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+###### Error de Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = error, 
+    aes(col = MSE2), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1) +
+  labs(
+    title = "Tiempo 2",
+    color = "Error de predicción"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+:::
+
+##### Tercer Momento
+
+::: panel-tabset
+###### Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = pred, 
+    aes(col = t3), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_color_carto_c(palette = 'Prism', na.value = '#111111') +
+  labs(
+    title = "Tiempo 3",
+    color = "Temperatura"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+###### Error de Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = error, 
+    aes(col = MSE3), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1) +
+  labs(
+    title = "Tiempo 3",
+    color = "Error de predicción"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+:::
+
+##### Cuarto Momento
+
+::: panel-tabset
+###### Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = pred, 
+    aes(col = t4), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_color_carto_c(palette = 'Prism', na.value = '#111111') +
+  labs(
+    title = "Tiempo 4",
+    color = "Temperatura"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+###### Error de Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = error, 
+    aes(col = MSEt4), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1) +
+  labs(
+    title = "Tiempo 4",
+    color = "Error de predicción"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+:::
+
+##### Quinto Momento
+
+::: panel-tabset
+###### Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = pred, 
+    aes(col = t5), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_color_carto_c(palette = 'Prism', na.value = '#111111') +
+  labs(
+    title = "Tiempo 5",
+    color = "Temperatura"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+###### Error de Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = error, 
+    aes(col = MSE5), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1) +
+  labs(
+    title = "Tiempo 5",
+    color = "Error de predicción"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+:::
+
+##### Sexto Momento
+
+::: panel-tabset
+###### Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = pred, 
+    aes(col = t6), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_color_carto_c(palette = 'Prism', na.value = '#111111') +
+  labs(
+    title = "Tiempo 6",
+    color = "Temperatura"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+###### Error de Predicción
+
+```{r, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = sh_mundos, fill = "gray90", color = "gray30", linewidth = 0.5) +
+  geom_sf(
+    data = error, 
+    aes(col = MSE6), 
+    size = 3,          
+    alpha = 0.8 
+  ) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1) +
+  labs(
+    title = "Tiempo 6",
+    color = "Error de predicción"
+  ) +
+  theme_light()+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+:::
+:::::::::
+
+## Conclusiones
+
+::: {.callout-caution appearance="simple"}
+## En desarrollo...
+:::
+
+# Referencias {.unnumbered}

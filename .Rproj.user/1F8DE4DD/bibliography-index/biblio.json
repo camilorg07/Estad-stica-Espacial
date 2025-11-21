@@ -40,9 +40,27 @@
             "title": "Notas de clase: Estadística espacial y espacio-temporal para campos aleatorios escalares y funcionales",
             "title-short": "Notas de clase",
             "type": ""
+        },
+        {
+            "URL": "https://rpubs.com/mpbohorquezc",
+            "author": [
+                {
+                    "literal": "mpbohorquezc"
+                }
+            ],
+            "id": "mpbohorquezc2025estadistica",
+            "issued": {
+                "date-parts": [
+                    [
+                        2025
+                    ]
+                ]
+            },
+            "note": "Publicado en línea",
+            "publisher": "RPubs",
+            "title": "Estadística espacio‑tiempo con r",
+            "type": ""
         }
     ],
-    "project_biblios": [
-        "referencias.bib"
-    ]
+    "project_biblios": []
 }

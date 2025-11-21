@@ -75,3 +75,8 @@ body.quarto-dark blockquote {
   /* Espacio extra abajo para separarlo del título numerado */
   margin-bottom: 1em; 
 }
+
+div.sourceCode {
+  max-height: 250px;
+  overflow-y: auto;
+}

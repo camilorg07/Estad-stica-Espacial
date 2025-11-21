@@ -21,10 +21,16 @@ book:
     search: true
   chapters:
     - index.qmd
-    - part: "Análisis Geoestadístico"
+    - part: "Geoestadística"
       chapters:
         - Geo_uni.qmd
         - Geo_bi.qmd
+    - part: "Geoestadística Espacio Temporal"
+      chapters: 
+        - Geo_esp_temp.qmd
+    - part: "Geoestadística Funcional"
+      chapters: 
+        - Geo_fun.qmd
   #downloads: pdf
 lang: es
 

@@ -1,0 +1,393 @@
+### Variable Ozono
+
+```{r, message=FALSE, warning=FALSE}
+
+k <- 24
+
+BSpl <- create.bspline.basis(rangeval=c(0,744),
+                                    nbasis=k, norder=4)
+
+Ozono <- read_excel("Ozono_imp.xlsx", sheet = "Ozono")
+Ozono <- as.data.frame(Ozono)
+
+EstacionesOz <- read_excel("Ozono_imp.xlsx", sheet = "Estaciones")
+EstacionesOz <- EstacionesOz[,c(1,12,13)]
+
+Ozono$DateTime <- as.POSIXct(Ozono$DateTime,
+                             format = "%m/%d/%y %H:%M:%S",
+                             tz = "America/Bogota")
+
+cols <- rainbow(ncol(Ozono)-1)
+
+ggplot() +
+  lapply(2:ncol(Ozono), function(i) {
+    geom_line(aes(x = Ozono$DateTime, y = Ozono[[i]]), 
+              color = cols[i-1],
+              alpha = 0.8)
+  }) +
+  labs(x = "Fecha", y = "Ozono")+
+  theme_light()
+```
+
+#### Modelado con B-Splines
+
+```{r, message=FALSE, warning=FALSE}
+
+ozone <- as.matrix(Ozono[,-1])
+
+loglam = seq(11.5e3,13.5e3,10)
+nlam = length(loglam)
+dfsave = rep(NA,nlam)
+gcvsave = rep(NA,nlam)
+for (ilam in 1:nlam) {
+  lambda = loglam[ilam]
+  fdParobj = fdPar(BSpl, Lfdobj=NULL, lambda= lambda)
+  smoothlist = smooth.basis(1:nrow(ozone), ozone, fdParobj)
+  dfsave[ilam] = smoothlist$df
+  gcvsave[ilam] = sum(smoothlist$gcv)
+}
+
+ggplot(data.frame(
+  loglam = loglam,
+  gcv = gcvsave
+),
+aes(x = loglam, y = gcv)) +
+  geom_point(size = .8) +
+  geom_line() +
+  labs(
+    x = expression(lambda),
+    y = expression(GCV(lambda)),
+    title = "Parámetros de suavizamiento versus GCV"
+  ) +
+  theme_light()+theme(
+    plot.title = element_text(hjust = 0.5,
+                              face = "bold")
+  )
+
+best.idx     <- which.min(gcvsave)
+best.lambdaO  <- loglam[best.idx]
+
+knitr::kable(data.frame(lambda = best.lambdaO,
+                        GCV=round(min(gcvsave), 3)),
+             escape = F,
+             col.names = c("$$\\lambda$$", "$$GCV$$"),
+             align='c')
+
+```
+
+Realizando el ajuste con el $\lambda$ óptimo que se obtuvo mediante validación cruzada:
+  
+```{r, results='hide'}
+Fozone <- Data2fd(y=ozone, basisobj=BSpl, lambda = best.lambdaO)
+
+eval_Fozone <- eval.fd(t_eval, Fozone)
+eval_Fozone <- as.data.frame(eval_Fozone)
+eval_Fozone$t <- t_eval
+
+eval_Fozone <- pivot_longer(
+  eval_Fozone,
+  cols = -t,
+  names_to = "Estacion",
+  values_to = "Ozono"
+)
+
+ggplot(eval_Fozone, aes(x = t, y = Ozono, group = Estacion, col=Estacion)) +
+  geom_line(linewidth = 0.7) + 
+  labs(
+    title = "Datos suavizados del Ozono",
+    x = "Hora-Día",
+    y = "Ozono (ppb)°"
+  ) +
+  theme_light() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),  
+    legend.position = "none"
+  )
+
+```
+##### Estadística descriptiva
+
+```{r}
+meanfdh <- mean.fd(Fozone)
+varfdh <-var.fd(Fozone)
+stdvfdh <- stddev.fd(Fozone)
+```
+
+::: panel-tabset
+###### Media
+
+```{r, message=FALSE, warning=FALSE}
+
+ggplot(eval_Fozone, aes(x = t, y = Ozono, group = Estacion, col=Estacion)) +
+  geom_line(linewidth = 0.7, show.legend = F) + 
+  geom_line(data = data.frame(t = eval_Fozone$t,
+                              Ozono =  eval.fd(eval_Fozone$t, meanfdh)),
+            aes(x = t, y = mean),
+            linewidth = 1.2, col="red",
+            inherit.aes = FALSE )+
+  labs(
+    title = "Datos suavizados del Ozono",
+    x = "Hora-Día",
+    y = "Ozono (ppb)"
+  ) +
+  theme_light() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),  
+  )
+```
+
+###### Varianza
+
+```{r, message=FALSE, warning=FALSE}
+
+plot(varfdh, main=" Superficie de varianza", xlab = "t", ylab = "s")
+
+```
+
+###### SD
+
+```{r, message=FALSE, warning=FALSE}
+
+data.frame(
+  t = eval_Ftemp$t,
+  std = as.vector(eval.fd(eval_Ftemp$t, stdvfdh))
+) %>% 
+  ggplot(aes(x = t, y = std)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  labs(
+    title = "Desviación estándar",
+    x = "Mes",
+    y = "Temperatura °C"
+  ) +
+  theme_light() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+```
+:::
+  
+#### Componentes Principales
+  
+  Se realiza un **análisis de componentes funcional (ACPF)** con el objetivo de reducir la dimensión de las funciones. Para esto, se utiliza la función `pca.fd` del paquete `fda`.
+
+A continuación se muestra gráficamente el porcentaje de varianza acumulado en cada componente.
+
+```{r}
+PCAO = pca.fd(Fozone, 15)
+
+data.frame(
+  Dim = 1:15,
+  Perc = round(PCAO$varprop*100,2)
+) %>% 
+  ggplot(aes(x = Dim, y = Perc)) +
+  geom_col(fill = "#7EC0EE", width = 0.7, alpha = 0.8) +
+  geom_line(aes(y = Perc), linewidth = 0.8) +
+  geom_point(size = 1.5) +
+  geom_text(aes(label = paste0(round(Perc,1), "%")),
+            vjust = -0.5, size = 3) +
+  scale_x_continuous(breaks = 1:15) +
+  labs(
+    title = "Valores propios del FPCA",
+    x = "Dimensiones",
+    y = "Porcentaje de varianza explicada"
+  ) +
+  theme_light() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+```
+
+Se observa que el aproximadamente el 85% de la variabilidad es recogida por los primeros 6 componentes.
+
+```{r}
+coordsO <- EstacionesOz[,c(2,3)]
+PC1O <- cbind(Scores=PCAO$scores[,1], coordsO)
+PC2O <- cbind(Scores=PCAO$scores[,2], coordsO)
+PC3O <- cbind(Scores=PCAO$scores[,3], coordsO)
+```
+
+Primero revisamos el comportamiento de la media para ver si es necesario mitigar un efecto espacial en ella mediante regresión.
+
+::: panel-tabset
+
+##### Primer Componente
+
+::: panel-tabset
+###### Matriz
+
+```{r}
+pander::pander(cor(PC1O))
+```
+
+###### Gráficos de dispersión
+
+```{r}
+pO1 <- simple_scatter_plot(PC1O, "Este", "Scores")
+pO2 <- simple_scatter_plot(PC1O, "Norte", "Scores")
+
+cowplot::plot_grid(pO1,pO2)
+
+```
+:::
+
+##### Segundo Componente
+
+::: panel-tabset
+###### Matriz
+
+```{r}
+pander::pander(cor(PC2O))
+```
+
+###### Gráficos de dispersión
+
+```{r}
+pO1 <- simple_scatter_plot(PC2O, "Este", "Scores")
+pO2 <- simple_scatter_plot(PC2O, "Norte", "Scores")
+
+cowplot::plot_grid(pO1,pO2)
+
+```
+:::
+
+##### Tercer Componente
+
+::: panel-tabset
+###### Matriz
+
+```{r}
+pander::pander(cor(PC3O))
+```
+
+###### Gráficos de dispersión
+
+```{r}
+pO1 <- simple_scatter_plot(PC3O, "Este", "Scores")
+pO2 <- simple_scatter_plot(PC3O, "Norte", "Scores")
+
+cowplot::plot_grid(pO1,pO2)
+
+```
+:::
+
+:::
+
+#### Modelo de Covarianza
+
+Como se puede observar, los Scores son de media cero. Por tanto se procede a modelar el semivariograma.
+
+##### Modelos Individuales
+
+Primero se hará un estudio y análisis individual de los componentes mediante las funciones `variogram()` y `fit.variogram():`
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+puntajeO=PCAO$scores[,c(1:3)]
+colnames(puntajeO)=c("f1","f2","f3")
+rownames(puntajeO) = EstacionesOz$AQSID
+puntajesO=as.data.frame(puntajeO)
+coordinates(puntajesO)=coordsO
+
+vg_PC1_O <-  variogram(f1~1,puntajesO, cressie=T)
+vg_PC2_O <-  variogram(f2~1,puntajesO, cressie=T)
+vg_PC3_O <-  variogram(f3~1,puntajesO, cressie=T)
+
+vgcrossO <- gstat(NULL, id = "f1", form = f1 ~ 1, data = puntajesO)
+vgcrossO <- gstat(vgcrossO, id = "f2", form = f2 ~ 1, data = puntajesO)
+vgcrossO <- gstat(vgcrossO, id = "f3", form = f3 ~ 1, data = puntajesO)
+
+vgm.crossO <- variogram(vgcrossO,, cressie=T)
+```
+
+::: panel-tabset
+
+###### Primer Componente
+
+```{r, warning=FALSE}
+
+exp_pc1O <- fit.variogram(vg_PC1_O, vgm("Exp"),
+                          fit.method = 7)
+plot(vg_PC1_O, model = exp_pc1O)
+pander::pander(exp_pc1O)
+```
+
+
+###### Segundo Componente
+
+```{r}
+exp_pc2O <- fit.variogram(vg_PC2_O, vgm("Exp"),
+                          fit.method = 7)
+plot(vg_PC2_O, model = exp_pc2O)
+pander::pander(exp_pc2O)
+```
+
+
+###### Tercer Componente
+
+```{r}
+exp_pc3O <- fit.variogram(vg_PC3_O, vgm("Exp"),
+                          fit.method = 7)
+plot(vg_PC3_O, model = exp_pc3O)
+pander::pander(exp_pc3O)
+```
+
+:::
+
+Por estos resultados se intuye que lo más apropiado para el modelo lineal de corregionalización sería ajustar un modelo **Exponencial** o **Wave**.
+
+##### Modelo Cruzado
+
+El variograma cruzado se presenta en seguida:
+
+```{r}
+plot(vgm.crossO)
+```
+
+Se opta por un **modelo Wave** para realizar el ajuste mediante la función `fit.lmc()` de `gstat`:
+
+```{r}
+vgcrossO <- gstat(vgcrossO, id = "f1", model = exp_pc3O,
+                 fill.all = T)
+
+g <- fit.lmc(vgm.crossO, vgcrossO, fit.method=6, correct.diagonal=1.01)
+
+plot(vgm.crossO, model = g$model)
+
+```
+
+El resumen de los modelos ajustados para el modelo lineal de corregionalización se presenta de forma tabular a continuación:
+
+```{r}
+pander::pander(g$model)
+```
+
+#### Kriging Funcional
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+
+spat_fd <- SpatFD(data = ozone, coords = coordsO,
+                  basis = "Bsplines", nbasis = k,
+                  lambda = best.lambdaO, nharm = 3)
+
+vgcross1 <- gstat(NULL, id = "f1", form = f1 ~ 1,
+                  data = puntajesO, model = exp_pc1O)
+vgcross1 <- gstat(vgcross1, id = "f2", form = f2 ~ 1,
+                  data = puntajesO, model = exp_pc2O)
+vgcross1 <- gstat(vgcross1, id = "f3", form = f3 ~ 1,
+                  data = puntajesO, model = exp_pc3O)
+
+a<-KS_scores_lambdas(spat_fd, new@coords, model = vgcross1$model,
+                  method = "scores")
+
+
+SFDl <- list(SpatFD::recons_fd(a, a$name))
+
+for (i in 1:length(SFDl)) {
+  SFD <- SFDl[[i]]
+  namek <- names(a$SFD)[i]}
+
+eval <- fda::eval.fd(1:24, SFD)
+matplot(eval, type ="l")
+
+```

@@ -11,15 +11,11 @@ Análisis Geoestadístico de la Temperatura y Velocidad del Viento en el Estado 
 
 ## Planteamiento del problema
 
-::: {.callout-caution appearance="simple"}
-## En desarrollo...
-:::
-
 ### Introducción
 
-::: {.callout-caution appearance="simple"}
-## En desarrollo...
-:::
+La calidad del aire influye directamente en la salud y el bienestar, y en California este tema es especialmente crítico debido a su alta densidad poblacional, el tráfico vehicular, la actividad industrial y fenómenos como los incendios forestales. Estas condiciones favorecen episodios recurrentes de contaminación, cuya intensidad y dispersión dependen en gran medida de factores meteorológicos.
+
+Entre ellos, la temperatura y la velocidad del viento son variables clave, pues afectan la acumulación y transporte de contaminantes y, además, presentan una fuerte dependencia espacial y correlación entre sí. Para capturar esta relación conjunta y mejorar la precisión de la interpolación espacial, empleamos un modelo de cokriging, que permite analizar simultáneamente las estructuras de variabilidad y covariación entre ambas variables a partir de los datos registrados en estaciones meteorológicas de California.
 
 ### Descripción de los datos
 
@@ -35,19 +31,20 @@ Los datos objeto de este estudio provienen de la [Agencia de Protección Ambient
 
 #### Objetivo general
 
-::: {.callout-caution appearance="simple"}
-## En desarrollo...
-:::
+Estudiar e identificar la tendencia y los patrones espaciales de la temperatura y la velocidad del viento mediante herramientas de análisis geoestadístico bivariado, con el propósito de construir un modelo de cokriging que permita caracterizar y predecir su comportamiento espacial en el estado de California durante un periodo específico de tiempo en marzo de 2024.
 
 #### Objetivos específicos
 
-::: {.callout-caution appearance="simple"}
-## En desarrollo...
-:::
+1.  Construir los semivariogramas empíricos directos y cruzados, y ajustar un Modelo Lineal de Corregionalización (LMC) que describa adecuadamente la dependencia espacial conjunta entre ambas variables, garantizando la validez y coherencia del modelo multivariado.
 
-## Análisis Geoestadístico
+2.  Aplicar la técnica de Cokriging para construir los mapas de predicción espacial y los mapas de incertidumbre asociados, con el fin de representar la distribución esperada de las variables y evaluar la precisión de las estimaciones.
 
-Se consideran las variables **temperatura** y **velocidad del viento**:
+3.  Comparar los resultados del Cokriging con los obtenidos mediante Kriging univariado, evaluando la ganancia en precisión y estabilidad derivada del uso de información cruzada entre las variables
+
+## Análisis Geoestadístico Bivariado
+
+En este análisis se consideran los datos de **temperatura** y **velocidad del viento** registrados a las 00:00 horas del 1 de marzo de 2024.
+
 
 ```{r, warning=FALSE, message=FALSE}
 library(readxl)
@@ -66,14 +63,27 @@ library(leaflet)
 library(raster)
 library(stars)
 library(gstat)
+library(Matrix)
 
 
-cov_cos <- function(sigma, h, phi){
-  sigma * cos(h/phi)
-}
+#Gráficos de dispersión ----------------------------------
 
-cos_sv <- function(nugget, sigma, h, phi){
-  nugget +  sigma *(1 - cos(h/phi))
+simple_scatter_plot <- function(datos, variable1, variable2) {
+
+    plot1 <- ggplot(as.data.frame(datos),
+                    aes(x = .data[[variable1]], y = .data[[variable2]],
+                               color = as.factor(1))) +
+                    geom_point() +
+                    scale_colour_viridis_d() +
+                    labs(
+                        x = variable1,
+                        y = variable2
+                        ) +
+                    theme_light() +
+                    theme(legend.position = "none")
+
+    return(plot1)
+
 }
 
 #Variable Temperatura ---------------------------------------
@@ -121,25 +131,80 @@ datosWS$WindSpeed <- as.numeric(datosWS$WindSpeed)
 
 ws <- as.geodata(datosWS)
 
+#Para el mapa de California -------------------------------
+
+sh_mundos<-st_read("admin00.shp",quiet=TRUE)
+sh_mundos <- sh_mundos %>% filter(CNTRY_NAME=="United States")
+sh_mundos <- sh_mundos %>% filter(ADMIN_NAME=="California")
+
+CRS_UTM_NY = "+init=epsg:3310"
+
+sh_mundos_wgs84 <- st_transform(sh_mundos, crs = 4326)
+
+sh_mundos_utm <- st_transform(sh_mundos, crs = CRS("EPSG:3310"))
+
+sh_mundos_sp_utm <- as(sh_mundos_utm, "Spatial")
+
+sh_mundos_utm_simple <- st_union(sh_mundos_utm)
+sh_mundos_sp_utm_simple <- as(sh_mundos_utm_simple, "Spatial")
+
 ```
 
 ::: panel-tabset
 ### Temperatura
 
 ```{r, message=FALSE, warning=FALSE}
+datosT_sf <- st_as_sf(datosT, coords = c("Este", "Norte"), crs = 3310)
+
+datosT_sf_wgs84 <- st_transform(datosT_sf, crs = 4326)
+
+pal <- colorNumeric(palette = "viridis", domain = datosT_sf_wgs84$Temperatura)
+
+leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = sh_mundos_wgs84, fill = FALSE, color = "black", weight = 2) %>%
+  addCircleMarkers(data = datosT_sf_wgs84,
+                   fillColor = ~pal(Temperatura),
+                   fillOpacity = 0.8,
+                   color = "black",
+                   weight = 1,
+                   radius = 3,
+                   popup = ~paste("Temp:", Temperatura, "°C")) %>%
+  addLegend(pal = pal, values = datosT_sf_wgs84$Temperatura, title = "Temperatura (°C)")
+
 pander::pander(summary(temp))
 ```
 
 ### Velocidad del viento
 
 ```{r, message=FALSE, warning=FALSE}
+datosWS_sf <- st_as_sf(datosWS, coords = c("Este", "Norte"), crs = 3310)
+
+datosWS_sf_wgs84 <- st_transform(datosWS_sf, crs = 4326)
+
+palWS <- colorNumeric(palette = "viridis", domain = datosWS_sf_wgs84$WindSpeed)
+
+leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = sh_mundos_wgs84, fill = FALSE, color = "black", weight = 2) %>%
+  addCircleMarkers(data = datosWS_sf_wgs84,
+                   fillColor = ~palWS(WindSpeed),
+                   fillOpacity = 0.8,
+                   color = "black",
+                   weight = 1,
+                   radius = 3,
+                   popup = ~paste("WindSpeed:", WindSpeed, "m/s")) %>%
+  addLegend(pal = palWS, values = datosWS_sf_wgs84$WindSpeed, title = "WindSpeed (m/s)")
+
 pander::pander(summary(ws))
 ```
 :::
 
 ### Modelos Univariados
 
-#### Estacionariedad en Media
+#### Análisis de Estacionariedad en Media
+
+El estudio de la influencia de las coordenadas espaciales en la media de ambas variables ya se realizó en el [Análisis Univariado](#cap1). A continuación se presenta únicamente un resumen del ajuste.
 
 ::: panel-tabset
 ##### Temperatura
@@ -147,86 +212,145 @@ pander::pander(summary(ws))
 El modelo es: $$Temperatura = \beta_0 + \beta_1 \times Norte + \beta_2 \times Norte^2$$
 
 ```{r}
-plot(temp, qt.col = c("purple",
-                    "pink",
-                    "green",
-                    "yellow"),
-     scatter3d=T, trend=~Norte+I(Norte^2))
 fitT <- lm(Temperatura~Norte+I(Norte^2), data = datosT) 
+datosT$Residuos <- fitT$residuals
+
+pT1 <- simple_scatter_plot(datosT, "Este", "Residuos")
+pT2 <- simple_scatter_plot(datosT, "Norte", "Residuos")
+
+cowplot::plot_grid(pT1,pT2)
 pander::pander(summary(fitT))
 ```
 
 ##### Velocidad del viento
 
-El modelo es: $$WindSpeed = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte + + \beta_3 \times Este \times Norte$$
+El modelo es: $$WindSpeed = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte + \beta_3 \times Este \times Norte$$
 
 ```{r}
-plot(temp, qt.col = c("purple",
-                      "pink",
-                      "green",
-                      "yellow"),
-     scatter3d=T, trend=~Norte*Este)
-
 fitWS <- lm(WindSpeed~Este*Norte, data = datosWS) 
+datosWS$Residuos <- fitWS$residuals
+
+pWS1 <- simple_scatter_plot(datosWS, "Este", "Residuos")
+pWS2 <- simple_scatter_plot(datosWS, "Norte", "Residuos")
+
+cowplot::plot_grid(pWS1,pWS2)
 pander::pander(summary(fitWS))
 ```
 :::
 
 #### Variogramas
 
+Dado que se hará uso de las herramientas del paquete `gstat` se consideró necesario revisar cuál de las estimaciones presentadas en el [Capítulo 1](#cap1), mediante `GeoR`, se ajustan mejor a este entorno. 
+
+::: panel-tabset
 ##### Temperatura
 
-Para esta variable ya se analizo y encontró un modelo apropiado en el [Capítulo 1](#cap1).
+```{r}
+datosT1 <- datosT
+invisible(coordinates(datosT1) <- ~ Este + Norte)
+vg_T <-  variogram(Temperatura~Norte+I(Norte^2), datosT1, cressie=T)
+exp_T <- fit.variogram(vg_T, vgm("Exp"),
+                          fit.method = 2)
+plot(vg_T, model = exp_T)
+pander::pander(exp_T)
+```
 
 ##### Velocidad del viento
 
-Para esta variable ya se analizo y encontró un modelo apropiado en el [Capítulo 1](#cap1).
+```{r}
+datosWS1 <- datosWS
+invisible(coordinates(datosWS1) <- ~ Este + Norte)
+vg_WS <-  variogram(WindSpeed~Norte*Este, datosWS1,cressie=T)
+exp_WS <- fit.variogram(vg_WS, vgm("Wav"),
+                          fit.method = 7)
+plot(vg_WS, model = exp_WS)
+pander::pander(exp_WS)
 
-### Modelo cruzado de semivarianza
+```
 
-Considerando un modelo esférico para Temperatura y un modelo Wave para WS, las matrices para el modelo de coregionalización son:
+:::
+
+### Modelo Lineal de Corregionalización
+
+Considerando un modelo **Exponencial** para Temperatura y un modelo **Wave** para WS, se proponen los siguientes valores, ajustados por la función `nearPD` del paquete `Matrix` con el objetivo de garantizar un modelo válido de coregionalización, para las matrices:
+
+```{r, message=FALSE, warning=FALSE}
+mat1 <- cbind(c(6, 4),
+              c(4, 0))
+
+mat1 <- nearPD(mat1)$mat
+mat1 <- as.matrix(mat1)
+
+colnames(mat1) <- rownames(mat1)<- c("Temp","WS")
+
+mat2 <-cbind(c(4.5, 4.2),
+             c(4.2, 0))
+
+mat2 <- nearPD(mat2)$mat
+mat2 <- as.matrix(mat2)
+
+colnames(mat2) <- rownames(mat2)<- c("Temp","WS")
+
+mat3 <-cbind(c(0, 3),
+             c(3, 0.1))
+
+mat3 <- nearPD(mat3)$mat
+mat3 <- as.matrix(mat3)
+
+colnames(mat3) <- rownames(mat3)<- c("Temp","WS")
+
+```
+
+::: panel-tabset
+
+#### Exponencial
 
 ```{r}
-#| code-fold: false
-
-mat1 <- cbind(c(8, 3.5),
-              c(3.5, 1))
-
-mat2 <-cbind(c(8, 3.5),
-             c(3.5, 1))
+pander::pander(mat1, caption = "Matriz para Temperatura")
 ```
+
+#### Wave
+
+```{r}
+pander::pander(mat2, caption = "Matriz para Velocidad del viento")
+```
+
+#### Nugget
+
+```{r}
+pander::pander(mat3, caption = "Matriz para Nugget")
+```
+
+:::
+
+Para los valores iniciales se tiene el siguiente ajuste:
 
 ```{r,, message=FALSE, warning=FALSE}
 
-datosT1 <- datosT
-datosWS1 <- datosWS
-invisible(coordinates(datosT1) <- ~ Este + Norte)
-invisible(coordinates(datosWS1) <- ~ Este + Norte)
-
-
 vgmntemp <- vgm(psill = mat1[1, 1],
-              model = "Sph",
-              range = 2e5,
-              nugget = .5,
+              model = "Exp",
+              range = exp_T$range[2],
+              nugget = mat3[1,1],
               add.to = vgm(psill = mat2[1, 1],
                            model = "Wav",
-                           range = .5e5, nugget = 2))
+                           range = exp_WS$range[2]))
 
 vgmws <- vgm(psill = mat1[2, 2],
-             model = "Sph",
-             range = 2e5,
-             nugget = .5,
+             model = "Exp",
+             range = exp_T$range[2],
+             nugget = mat3[2,2],
              add.to = vgm(psill = mat2[2, 2],
                           model = "Wav",
-                          range = .5e5, nugget = 2))
+                          range = exp_WS$range[2]))
 
 
-vgmntemp_sv <- vgm(psill = mat1[1, 2], model = "Sph",
-                 range = 2e5,
-                 nugget = .5,
+vgmntemp_sv <- vgm(psill = mat1[1, 2],
+                   model = "Exp",
+                 range = exp_T$range[2],
+                 nugget = mat3[1,2],
                  add.to = vgm(psill = mat2[1, 2],
                               model = "Wav",
-                              range = .5e5, nugget = 2))
+                              range = exp_WS$range[2]))
 
 
 
@@ -236,19 +360,49 @@ g <- gstat(g, id="W_speed", formula=WindSpeed~Norte*Este,
            data=datosWS1, model = vgmws)
 g <- gstat(g, c("Temp","W_speed"), model = vgmntemp_sv)
 
-plot(variogram(g),
+plot(variogram(g, cressie=T),
      model = g$model,
      pl = F,
      xlab = "Distancias",
      ylab = "Semivarianza")
 
+pander::pander(g$model)
+
 ```
+
+Ahora, realizando el ajuste mediante la función `fit.lmc` de `gstat:
+
+```{r}
+vgcross <- gstat(NULL, id = "Temp",
+                 form = Temperatura~Norte+I(Norte^2),
+                 data = datosT1)
+
+vgcross <- gstat(vgcross, id = "W_speed",
+                 form = WindSpeed~Norte*Este,
+                 data = datosWS1)
+
+vg <- variogram(vgcross, cressie=T)
+
+fit <- fit.lmc(vg, g, fit.method=6, correct.diagonal=1.01)
+
+plot(vg, model = fit$model)
+
+pander::pander(fit$model)
+
+```
+
 
 ::: {.callout-caution appearance="simple"}
 ## En desarrollo...
 :::
 
 ### Cokriging
+
+::: {.callout-caution appearance="simple"}
+## En desarrollo...
+:::
+
+## Kriging vs Cokriging
 
 ::: {.callout-caution appearance="simple"}
 ## En desarrollo...

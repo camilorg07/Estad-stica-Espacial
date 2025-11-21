@@ -19,7 +19,7 @@ El comportamiento de los contaminantes atmosféricos, como el ozono troposféric
 
 ### Descripción de los datos
 
-Los datos objeto de este estudio provienen de la [Agencia de Protección Ambiental (EPA)](https://www.epa.gov/) de los Estados Unidos y corresponden a registros horarios obtenidos de las estaciones de monitoreo durante el mes de marzo de 2024. En particular, se analizan las variables **Temperatura ambiente (Temp)**, **Ozono (**$O_3$**)**, **Velocidad del viento (WS)** y **Presión barométrica**.
+Los datos objeto de este estudio provienen de la [Agencia de Protección Ambiental (EPA)](https://www.epa.gov/) de los Estados Unidos y corresponden a registros horarios obtenidos de las estaciones de monitoreo durante el mes de marzo de 2024. En particular, se analizan las variables **Temperatura ambiente (Temp)**, **Ozono (**$O_3$**)** y **Velocidad del viento (WS)**.
 
 #### Unidades
 
@@ -28,8 +28,6 @@ Los datos objeto de este estudio provienen de la [Agencia de Protección Ambient
 -   **Ozono:** Medida en partes por billón (ppb) con una intensidad horaria.
 
 -   **Velocidad del viento:** Medida en metros por segundo (m/s) con una intensidad horaria.
-
--   **Presión barométrica:** Medida en milibares (mb) con una intensidad horaria.
 
 ### Objetivos
 
@@ -45,7 +43,7 @@ Estudiar e identificar la tendencia y los patrones espaciales de las variables m
 
 3.  Aplicar la técnica de Kriging para construir los mapas de predicción espacial y los mapas de incertidumbre asociados, con el fin de representar la distribución esperada de las variables y evaluar la precisión de las estimaciones.
 
-## Análisis geoestadístico
+## Análisis Geoestadístico Univariado
 
 En el análisis se consideran los datos de todas las variables registrados a las 00:00 horas del 1 de marzo de 2024.
 
@@ -68,6 +66,7 @@ library(leaflet)
 library(raster)
 library(stars)
 library(terra)
+library(gstat)
 
 #Variale Temperatura --------------------------------------
 
@@ -92,15 +91,6 @@ colnames(WS)[-1] <- as.numeric(colnames(WS)[-1])
 EstacionesWS <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
 EstacionesWS <- EstacionesWS %>% mutate(AQSID = as.numeric(AQSID))
 EstacionesWS <- EstacionesWS %>% filter(AQSID %in% colnames(WS)[-1])
-
-#Variable presión atmosférica -----------------------------
-
-Presion <- read_excel("GeoEst_Cali.xlsx", sheet = "Presion")
-colnames(Presion)[-1] <- as.numeric(colnames(Presion)[-1])
-EstacionesPr <- read_excel("GeoEst_Cali.xlsx", sheet = "Estaciones")
-EstacionesPr <- EstacionesPr %>% mutate(AQSID = as.numeric(AQSID))
-EstacionesPr <- EstacionesPr %>% filter(AQSID %in% colnames(Presion)[-1])
-
 
 #Para el mapa de California -------------------------------
 
@@ -489,6 +479,19 @@ loglik <- function(par, kappa=NA, z, dist_matrix, model){
   n <- length(z)
   ll <- -0.5 * (n * log(2 * pi) + det + crossprod(z, inv_Sigma %*% z))  # Log-verosimilitud (negativa porque optim minimiza)
   return(-ll)
+}
+
+#Función para presentar las métricas de predicción----
+
+metricas_cv <- function(cv) {
+  data.frame(
+    ME = mean(cv$residual),
+    MAE = mean(abs(cv$residual)),
+    RMSE = sqrt(mean(cv$residual^2)),
+    R2 = 1 - var(cv$residual) / var(cv$observed),
+    MPSE = mean(cv@data$residual^2 / cv@data$var1.var),
+    COR = cor(cv@data$var1.pred, cv@data$observed)
+  )
 }
 
 ```
@@ -1194,6 +1197,24 @@ mapa_cv_leaflet
 Los resultados del Kriging indican que la calidad del aire tiende a ser más deficiente en el sur de California y en el Valle Central, donde se observan las concentraciones predichas más altas de ozono. Dado que estas regiones cuentan con una alta densidad de estaciones de monitoreo, se cuenta con una mayor confiabilidad y precisión en las estimaciones del modelo (reflejada en valores bajos de varianza o coeficiente de variación). En contraste, las predicciones sobre la concentración de ozono presentan mayor incertidumbre (varianza o CV elevados) en las zonas rurales y fronterizas del norte y este del estado, debido a la menor disponibilidad de estaciones de observación en esas áreas.
 
 A pesar de que los coeficientes de variación presentan valores muy bajos, todos inferiores al 11%, es importante interpretar estos resultados con cautela. Aunque se aplicó un **Kriging de vecinos cercanos** para mitigar el efecto de las grandes distancias entre puntos, es posible que aún persista cierto nivel de ruido o variabilidad residual asociado a la extensión geográfica del área californiana.
+
+##### Métricas de Validación Cruzada
+
+A continuación se presentan las métricas de validación cruzada obtenidas mediante la función `krige.cv()` del paquete `gstat`:
+
+```{r, warning=FALSE, message=FALSE}
+
+invisible(cv_oz <- krige.cv(Ozono ~ I(Norte^2) + I(Norte^3) + Este,
+                  datosOZ,
+                  model = best_model_O))
+
+pander::pander(metricas_cv(cv_oz), digits=3)
+
+```
+
+El modelo de Kriging muestra un desempeño sólido y equilibrado. El sesgo es bastante bajo, como se puede evidenciar en el valor del **ME**, de maneta similar los errores promedio ponderados se mantienen en un rango aceptable y se alcanza una correlación alta entre lo observado y lo predicho. Aun así, el **$R^2$** indica que el modelo explica alrededor del 50% de la variabilidad (algo coherente con la pepita observada en el semivariograma empírico). Los resultados en conjunto sugieren que el modelo captura bien los patrones espaciales generales del ozono y ofrece predicciones confiables en la mayor parte del territorio.
+
+Estos indicadores coinciden con lo observado en los mapas: las predicciones son más precisas en el sur de California y el Valle Central, donde la mayor densidad de estaciones reduce la incertidumbre, mientras que en zonas rurales y fronterizas la falta de información aumenta la variabilidad de las estimaciones. Aun cuando los coeficientes de variación son bajos, es importante interpretar con cautela las áreas con poca cobertura, ya que pueden conservar algo de ruido residual debido a la extensión y heterogeneidad del estado.
 
 ### Variable Temperatura
 
@@ -2122,6 +2143,24 @@ Los mapas de kriging para la temperatura muestran que las zonas más cálidas y 
 
 Esta menor fiabilidad en el norte se debe a la escasa presencia de estaciones de monitoreo en esas extensas áreas. El modelo de semivarianza empleado **(Esférico)** presenta un rango de influencia de aproximadamente 175 km, lo que implica que las mediciones dejan de ser útiles para la predicción más allá de esa distancia. Aunque se aplicó un **Kriging de vecinos cercanos** para mitigar el efecto de estas grandes distancias, persiste un nivel considerable de incertidumbre en las zonas con baja densidad de observaciones
 
+##### Métricas de Validación Cruzada
+
+A continuación se presentan las métricas de validación cruzada obtenidas mediante la función `krige.cv()` del paquete `gstat`:
+
+```{r, warning=FALSE, message=FALSE}
+
+invisible(cv_t <- krige.cv(Temperatura ~ Norte + I(Norte^2),
+                  datosT,
+                  model = best_model_T))
+
+pander::pander(metricas_cv(cv_t), digits=3)
+
+```
+
+El **ME** cercano a cero indica que el Kriging no presenta un sesgo sistemático, lo cual es coherente con las zonas donde el modelo predice bien, especialmente en el sur y en el Valle Central. Los valores de **MAE** y **RMSE** muestran que el error promedio es moderado y aceptable para un fenómeno con alta variabilidad espacial como la temperatura. Sin embargo, estos valores sugieren que, en las regiones con poca densidad de estaciones, como el norte del estado, los errores tienden a aumentar debido a la mayor incertidumbre.
+
+El **$R^2$**de 0.568 y la correlación de 0.715 reflejan una relación sólida entre las predicciones y los valores observados, lo cual concuerda con la mayor confiabilidad del modelo en las áreas bien monitoreadas. Sin embargo, estos indicadores también sugieren que aún queda una parte importante de variabilidad sin capturar, algo consistente con las zonas rurales y fronterizas donde la distancia entre estaciones supera con frecuencia el rango del modelo esférico. En conjunto, las métricas confirman un buen desempeño general, pero también respaldan la necesidad de interpretar con cautela las predicciones en las áreas con baja cobertura.
+
 ### Variable Velocidad del viento
 
 En el siguiente mapa se presenta la distribución territorial de las estaciones de **Velocidad del Viento**, así mismo como sus valores muestrales:
@@ -2724,507 +2763,36 @@ mapa_cv_leaflet
 
 La velocidad del viento es más elevada en el Valle Central y en el interior sur de California, y, en general, las predicciones en la mitad sur del estado muestran buena precisión (bajo coeficiente de variación). La incertidumbre más alta se concentra en el extremo norte, debido a la escasez de datos. El modelo **Wave** se utiliza para capturar la naturaleza variable del viento; sin embargo, la varianza sigue siendo elevada en zonas con baja densidad de estaciones y en algunas áreas muestreadas donde el viento probablemente es más turbulento o errático, lo que dificulta la interpolación. Para mitigar el efecto de las grandes distancias entre estaciones, se aplicó un **Kriging de vecinos cercanos**, lo que mejora la fiabilidad de las predicciones en puntos aislados.
 
-### Variable Presión Barométrica
+##### Métricas de Validación Cruzada
 
-En el siguiente mapa se presenta la distribución territorial de las estaciones de **Presión Barométrica**, así mismo como sus valores muestrales:
+A continuación se presentan las métricas de validación cruzada obtenidas mediante la función `krige.cv()` del paquete `gstat`:
 
-```{r, message=F, warning=F}
+```{r, warning=FALSE, message=FALSE}
 
-y_Pr <- Presion[1,] #Tomar una fecha
-y_Pr <- cbind(colnames(y_Pr),t(y_Pr[1,]))
-y_Pr <- y_Pr[-1,]
-y_Pr <- as.data.frame(y_Pr)
-y_Pr <- na.omit(y_Pr)
-y_Pr$V1 <- as.numeric(y_Pr$V1)
-y_Pr <- y_Pr[-which.min(y_Pr$V2),]
-y_Pr <- y_Pr[-which.min(y_Pr$V2),]
-y_Pr <- inner_join(y_Pr, EstacionesPr, by=c("V1"="AQSID"))
-datosPr <- y_Pr[,c(13,14,2)]
-colnames(datosPr)=c("Este","Norte","Presion")
-datosPr$Presion <- as.numeric(datosPr$Presion)
+invisible(cv_ws <- krige.cv(WindSpeed ~ Norte*Este,
+                  datosWS,
+                  model = best_model_WS))
 
-datosPr_sf <- st_as_sf(datosPr, coords = c("Este", "Norte"), crs = 3310)
-
-datosPr_sf_wgs84 <- st_transform(datosPr_sf, crs = 4326)
-
-palPr <- colorNumeric(palette = "viridis", domain = datosPr_sf_wgs84$Presion)
-
-leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  addPolygons(data = sh_mundos_wgs84, fill = FALSE, color = "black", weight = 2) %>%
-  addCircleMarkers(data = datosPr_sf_wgs84,
-                   fillColor = ~palPr(Presion),
-                   fillOpacity = 0.8,
-                   color = "black",
-                   weight = 1,
-                   radius = 3,
-                   popup = ~paste("Presion:", Presion, "mb")) %>%
-  addLegend(pal = palPr, values = datosPr_sf_wgs84$Presion, title = "Presión Barométrica mb")
+pander::pander(metricas_cv(cv_ws), digits=3)
 
 ```
 
-Los datos observados son trabajados en el formato *geodata* mediante el uso de la función `as.geodata()` del paquete `GeoR`. El resumen de las coordenadas y la variable Ozono se presenta tabularmente en seguida:
+El **ME** cercano a cero indica que el Kriging no presenta un sesgo sistemático al estimar la velocidad del viento, lo que es coherente con el buen desempeño del modelo en la mitad sur del estado, donde la mayor disponibilidad de estaciones reduce la incertidumbre. Los errores promedio también son bajos; muestran que las diferencias entre lo observado y lo predicho son relativamente pequeñas, lo cual se ajusta a las zonas donde la variación del viento es más estable y el coeficiente de variación resultó reducido.
 
-```{r, message=FALSE, warning=FALSE}
-presion <- as.geodata(datosPr)
-pander::pander(summary(presion))
-```
-
-#### Análisis de Estacionariedad en Media
-
-Ahora, se procede a revisar el comportamiento de la media de la variable con respecto a las coordenadas *Este* y *Norte*. Para entender de mejor manera la distribución de la variable ozono se presentan la matriz de correlación muestral y los siguientes gráficos:
-
-::: panel-tabset
-##### Matriz
-
-```{r}
-pander::pander(cor(datosPr))
-```
-
-##### Gráficos de dispersión
-
-```{r}
-pPr1 <- simple_scatter_plot(datosPr, "Este", "Presion")
-pPr2 <- simple_scatter_plot(datosPr, "Norte", "Presion")
-
-cowplot::plot_grid(pPr1,pPr2)
-
-```
-
-##### GeoR
-
-```{r}
-plot(presion, qt.col = c("purple",
-                          "pink",
-                          "green",
-                          "yellow"),
-     scatter3d=T)
-```
-:::
-
-En la matriz de correlaciones se aprecia una ligera asociación de la **presión** con la coordenada Este. No obstante, en los gráficos se observa una tendencia más evidente que involucra ambas coordenadas.
-
-##### Ajuste del Modelo
-
-El modelo que mejor atrapa el efecto de la media es:
-
-$$Presion = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte $$
-
-```{r}
-fitPr <- lm(Presion~Este+Norte, data=datosPr)
-pander::pander(summary(fitPr))
-
-```
-
-Todos los coeficientes del modelo resultan estadísticamente significativos, y el valor de $R^2$ (0.65) indica que el ajuste captura de manera adecuada la variabilidad de la presión, sugiriendo que el modelo es apropiado.
-
-::: panel-tabset
-###### Gráficos de dispersión
-
-```{r}
-datosPr$Residuos <- fitPr$residuals
-
-pPr1 <- simple_scatter_plot(datosPr, "Este", "Residuos")
-pPr2 <- simple_scatter_plot(datosPr, "Norte", "Residuos")
-
-cowplot::plot_grid(pPr1,pPr2)
-
-```
-
-###### GeoR
-
-```{r}
-plot(presion, qt.col = c("purple",
-                      "pink",
-                      "green",
-                      "yellow"),
-     scatter3d=T, trend=~Norte+Este)
-```
-:::
-
-Los gráficos de dispersión corroboran los resultados del ajuste del modelo, mostrando que la tendencia respecto a las coordenadas espaciales se ha mitigado de buena manera.
-
-#### Estudio del Semivariograma
-
-A continuación, se presenta la estimación del semivariograma obtenida con la función `variog()`. Para asegurar la fiabilidad de los resultados, se especifican los argumentos `estimator.type = "modulus"` y `pairs.min=50`, con el fin de utilizar un estimador robusto y garantizar un número mínimo adecuado de pares en cada intervalo de distancia.
-
-```{r, message=FALSE, results='hide'}
-vgO_Pr <- variog(presion,estimator.type = "modulus", pairs.min=50) 
-
-vg1_Pr <- variog(presion, trend = ~Norte+Este,
-                estimator.type = "modulus", pairs.min=50)
-```
-
-::: panel-tabset
-##### Con tendencia
-
-```{r}
-plot(vgO_Pr,
-     xlab = "h",
-     ylab = "Semivarianza",
-     cex.lab = 1.3,
-     cex.axis = 1.2,
-     main = "Sin remover tendencia",
-     col.main = "#36648B", cex.main =1.3)
-```
-
-##### Removiendo Tendencia
-
-```{r}
-plot(vg1_Pr,
-     xlab = "h",
-     ylab = "Semivarianza",
-     cex.lab = 1.3,
-     cex.axis = 1.2,
-     main = "Removiendo tendencia",
-     col.main = "#36648B", cex.main =1.3)
-```
-:::
-
-##### Estimación del Modelo Teórico de Semivariograma
-
-Para obtener unos valores iniciales de los modelos teóricos se usa la función `EyeFit()` de la librería `GeoR`.
-
-El modelo obtenido ajustando por `EyeFit()`, son:
-
-> cov.model sigmasq phi tausq kappa kappa2 practicalRange
->
-> 1 exponential 1056.47 126360.8 132.06 NA NA 378543.2
-
-###### Exponencial
-
-```{r, message=FALSE, warning=FALSE, results='hide'}
-
-variog_Pr <- data.frame(h = vg1_Pr$u, gamma_hat = vg1_Pr$v,
-                       n = vg1_Pr$n)
-
-nugget_0_ePr <- 132.06
-
-par_ePr <- c(1056.47,126360.8)
-
-fitvar1_exp_Pr <- variofit(vg1_Pr,
-                    cov.model = "exponential",
-                    par_ePr,
-                    fix.nugget = F,
-                    nugget = nugget_0_ePr,
-                    wei = "equal")
-
-fitvar2_exp_Pr <- variofit(vg1_Pr,
-                    cov.model = "exponential",
-                    par_ePr,
-                    fix.nugget = F,
-                    nugget = nugget_0_ePr,
-                    wei = "npairs")
-
-fitvar3_exp_Pr <- variofit(vg1_Pr,
-                    cov.model = "exponential",
-                    par_ePr,
-                    fix.nugget = F,
-                    nugget = nugget_0_ePr,
-                    wei = "cressie")
-
-fitvar4_exp_Pr <- likfit(presion,
-                       coords = presion$coords,
-                       data = presion$data,
-                       trend = ~ Este+Norte,
-                       ini.cov.pars = par_ePr,
-                       fix.nugget = F,
-                       nugget = nugget_0_ePr,
-                       cov.model = "exponential",
-                       lik.method = "ML")
-
-plot(vg1_Pr,
-     xlab = "h",
-     ylab = "Semivarianza",
-     cex.lab = 1.3,
-     cex.axis = 1.2,
-     main = "Estimación teórica del modelo de semivariograma \n (GeoR, gstat)",
-     col.main = "#36648B", cex.main =1.3)
-lines(fitvar1_exp_Pr, col="#FF4040", lwd=1.5)
-lines(fitvar2_exp_Pr, col="#4169E1", lwd=1.5)
-lines(fitvar3_exp_Pr, col="#008B00", lwd=1.5)
-lines(fitvar4_exp_Pr, col="#FFA500", lwd=1.5)
-legend("topleft",
-       c("MCO", "1/n", "Cressie", "MLE"),#, "REML"),
-       lwd = 1,
-       lty = 3,
-       col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
-       box.col = 9,
-       text.col = c("#FF4040", "#4169E1", "#008B00","#FFA500"),
-       cex=1,
-       seg.len = .5)
-
-```
-
-```{r}
-par1Prexp <- c(fitvar1_exp_Pr$nugget, fitvar1_exp_Pr$cov.pars[1], fitvar1_exp_Pr$cov.pars[2])
-par2Prexp <- c(fitvar2_exp_Pr$nugget, fitvar2_exp_Pr$cov.pars[1], fitvar2_exp_Pr$cov.pars[2])
-par3Prexp <- c(fitvar3_exp_Pr$nugget, fitvar3_exp_Pr$cov.pars[1], fitvar3_exp_Pr$cov.pars[2])
-par4Prexp <- c(fitvar4_exp_Pr$nugget, fitvar4_exp_Pr$cov.pars[1], fitvar4_exp_Pr$cov.pars[2])
-
-resumen_exp_Pr <- cbind(
-  c("MCO", "1/n", "Cressie","MLE"),
-  rbind(
-    par1Prexp,
-    par2Prexp,
-    par3Prexp,
-    par4Prexp
-  ),
-  MSE = c(
-    MSE_sv(variog_Pr$gamma_hat, par1Prexp, NA, model = "exponencial", variog_Pr$h),
-    MSE_sv(variog_Pr$gamma_hat, par2Prexp, NA, model = "exponencial", variog_Pr$h),
-    MSE_sv(variog_Pr$gamma_hat, par3Prexp, NA, model = "exponencial", variog_Pr$h),
-    MSE_sv(variog_Pr$gamma_hat, par4Prexp, NA, model = "exponencial", variog_Pr$h)
-  )
-)
-
-resumen_exp_Pr <- as.data.frame(resumen_exp_Pr)
-resumen_exp_Pr[ , -1] <- lapply(resumen_exp_Pr[ , -1], function(x) round(as.numeric(x), 3))
-kable(resumen_exp_Pr, digits = 3,
-      col.names = c("Método", "Nugget", "Sigma", "Phi", "MSE"),
-      escape = F, row.names = F)
-```
-
-#### Kriging
-
-El modelo **Exponencial**, con los parámetros obtenidos por **MCO**, que se usará para realizar Kriging es el siguiente:
-
-```{r}
-plot(vg1_Pr,
-     xlab = "h",
-     ylab = "Semivarianza",
-     cex.lab = 1.3,
-     cex.axis = 1.2,
-     main = "Modelo exponencial para Presión",
-     col.main = "#36648B", cex.main =1.3)
-lines(fitvar1_exp_Pr, col="#FF4040", lwd=1.5)
-
-
-```
-
-Para realizar la predicción, se genera una muestra aleatoria de puntos dentro del polígono que delimita el estado de California mediante la función `spsample()` del paquete `sp`. Sobre estos puntos se estiman los valores esperados aplicando el método de **Kriging de vecinos cercanos**, con el fin de mejorar la precisión de las estimaciones al considerar las grandes distancias características del territorio californiano. El procedimiento se implementa mediante la función `krige()` de `gstat`, especifícando la opción `nmin=20` y utilizando la función `predict()` de base de `R`.
-
-```{r, message=F, warning=F, results='hide'}
-
-#Se ajusta el mejor modelo -------------------------------
-
-best_model_Pr <- gstat::vgm(psill = fitvar1_exp_Pr$cov.pars[1],
-                           model = "Exp",
-                           range = fitvar1_exp_Pr$cov.pars[2],
-                           nugget = fitvar1_exp_Pr$nugget
-                           
-)
-
-# Se crea un objeto en gstat ------------------------------
-
-coordinates(datosPr) <- ~Este + Norte
-proj4string(datosPr) <- CRS("EPSG:3310")
-
-g_obj<-gstat::gstat(id="Presion",
-             formula = Presion ~ Norte + Este,
-             model = best_model_Pr,
-             data = datosPr)
-
-#Kriging ------------------------------------------------
-
-invisible(predic <- predict(g_obj, newdata = new))
-
-
-#Mapas de predicción -------------------------------------
-
-gridded(predic) <- TRUE
-
-#1. Mapa de Kriging --------------------------------------
-
-predic_raster_utm <- raster(predic, layer = "Presion.pred")
-
-crs(predic_raster_utm) <- "+init=epsg:3310"
-
-predic_raster_wgs84 <- raster::projectRaster(
-    raster::mask(
-        predic_raster_utm, 
-        sh_mundos_sp_utm_simple
-    ),
-    crs = "+init=epsg:4326", 
-    method = "bilinear"
-)
-
-min_pred <- raster::cellStats(predic_raster_wgs84, stat='min')
-max_pred <- raster::cellStats(predic_raster_wgs84, stat='max')
-
-pred_range <- c(minValue(predic_raster_wgs84), maxValue(predic_raster_wgs84))
-
-step_pred <- (max_pred-min_pred)/ 6
-
-bins <- round(seq(min_pred, max_pred, by=step_pred),0)
-
-pal_pred <- colorBin(
-  palette = "viridis", # La paleta de colores
-  domain = pred_range,
-  bins = bins,
-  na.color = "transparent"
-)
-
-mapa_kriging_leaflet <- leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  addRasterImage(
-    predic_raster_wgs84, 
-    colors = pal_pred, 
-    opacity = 0.7,
-    group = "Predicción Kriging"
-  ) %>%
-    addCircleMarkers(data = datosPr_sf_wgs84,
-                   fillColor = ~palPr(Presion),
-                   fillOpacity = 0.8,
-                   color = "black",
-                   weight = 1,
-                   radius = 3,
-                   popup = ~paste("Presión:", Presion, "mb")) %>% 
-  
-  addLegend(
-    pal = pal_pred, 
-    values = pred_range,
-    title = "Predicción Presión mb",
-    position = "topright"
-  ) %>%
-  
-  addLegend(pal = palPr,
-            values = datosPr_sf_wgs84$Presion,
-            title = "Presión Observada",
-    position = "topleft"
-  ) 
-
-#2 Mapa Varianza------------------------------------------
-
-var_raster_utm <- raster(predic, layer = "Presion.var")
-
-crs(var_raster_utm) <- "+init=epsg:3310"
-
-var_raster_wgs84 <- raster::projectRaster(
-    raster::mask(
-        var_raster_utm, 
-        sh_mundos_sp_utm_simple
-    ),
-    crs = "+init=epsg:4326", 
-    method = "bilinear"
-)
-
-max_var <- raster::cellStats(var_raster_wgs84, stat='max')
-step_var <- max_var / 6
-
-binsv <- round(seq(0, max_var, by=step_var),2)
-
-var_range <- c(minValue(var_raster_wgs84), maxValue(var_raster_wgs84))
-pal_var <- colorBin(
-  palette = "Spectral", # La paleta de colores
-  domain = var_range,
-  bins = binsv,
-  na.color = "transparent"
-)
-
-mapa_var_leaflet <- leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  addRasterImage(
-    var_raster_wgs84,
-    colors = pal_var, 
-    opacity = 0.7,
-    group = "Predicción Kriging"
-  ) %>%
-  addLegend(
-    pal = pal_var, 
-    values = var_range,
-    title = "Varianza",
-    position = "topright"
-  ) 
-
-#3. Mapa Cv ----------------------------------------------
-
-cv_raster_utm <- sqrt(var_raster_utm) / abs(predic_raster_utm)
-
-mapa_mayor_a_uno <- cv_raster_utm > 1
-cv_raster_utm[mapa_mayor_a_uno] <- 1
-
-crs(cv_raster_utm) <- "+init=epsg:3310"
-
-cv_terra <- terra::rast(cv_raster_utm)
-sh_terra <- terra::vect(sh_mundos_sp_utm_simple)
-
-masked_cv_terra <- terra::mask(cv_terra, sh_terra)
-
-cv_raster_wgs84_terra <- terra::project(
-    masked_cv_terra, 
-    y = "epsg:4326", 
-    method = "bilinear" # Similar a projectRaster
-)
-
-cv_raster_wgs84 <- raster::raster(cv_raster_wgs84_terra)
-
-max_cv <- raster::cellStats(cv_raster_wgs84, stat='max')
-step_cv <- max_cv / 10
-
-bincv <- seq(0,max_cv, by=step_cv)
-
-cv_range <- c(minValue(cv_raster_wgs84), maxValue(cv_raster_wgs84))
-
-pal_cv <- colorBin(
-  palette = "RdYlGn", # Rojo-Amarillo-Verde
-  domain = cv_range,
-  na.color = "transparent",
-  bins = bincv,
-  reverse = TRUE
-)
-
-mapa_cv_leaflet <- leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  addRasterImage(
-    cv_raster_wgs84,
-    colors = pal_cv, 
-    opacity = 0.7,
-    group = "Predicción Kriging"
-  ) %>%
-  addLegend(
-    pal = pal_cv, 
-    values = cv_range,
-    title = "Coeficiente de Variación",
-    position = "topright"
-  )
-
-```
-
-En el siguiente panel se presentan 3 mapas que resumen el proceso de predicción:
-
-::: panel-tabset
-##### Predicción
-
-```{r}
-mapa_kriging_leaflet
-```
-
-##### Varianza
-
-```{r}
-mapa_var_leaflet
-```
-
-##### Coeficiente de variación
-
-```{r}
-mapa_cv_leaflet
-```
-:::
-
-La presión atmosférica es más alta en la costa y en el sur del estado, y más baja en las regiones de gran altitud del este y del norte. Aunque las predicciones presentan buena precisión (bajo CV) en el Valle Central y el sur, el mapa de varianza absoluta muestra valores elevados en estas mismas zonas. Esto indica que el modelo **Exponencial** está capturando una alta heterogeneidad local de la presión en áreas con abundantes datos, probablemente asociada a efectos topográficos o meteorológicos muy localizados. Por su parte, la incertidumbre relativa sigue siendo mayor en el norte debido a la escasez de estaciones de monitoreo; para mitigar el efecto de las grandes distancias entre puntos, se aplicó un **Kriging de vecinos cercanos**, mejorando la confiabilidad de las estimaciones en regiones con datos limitados.
+El valor del **$R^2$** y la correlación, indican que el modelo captura más de la mitad de la variabilidad del viento y mantiene una relación fuerte entre las predicciones y los valores reales. Sin embargo, estos valores también sugieren que existe una parte importante de variabilidad que no logra modelarse del todo, algo que coincide con las zonas del norte donde el viento es más errático y la densidad de estaciones es baja. En conjunto, las métricas reflejan un modelo con buen rendimiento general, pero cuya precisión disminuye inevitablemente en áreas donde el fenómeno es más turbulento o hay grandes distancias entre puntos de observación.
 
 ## Conclusiones
 
-1.  Se logró modelar y mitigar la tendencia espacial de todas las variables analizadas. Las correlaciones iniciales con las coordenadas (principalmente para temperatura y presión) se redujeron significativamente tras el ajuste de los modelos de media, evidenciado tanto en los gráficos de dispersión como en los coeficientes significativos de los modelos.
+1.  Se logró modelar y mitigar la tendencia espacial de todas las variables analizadas. Las correlaciones iniciales con las coordenadas, principalmente para temperatura, se redujeron significativamente tras el ajuste de los modelos de media, evidenciado tanto en los gráficos de dispersión como en los coeficientes significativos de los modelos.
 
 2.  Los modelos de semivariograma ajustados (Esférico, Wave y Exponencial según la variable) capturaron la dependencia espacial de manera adecuada. El uso del **Kriging de vecinos cercanos** permitió mitigar el efecto de las grandes distancias entre estaciones de monitoreo, mejorando la precisión en zonas con baja densidad de datos, aunque persistió incertidumbre relativa en el norte y áreas fronterizas.
 
-3.  Las predicciones son más confiables en regiones con alta densidad de estaciones (sur y Valle Central), mientras que la varianza y el coeficiente de variación son mayores en el norte y en áreas rurales o fronterizas, reflejando la menor disponibilidad de datos y la complejidad local de ciertas variables (como la velocidad del viento y la presión).
+3.  Las predicciones son más confiables en regiones con alta densidad de estaciones (sur y Valle Central), mientras que la varianza y el coeficiente de variación son mayores en el norte y en áreas rurales o fronterizas, reflejando la menor disponibilidad de datos y la complejidad local de ciertas variables, como la velocidad del viento.
 
-4.  La temperatura es más alta en el sur del estado y en el Valle Central, mientras que la presión atmosférica alcanza valores mayores en la costa y el sur, y menores en las zonas de gran altitud del norte y este. La velocidad del viento muestra máximos en el Valle Central y el interior sur, reflejando la heterogeneidad espacial del comportamiento atmosférico en California.
+4.  Las métricas de validación confirmaron el buen desempeño general de los modelos de Kriging. El sesgo fue prácticamente nulo y los errores promedio se mantuvieron en niveles moderados para todas las variables, mientras que las correlaciones superiores a 0.70 y los valores de $R^2$ cercanos al 0.60 reflejan una relación sólida entre los valores observados y los predichos.
 
-5.  El enfoque geoestadístico permitió cumplir los objetivos planteados: se identificaron patrones espaciales, se estimaron semivariogramas y se ajustaron modelos teóricos adecuados, y se construyeron mapas de predicción y de incertidumbre que representan de manera confiable la distribución espacial de las variables. Esto demuestra que la metodología es útil para caracterizar la variabilidad espacial de variables meteorológicas y contaminantes como el ozono, incluso en territorios extensos como California
+5.  La temperatura es más alta en el sur del estado y en el Valle Central. La velocidad del viento muestra máximos en el Valle Central y el interior sur, reflejando la heterogeneidad espacial del comportamiento atmosférico en California.
+
+6.  El enfoque geoestadístico permitió cumplir los objetivos planteados: se identificaron patrones espaciales, se estimaron semivariogramas y se ajustaron modelos teóricos adecuados, y se construyeron mapas de predicción y de incertidumbre que representan de manera confiable la distribución espacial de las variables. Esto demuestra que la metodología es útil para caracterizar la variabilidad espacial de variables meteorológicas y contaminantes como el ozono, incluso en territorios extensos como California
 
 # Referencias {.unnumbered}

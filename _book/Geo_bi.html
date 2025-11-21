@@ -84,6 +84,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./Geo_esp_temp.html" rel="next">
 <link href="./Geo_uni.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -123,6 +124,30 @@ div.csl-indent {
     "search-label": "Buscar"
   }
 }</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+
+<script src="site_libs/proj4-2.6.2/proj4.min.js"></script>
+
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+
+<script src="site_libs/leaflet-binding-2.2.3/leaflet.js"></script>
+
+<script src="site_libs/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script>
+
+<script src="site_libs/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script>
+
 
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
@@ -217,7 +242,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Análisis Geoestadístico</span></a>
+ <span class="menu-text">Geoestadística</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -233,6 +258,40 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="./Geo_bi.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Análisis Bivariado</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geoestadística Espacio Temporal</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Geo_esp_temp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Análisis Geoestadístico Espacio Temporal</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geoestadística Funcional</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Geo_fun.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis Geoestadístico Funcional</span></span></a>
   </div>
 </li>
       </ul>
@@ -260,21 +319,18 @@ window.Quarto = {
   <li><a href="#objetivos-específicos" id="toc-objetivos-específicos" class="nav-link" data-scroll-target="#objetivos-específicos"><span class="header-section-number">2.1.3.2</span> Objetivos específicos</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#análisis-geoestadístico" id="toc-análisis-geoestadístico" class="nav-link" data-scroll-target="#análisis-geoestadístico"><span class="header-section-number">2.2</span> Análisis Geoestadístico</a>
+  <li><a href="#análisis-geoestadístico-bivariado" id="toc-análisis-geoestadístico-bivariado" class="nav-link" data-scroll-target="#análisis-geoestadístico-bivariado"><span class="header-section-number">2.2</span> Análisis Geoestadístico Bivariado</a>
   <ul>
   <li><a href="#modelos-univariados" id="toc-modelos-univariados" class="nav-link" data-scroll-target="#modelos-univariados"><span class="header-section-number">2.2.1</span> Modelos Univariados</a>
   <ul>
-  <li><a href="#estacionariedad-en-media" id="toc-estacionariedad-en-media" class="nav-link" data-scroll-target="#estacionariedad-en-media"><span class="header-section-number">2.2.1.1</span> Estacionariedad en Media</a></li>
-  <li><a href="#variogramas" id="toc-variogramas" class="nav-link" data-scroll-target="#variogramas"><span class="header-section-number">2.2.1.2</span> Variogramas</a>
-  <ul class="collapse">
-  <li><a href="#temperatura-2" id="toc-temperatura-2" class="nav-link" data-scroll-target="#temperatura-2"><span class="header-section-number">2.2.1.2.1</span> Temperatura</a></li>
-  <li><a href="#velocidad-del-viento-2" id="toc-velocidad-del-viento-2" class="nav-link" data-scroll-target="#velocidad-del-viento-2"><span class="header-section-number">2.2.1.2.2</span> Velocidad del viento</a></li>
+  <li><a href="#análisis-de-estacionariedad-en-media" id="toc-análisis-de-estacionariedad-en-media" class="nav-link" data-scroll-target="#análisis-de-estacionariedad-en-media"><span class="header-section-number">2.2.1.1</span> Análisis de Estacionariedad en Media</a></li>
+  <li><a href="#variogramas" id="toc-variogramas" class="nav-link" data-scroll-target="#variogramas"><span class="header-section-number">2.2.1.2</span> Variogramas</a></li>
   </ul></li>
-  </ul></li>
-  <li><a href="#modelo-cruzado-de-semivarianza" id="toc-modelo-cruzado-de-semivarianza" class="nav-link" data-scroll-target="#modelo-cruzado-de-semivarianza"><span class="header-section-number">2.2.2</span> Modelo cruzado de semivarianza</a></li>
+  <li><a href="#modelo-lineal-de-corregionalización" id="toc-modelo-lineal-de-corregionalización" class="nav-link" data-scroll-target="#modelo-lineal-de-corregionalización"><span class="header-section-number">2.2.2</span> Modelo Lineal de Corregionalización</a></li>
   <li><a href="#cokriging" id="toc-cokriging" class="nav-link" data-scroll-target="#cokriging"><span class="header-section-number">2.2.3</span> Cokriging</a></li>
   </ul></li>
-  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">2.3</span> Conclusiones</a></li>
+  <li><a href="#kriging-vs-cokriging" id="toc-kriging-vs-cokriging" class="nav-link" data-scroll-target="#kriging-vs-cokriging"><span class="header-section-number">2.3</span> Kriging vs Cokriging</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">2.4</span> Conclusiones</a></li>
   <li><a href="#referencias" id="toc-referencias" class="nav-link" data-scroll-target="#referencias">Referencias</a></li>
   </ul>
 </nav>
@@ -306,34 +362,10 @@ window.Quarto = {
 </div>
 <section id="planteamiento-del-problema" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="planteamiento-del-problema"><span class="header-section-number">2.1</span> Planteamiento del problema</h2>
-<div class="callout callout-style-simple callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-En desarrollo…
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
 <section id="introducción" class="level3" data-number="2.1.1">
 <h3 data-number="2.1.1" class="anchored" data-anchor-id="introducción"><span class="header-section-number">2.1.1</span> Introducción</h3>
-<div class="callout callout-style-simple callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-En desarrollo…
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
+<p>La calidad del aire influye directamente en la salud y el bienestar, y en California este tema es especialmente crítico debido a su alta densidad poblacional, el tráfico vehicular, la actividad industrial y fenómenos como los incendios forestales. Estas condiciones favorecen episodios recurrentes de contaminación, cuya intensidad y dispersión dependen en gran medida de factores meteorológicos.</p>
+<p>Entre ellos, la temperatura y la velocidad del viento son variables clave, pues afectan la acumulación y transporte de contaminantes y, además, presentan una fuerte dependencia espacial y correlación entre sí. Para capturar esta relación conjunta y mejorar la precisión de la interpolación espacial, empleamos un modelo de cokriging, que permite analizar simultáneamente las estructuras de variabilidad y covariación entre ambas variables a partir de los datos registrados en estaciones meteorológicas de California.</p>
 </section>
 <section id="descripción-de-los-datos" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="descripción-de-los-datos"><span class="header-section-number">2.1.2</span> Descripción de los datos</h3>
@@ -350,41 +382,21 @@ En desarrollo…
 <h3 data-number="2.1.3" class="anchored" data-anchor-id="objetivos"><span class="header-section-number">2.1.3</span> Objetivos</h3>
 <section id="objetivo-general" class="level4" data-number="2.1.3.1">
 <h4 data-number="2.1.3.1" class="anchored" data-anchor-id="objetivo-general"><span class="header-section-number">2.1.3.1</span> Objetivo general</h4>
-<div class="callout callout-style-simple callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-En desarrollo…
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
+<p>Estudiar e identificar la tendencia y los patrones espaciales de la temperatura y la velocidad del viento mediante herramientas de análisis geoestadístico bivariado, con el propósito de construir un modelo de cokriging que permita caracterizar y predecir su comportamiento espacial en el estado de California durante un periodo específico de tiempo en marzo de 2024.</p>
 </section>
 <section id="objetivos-específicos" class="level4" data-number="2.1.3.2">
 <h4 data-number="2.1.3.2" class="anchored" data-anchor-id="objetivos-específicos"><span class="header-section-number">2.1.3.2</span> Objetivos específicos</h4>
-<div class="callout callout-style-simple callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-En desarrollo…
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
+<ol type="1">
+<li><p>Construir los semivariogramas empíricos directos y cruzados, y ajustar un Modelo Lineal de Corregionalización (LMC) que describa adecuadamente la dependencia espacial conjunta entre ambas variables, garantizando la validez y coherencia del modelo multivariado.</p></li>
+<li><p>Aplicar la técnica de Cokriging para construir los mapas de predicción espacial y los mapas de incertidumbre asociados, con el fin de representar la distribución esperada de las variables y evaluar la precisión de las estimaciones.</p></li>
+<li><p>Comparar los resultados del Cokriging con los obtenidos mediante Kriging univariado, evaluando la ganancia en precisión y estabilidad derivada del uso de información cruzada entre las variables</p></li>
+</ol>
 </section>
 </section>
 </section>
-<section id="análisis-geoestadístico" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="análisis-geoestadístico"><span class="header-section-number">2.2</span> Análisis Geoestadístico</h2>
-<p>Se consideran las variables <strong>temperatura</strong> y <strong>velocidad del viento</strong>:</p>
+<section id="análisis-geoestadístico-bivariado" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="análisis-geoestadístico-bivariado"><span class="header-section-number">2.2</span> Análisis Geoestadístico Bivariado</h2>
+<p>En este análisis se consideran los datos de <strong>temperatura</strong> y <strong>velocidad del viento</strong> registrados a las 00:00 horas del 1 de marzo de 2024.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
@@ -404,60 +416,90 @@ En desarrollo…
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stars)</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gstat)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>cov_cos <span class="ot">&lt;-</span> <span class="cf">function</span>(sigma, h, phi){</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  sigma <span class="sc">*</span> <span class="fu">cos</span>(h<span class="sc">/</span>phi)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>cos_sv <span class="ot">&lt;-</span> <span class="cf">function</span>(nugget, sigma, h, phi){</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  nugget <span class="sc">+</span>  sigma <span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">cos</span>(h<span class="sc">/</span>phi))</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#Variable Temperatura ---------------------------------------</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>Temp <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Temperatura"</span>)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Temp)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">colnames</span>(Temp)[<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>EstacionesT <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Estaciones"</span>)</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>EstacionesT <span class="ot">&lt;-</span> EstacionesT <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">AQSID =</span> <span class="fu">as.numeric</span>(AQSID))</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>EstacionesT <span class="ot">&lt;-</span> EstacionesT <span class="sc">%&gt;%</span> <span class="fu">filter</span>(AQSID <span class="sc">%in%</span> <span class="fu">colnames</span>(Temp)[<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> Temp[<span class="dv">1</span>,] <span class="co">#Tomar una fecha</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">colnames</span>(y_T),<span class="fu">t</span>(y_T[<span class="dv">1</span>,]))</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> y_T[<span class="sc">-</span><span class="dv">1</span>,]</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(y_T)</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(y_T)</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> y_T[<span class="sc">-</span><span class="fu">which.min</span>(y_T<span class="sc">$</span>V2),]</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>y_T<span class="sc">$</span>V1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y_T<span class="sc">$</span>V1)</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(y_T, EstacionesT, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"V1"</span><span class="ot">=</span><span class="st">"AQSID"</span>))</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>datosT <span class="ot">&lt;-</span> y_T[,<span class="fu">c</span>(<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">2</span>)]</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(datosT)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"Este"</span>,<span class="st">"Norte"</span>,<span class="st">"Temperatura"</span>)</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>datosT<span class="sc">$</span>Temperatura <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datosT<span class="sc">$</span>Temperatura)</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">as.geodata</span>(datosT)</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co">#Variable Velocidad del viento ------------------------------</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>WS <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"WindSpeed"</span>)</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(WS)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">colnames</span>(WS)[<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>EstacionesWS <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Estaciones"</span>)</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>EstacionesWS <span class="ot">&lt;-</span> EstacionesWS <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">AQSID =</span> <span class="fu">as.numeric</span>(AQSID))</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>EstacionesWS <span class="ot">&lt;-</span> EstacionesWS <span class="sc">%&gt;%</span> <span class="fu">filter</span>(AQSID <span class="sc">%in%</span> <span class="fu">colnames</span>(WS)[<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> WS[<span class="dv">1</span>,] <span class="co">#Tomar una fecha</span></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">colnames</span>(y_WS),<span class="fu">t</span>(y_WS[<span class="dv">1</span>,]))</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> y_WS[<span class="sc">-</span><span class="dv">1</span>,]</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(y_WS)</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(y_WS)</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>y_WS<span class="sc">$</span>V1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y_WS<span class="sc">$</span>V1)</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(y_WS, EstacionesWS, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"V1"</span><span class="ot">=</span><span class="st">"AQSID"</span>))</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>datosWS <span class="ot">&lt;-</span> y_WS[,<span class="fu">c</span>(<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">2</span>)]</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(datosWS)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"Este"</span>,<span class="st">"Norte"</span>,<span class="st">"WindSpeed"</span>)</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>datosWS<span class="sc">$</span>WindSpeed <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datosWS<span class="sc">$</span>WindSpeed)</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>ws <span class="ot">&lt;-</span> <span class="fu">as.geodata</span>(datosWS)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#Gráficos de dispersión ----------------------------------</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>simple_scatter_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(datos, variable1, variable2) {</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    plot1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">as.data.frame</span>(datos),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">aes</span>(<span class="at">x =</span> .data[[variable1]], <span class="at">y =</span> .data[[variable2]],</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="fu">as.factor</span>(<span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">scale_colour_viridis_d</span>() <span class="sc">+</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">labs</span>(</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>                        <span class="at">x =</span> variable1,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> variable2</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>                        ) <span class="sc">+</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">theme_light</span>() <span class="sc">+</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(plot1)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#Variable Temperatura ---------------------------------------</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>Temp <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Temperatura"</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Temp)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">colnames</span>(Temp)[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>EstacionesT <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Estaciones"</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>EstacionesT <span class="ot">&lt;-</span> EstacionesT <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">AQSID =</span> <span class="fu">as.numeric</span>(AQSID))</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>EstacionesT <span class="ot">&lt;-</span> EstacionesT <span class="sc">%&gt;%</span> <span class="fu">filter</span>(AQSID <span class="sc">%in%</span> <span class="fu">colnames</span>(Temp)[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> Temp[<span class="dv">1</span>,] <span class="co">#Tomar una fecha</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">colnames</span>(y_T),<span class="fu">t</span>(y_T[<span class="dv">1</span>,]))</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> y_T[<span class="sc">-</span><span class="dv">1</span>,]</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(y_T)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(y_T)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> y_T[<span class="sc">-</span><span class="fu">which.min</span>(y_T<span class="sc">$</span>V2),]</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>y_T<span class="sc">$</span>V1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y_T<span class="sc">$</span>V1)</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>y_T <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(y_T, EstacionesT, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"V1"</span><span class="ot">=</span><span class="st">"AQSID"</span>))</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>datosT <span class="ot">&lt;-</span> y_T[,<span class="fu">c</span>(<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">2</span>)]</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(datosT)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"Este"</span>,<span class="st">"Norte"</span>,<span class="st">"Temperatura"</span>)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>datosT<span class="sc">$</span>Temperatura <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datosT<span class="sc">$</span>Temperatura)</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">as.geodata</span>(datosT)</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="co">#Variable Velocidad del viento ------------------------------</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>WS <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"WindSpeed"</span>)</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(WS)[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">colnames</span>(WS)[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>EstacionesWS <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"GeoEst_Cali.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Estaciones"</span>)</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>EstacionesWS <span class="ot">&lt;-</span> EstacionesWS <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">AQSID =</span> <span class="fu">as.numeric</span>(AQSID))</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>EstacionesWS <span class="ot">&lt;-</span> EstacionesWS <span class="sc">%&gt;%</span> <span class="fu">filter</span>(AQSID <span class="sc">%in%</span> <span class="fu">colnames</span>(WS)[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> WS[<span class="dv">1</span>,] <span class="co">#Tomar una fecha</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">colnames</span>(y_WS),<span class="fu">t</span>(y_WS[<span class="dv">1</span>,]))</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> y_WS[<span class="sc">-</span><span class="dv">1</span>,]</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(y_WS)</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(y_WS)</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>y_WS<span class="sc">$</span>V1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y_WS<span class="sc">$</span>V1)</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>y_WS <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(y_WS, EstacionesWS, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"V1"</span><span class="ot">=</span><span class="st">"AQSID"</span>))</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>datosWS <span class="ot">&lt;-</span> y_WS[,<span class="fu">c</span>(<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">2</span>)]</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(datosWS)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"Este"</span>,<span class="st">"Norte"</span>,<span class="st">"WindSpeed"</span>)</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>datosWS<span class="sc">$</span>WindSpeed <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datosWS<span class="sc">$</span>WindSpeed)</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>ws <span class="ot">&lt;-</span> <span class="fu">as.geodata</span>(datosWS)</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="co">#Para el mapa de California -------------------------------</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>sh_mundos<span class="ot">&lt;-</span><span class="fu">st_read</span>(<span class="st">"admin00.shp"</span>,<span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>sh_mundos <span class="ot">&lt;-</span> sh_mundos <span class="sc">%&gt;%</span> <span class="fu">filter</span>(CNTRY_NAME<span class="sc">==</span><span class="st">"United States"</span>)</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>sh_mundos <span class="ot">&lt;-</span> sh_mundos <span class="sc">%&gt;%</span> <span class="fu">filter</span>(ADMIN_NAME<span class="sc">==</span><span class="st">"California"</span>)</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>CRS_UTM_NY <span class="ot">=</span> <span class="st">"+init=epsg:3310"</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>sh_mundos_wgs84 <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(sh_mundos, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>sh_mundos_utm <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(sh_mundos, <span class="at">crs =</span> <span class="fu">CRS</span>(<span class="st">"EPSG:3310"</span>))</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>sh_mundos_sp_utm <span class="ot">&lt;-</span> <span class="fu">as</span>(sh_mundos_utm, <span class="st">"Spatial"</span>)</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>sh_mundos_utm_simple <span class="ot">&lt;-</span> <span class="fu">st_union</span>(sh_mundos_utm)</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>sh_mundos_sp_utm_simple <span class="ot">&lt;-</span> <span class="fu">as</span>(sh_mundos_utm_simple, <span class="st">"Spatial"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
@@ -467,7 +509,31 @@ En desarrollo…
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(temp))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>datosT_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(datosT, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"Este"</span>, <span class="st">"Norte"</span>), <span class="at">crs =</span> <span class="dv">3310</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>datosT_sf_wgs84 <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(datosT_sf, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>pal <span class="ot">&lt;-</span> <span class="fu">colorNumeric</span>(<span class="at">palette =</span> <span class="st">"viridis"</span>, <span class="at">domain =</span> datosT_sf_wgs84<span class="sc">$</span>Temperatura)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>CartoDB.Positron) <span class="sc">%&gt;%</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPolygons</span>(<span class="at">data =</span> sh_mundos_wgs84, <span class="at">fill =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">weight =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircleMarkers</span>(<span class="at">data =</span> datosT_sf_wgs84,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">fillColor =</span> <span class="sc">~</span><span class="fu">pal</span>(Temperatura),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">fillOpacity =</span> <span class="fl">0.8</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">weight =</span> <span class="dv">1</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">radius =</span> <span class="dv">3</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                   <span class="at">popup =</span> <span class="sc">~</span><span class="fu">paste</span>(<span class="st">"Temp:"</span>, Temperatura, <span class="st">"°C"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addLegend</span>(<span class="at">pal =</span> pal, <span class="at">values =</span> datosT_sf_wgs84<span class="sc">$</span>Temperatura, <span class="at">title =</span> <span class="st">"Temperatura (°C)"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-c6d8b8a9c28b22fc7672" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-c6d8b8a9c28b22fc7672">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addPolygons","args":[[[[{"lng":[-117.1223754882812,-117.1333312988281,-117.1827087402344,-117.2129135131836,-117.2123794555664,-117.2005081176758,-117.1740798950195,-117.1472244262695,-117.1156234741211,-117.1166534423828,-117.1413879394531,-117.2021560668945,-117.2288131713867,-117.2405471801758,-117.2420425415039,-117.2549896240234,-117.2684783935547,-117.26611328125,-117.2587661743164,-117.2803421020508,-117.2529220581055,-117.2490615844727,-117.25,-117.2698593139648,-117.3197326660156,-117.3294525146484,-117.3402862548828,-117.4094390869141,-117.480827331543,-117.495002746582,-117.6319427490234,-117.6725006103516,-117.7744369506836,-117.8638916015625,-117.8840179443359,-117.9108276367188,-117.9361114501953,-117.9550018310547,-117.9736175537109,-117.9949951171875,-118.0270843505859,-118.0452728271484,-118.0830688476562,-118.1081848144531,-118.1347427368164,-118.2222213745117,-118.2671279907227,-118.272087097168,-118.2977752685547,-118.3180694580078,-118.400016784668,-118.4174652099609,-118.3986206054688,-118.3861846923828,-118.4211044311523,-118.432502746582,-118.4544525146484,-118.4711227416992,-118.508903503418,-118.5300064086914,-118.554443359375,-118.6549987792969,-118.6977691650391,-118.7525024414062,-118.7811126708984,-118.8364028930664,-118.9361114501953,-118.9614028930664,-118.9811096191406,-119.1291732788086,-119.1743011474609,-119.2196502685547,-119.2558441162109,-119.3124694824219,-119.4161071777344,-119.446662902832,-119.5416717529297,-119.5772171020508,-119.5997314453125,-119.6247100830078,-119.7986068725586,-120.0037460327148,-120.1308288574219,-120.245002746582,-120.3550033569336,-120.4241561889648,-120.4490280151367,-120.4819412231445,-120.4953460693359,-120.5583267211914,-120.5831909179688,-120.605827331543,-120.6259613037109,-120.6283264160156,-120.623893737793,-120.6033248901367,-120.5941696166992,-120.5913772583008,-120.5980606079102,-120.6247100830078,-120.6137466430664,-120.6000671386719,-120.6181945800781,-120.6805572509766,-120.7186813354492,-120.7385330200195,-120.8313903808594,-120.8567962646484,-120.8697280883789,-120.8681945800781,-120.8591613769531,-120.8411102294922,-120.9199981689453,-120.9770812988281,-120.9994506835938,-121.0477752685547,-121.1666564941406,-121.2687530517578,-121.29638671875,-121.3215408325195,-121.3680572509766,-121.4349899291992,-121.4418029785156,-121.4609680175781,-121.4720840454102,-121.6654205322266,-121.7580642700195,-121.7961044311523,-121.8676300048828,-121.8641662597656,-121.8734664916992,-121.8847427368164,-121.8976440429688,-121.9216613769531,-121.9432525634766,-121.8997955322266,-121.8656158447266,-121.8450012207031,-121.8255615234375,-121.8091506958008,-121.7993087768555,-121.7747192382812,-121.7639007568359,-121.7991638183594,-121.8511123657227,-121.8791656494141,-121.9135971069336,-121.9783325195312,-122.0202865600586,-122.0415191650391,-122.0709762573242,-122.1472320556641,-122.1795806884766,-122.379020690918,-122.3883438110352,-122.393684387207,-122.3844528198242,-122.3731918334961,-122.378044128418,-122.4259719848633,-122.4433288574219,-122.4806137084961,-122.4902801513672,-122.4958267211914,-122.4994430541992,-122.4905471801758,-122.4843063354492,-122.4481201171875,-122.379638671875,-122.359992980957,-122.3513870239258,-122.35693359375,-122.3673553466797,-122.3577728271484,-122.0643005371094,-122.0231857299805,-122.0058364868164,-122.0297164916992,-122.0808334350586,-122.1259689331055,-122.1308288574219,-122.1384811401367,-122.1572265625,-122.1747131347656,-122.2427673339844,-122.2999877929688,-122.3934097290039,-122.352783203125,-122.2252731323242,-122.1633224487305,-122.1277313232422,-122.0158386230469,-121.9894409179688,-121.9155578613281,-121.8572235107422,-121.8337554931641,-121.6848526000977,-121.6541976928711,-121.6434936523438,-121.5911102294922,-121.498046875,-121.4272155761719,-121.4705505371094,-121.5531921386719,-121.5850067138672,-121.6622161865234,-121.6852188110352,-121.7229156494141,-121.8186798095703,-121.9052734375,-121.977783203125,-122.0186233520508,-122.0500030517578,-122.109733581543,-122.2641830444336,-122.2920837402344,-122.311393737793,-122.3652801513672,-122.3908386230469,-122.4783248901367,-122.479866027832,-122.4433288574219,-122.4201354980469,-122.456672668457,-122.505485534668,-122.6566619873047,-122.7822875976562,-122.8169631958008,-122.8966674804688,-122.9283294677734,-122.9563903808594,-122.9269409179688,-122.8399963378906,-122.8030471801758,-122.8077697753906,-122.83056640625,-122.9586181640625,-123.1072235107422,-123.1290283203125,-123.1716613769531,-123.2372131347656,-123.2666625976562,-123.3130645751953,-123.3530578613281,-123.4475021362305,-123.5361175537109,-123.620002746582,-123.7015228271484,-123.7072601318359,-123.6745834350586,-123.6669387817383,-123.6861038208008,-123.712646484375,-123.7541809082031,-123.7957000732422,-123.7956924438477,-123.774169921875,-123.7630615234375,-123.7368698120117,-123.7723617553711,-123.8202819824219,-123.8674926757812,-123.9311065673828,-124.0623550415039,-124.0927734375,-124.1525726318359,-124.2022171020508,-124.297233581543,-124.331184387207,-124.3240356445312,-124.3233413696289,-124.3543090820312,-124.3758239746094,-124.3523559570312,-124.3319473266602,-124.2750091552734,-124.2529144287109,-124.2294464111328,-124.1994323730469,-124.14306640625,-124.0988922119141,-124.0993041992188,-124.1125030517578,-124.1222229003906,-124.0909729003906,-124.061393737793,-124.0458374023438,-124.0399932861328,-124.0467987060547,-124.063606262207,-124.1186065673828,-124.1813812255859,-124.2155609130859,-124.1973571777344,-124.1902770996094,-124.1752777099609,-124.1841583251953,-124.1858520507812,-123.9505615234375,-123.883903503418,-123.5336227416992,-123.4836120605469,-123.4169464111328,-123.366943359375,-123.3169631958008,-123.2669525146484,-123.2169494628906,-123.1669464111328,-123.116943359375,-123.0669631958008,-122.8999862670898,-122.8177795410156,-122.7508392333984,-122.6341705322266,-122.600830078125,-122.5175018310547,-122.2172164916992,-122.1505584716797,-122.1172180175781,-122.0005569458008,-121.9669494628906,-121.8836212158203,-121.8002777099609,-121.7169494628906,-121.6677703857422,-121.5341567993164,-121.4841613769531,-121.4341583251953,-121.3008270263672,-121.1838836669922,-121.133903503418,-121.0672302246094,-120.9169464111328,-120.8510971069336,-120.7677764892578,-120.6841583251953,-120.3208236694336,-120.0341567993164,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.001106262207,-119.8197326660156,-119.5155563354492,-119.0130615234375,-118.8799896240234,-118.3752670288086,-118.2108306884766,-117.8919525146484,-117.7452697753906,-117.5747222900391,-117.4211120605469,-117.2677764892578,-117.1069488525391,-116.946662902832,-116.8027801513672,-116.6513977050781,-116.4924926757812,-116.1999969482422,-116.0269470214844,-115.8622131347656,-115.7527923583984,-115.5580368041992,-115.2555694580078,-115.1241607666016,-114.9933319091797,-114.6563873291016,-114.6219329833984,-114.6197128295898,-114.5563812255859,-114.4933319091797,-114.4561233520508,-114.4188766479492,-114.3781890869141,-114.3695068359375,-114.3358306884766,-114.2726440429688,-114.230827331543,-114.2005615234375,-114.1700668334961,-114.1516723632812,-114.1344528198242,-114.1170120239258,-114.2226409912109,-114.3141632080078,-114.3576278686523,-114.3834762573242,-114.4070892333984,-114.4207611083984,-114.4554061889648,-114.4755630493164,-114.5127868652344,-114.5233306884766,-114.510009765625,-114.4941635131836,-114.48388671875,-114.5275039672852,-114.6404876708984,-114.7255630493164,-114.7260971069336,-114.7038879394531,-114.6836090087891,-114.6681900024414,-114.6752777099609,-114.6965179443359,-114.6970748901367,-114.6788787841797,-114.6626281738281,-114.6029205322266,-114.5701370239258,-114.5452728271484,-114.5153503417969,-114.4644470214844,-114.4587478637695,-114.5352096557617,-114.5541687011719,-114.5844497680664,-114.6125030517578,-114.6526412963867,-114.6955490112305,-114.7190933227539,-114.7297973632812,-114.8713455200195,-115.0258941650391,-115.2024993896484,-115.404167175293,-115.6055603027344,-115.9077835083008,-116.2426376342773,-116.5081481933594,-116.7130584716797,-116.9141693115234,-117.0952911376953,-117.1223754882812],"lat":[32.53533172607422,32.56582641601562,32.65929412841797,32.68302917480469,32.69705581665039,32.69759368896484,32.6749382019043,32.61860275268555,32.62131118774414,32.64249420166016,32.68061447143555,32.72769546508789,32.71561431884766,32.68464279174805,32.66253280639648,32.65713882446289,32.68842315673828,32.70860290527344,32.77041625976562,32.82921600341797,32.86082458496094,32.87129211425781,32.88971710205078,32.97707366943359,33.10527038574219,33.12443542480469,33.14166259765625,33.24415588378906,33.32749176025391,33.34221649169922,33.44276428222656,33.47054290771484,33.53943634033203,33.59568405151367,33.60055160522461,33.60665893554688,33.62054443359375,33.63276672363281,33.64554595947266,33.66249084472656,33.69401931762695,33.70943450927734,33.73971557617188,33.75693893432617,33.76666259765625,33.78416442871094,33.75777435302734,33.72332000732422,33.71610260009766,33.7208251953125,33.74985504150391,33.78179931640625,33.80804443359375,33.84096527099609,33.92124557495117,33.93915557861328,33.96776580810547,33.98777008056641,34.03110504150391,34.04791259765625,34.05568695068359,34.0494384765625,34.04610443115234,34.03971862792969,34.03318786621094,34.03054809570312,34.05554962158203,34.06221008300781,34.06749725341797,34.11388397216797,34.1361083984375,34.16492080688477,34.22346115112305,34.28351593017578,34.35749816894531,34.37332153320312,34.41415405273438,34.42054748535156,34.42360687255859,34.42471313476562,34.42638397216797,34.4679069519043,34.47873687744141,34.47360229492188,34.46582794189453,34.45610046386719,34.4556884765625,34.50957489013672,34.53047561645508,34.56193542480469,34.56221389770508,34.55860137939453,34.58443832397461,34.62360382080078,34.64110565185547,34.66943740844727,34.69026947021484,34.71082305908203,34.8608283996582,34.89499664306641,35.01860427856445,35.10005950927734,35.13943862915039,35.17110443115234,35.18054580688477,35.16464233398438,35.20999145507812,35.22880935668945,35.25722122192383,35.27999496459961,35.3074951171875,35.35527038574219,35.44887542724609,35.46596145629883,35.47915649414062,35.52499008178711,35.64916229248047,35.70013046264648,35.76610565185547,35.79402542114258,35.82916259765625,35.8942985534668,35.92804718017578,35.97943496704102,35.99777221679688,36.18304443359375,36.22943496704102,36.24110412597656,36.31533813476562,36.3429069519043,36.39388656616211,36.43387603759766,36.46735382080078,36.51805114746094,36.59457397460938,36.64124298095703,36.61985397338867,36.61513137817383,36.6270751953125,36.64846420288086,36.66790771484375,36.75916290283203,36.81249237060547,36.88401794433594,36.95068740844727,36.97248840332031,36.9803352355957,36.96915435791016,36.95485305786133,36.95415878295898,36.96235275268555,36.99582672119141,37.01763153076172,37.19998931884766,37.22026824951172,37.25186538696289,37.28971862792969,37.32915878295898,37.37443542480469,37.48429489135742,37.50436782836914,37.5122184753418,37.52999114990234,37.56610107421875,37.58998870849609,37.75222015380859,37.78992462158203,37.81005859375,37.81381225585938,37.78693771362305,37.73165893554688,37.68762969970703,37.65443420410156,37.61582565307617,37.45929718017578,37.45790863037109,37.47137451171875,37.47943115234375,37.51027297973633,37.6027717590332,37.6322135925293,37.66221618652344,37.69470977783203,37.71471405029297,37.76666259765625,37.82638549804688,37.95915985107422,37.99082946777344,38.06415939331055,38.04743576049805,38.03526306152344,38.06610107421875,38.06554412841797,38.05416107177734,38.04305267333984,38.03666305541992,38.01811599731445,38.04861831665039,38.0789909362793,38.10464859008789,38.04888153076172,38.01290893554688,38.05499267578125,38.11041259765625,38.11568832397461,38.09658813476562,38.06646728515625,38.04746627807617,38.08115386962891,38.06610107421875,38.09721374511719,38.14811325073242,38.10877990722656,38.06137847900391,38.10999298095703,38.12693405151367,38.1361083984375,38.15554809570312,38.14749145507812,38.11957168579102,37.9366569519043,37.90693664550781,37.88318634033203,37.83346557617188,37.83103942871094,37.91054534912109,38.00131607055664,38.02027130126953,38.05443572998047,38.05360412597656,38.05804443359375,38.16249084472656,38.10777282714844,38.08193969726562,38.09498977661133,38.12748718261719,38.28527069091797,38.46277236938477,38.47290802001953,38.49193572998047,38.52276611328125,38.54083251953125,38.57388305664062,38.62443542480469,38.7340202331543,38.79610443115234,38.86082458496094,38.93041229248047,38.97109985351562,39.00458145141602,39.02554702758789,39.1219367980957,39.17804718017578,39.25943756103516,39.35332489013672,39.38582611083984,39.49652099609375,39.51915740966797,39.55499267578125,39.70971298217773,39.79166412353516,39.86915588378906,39.94971466064453,40.09165954589844,40.11631011962891,40.14790725708008,40.17416381835938,40.23804473876953,40.27245712280273,40.31193542480469,40.33624267578125,40.41526794433594,40.44769668579102,40.5322151184082,40.5816650390625,40.6947135925293,40.724365234375,40.74638366699219,40.74554443359375,40.81193542480469,40.99193572998047,41.03853607177734,41.0574951171875,41.15749359130859,41.24985504150391,41.34415435791016,41.39443969726562,41.42777252197266,41.46318435668945,41.51527404785156,41.68305206298828,41.75416564941406,41.81999206542969,41.84804916381836,41.86943817138672,41.94971466064453,41.99415588378906,41.99946594238281,42,42,42,42,42,42,42,42,42,42,42,42,42,42,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,42,42,42,42,42,42,42,42,42,42,42,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99964904785156,42,41.99943542480469,40.43305206298828,39.84943389892578,39.56610107421875,39.44971466064453,39.33332824707031,39.00721740722656,38.88276672363281,38.67276763916016,38.32054901123047,38.22609710693359,37.86527252197266,37.74638366699219,37.51416015625,37.40665435791016,37.28110504150391,37.16721343994141,37.05304718017578,36.93276977539062,36.81221008300781,36.70360565185547,36.58860015869141,36.46749114990234,36.24276733398438,36.10888671875,35.98081970214844,35.89499664306641,35.74221801757812,35.50277709960938,35.39804840087891,35.29332733154297,35.02165985107422,34.99214935302734,34.88193511962891,34.81666564941406,34.75833129882812,34.69860076904297,34.63166046142578,34.55082702636719,34.52193832397461,34.46415710449219,34.41582489013672,34.38999176025391,34.37276458740234,34.35867691040039,34.34276580810547,34.32332611083984,34.28804779052734,34.19624328613281,34.14665985107422,34.12568283081055,34.11429977416992,34.09207153320312,34.03013229370117,34.00124359130859,33.98721313476562,33.96152114868164,33.94415283203125,33.86888122558594,33.78305053710938,33.72193145751953,33.55929946899414,33.42033767700195,33.39916229248047,33.31888580322266,33.28054809570312,33.24638366699219,33.20901870727539,33.15541076660156,33.115478515625,33.08943557739258,33.06137847900391,33.04374313354492,33.02971267700195,33.03360748291016,33.03471755981445,33.02554702758789,32.97165679931641,32.86235046386719,32.73200607299805,32.72499084472656,32.72568511962891,32.73110198974609,32.74179840087891,32.74096298217773,32.71845626831055,32.71771240234375,32.70785140991211,32.69698715209961,32.68444061279297,32.66971588134766,32.65471649169922,32.63194274902344,32.60577011108398,32.58499908447266,32.568603515625,32.55221557617188,32.53665924072266,32.53533172607422]}],[{"lng":[-119.8680572509766,-119.6983337402344,-119.5936126708984,-119.5631866455078,-119.5527801513672,-119.5155639648438,-119.5329895019531,-119.5899963378906,-119.7133331298828,-119.7727813720703,-119.788330078125,-119.8369369506836,-119.8709716796875,-119.9177703857422,-119.9142303466797,-119.8680572509766],"lat":[34.08415985107422,34.04527282714844,34.05387878417969,34.06583023071289,34.06582641601562,34.04457855224609,34.01513290405273,33.99721527099609,33.97082138061523,33.96720886230469,33.96720886230469,33.97415924072266,33.99151992797852,34.06526947021484,34.0826301574707,34.08415985107422]}],[{"lng":[-120,-119.9694442749023,-119.9663925170898,-120.0365295410156,-120.1074981689453,-120.1216583251953,-120.1452789306641,-120.164436340332,-120.172233581543,-120.1922073364258,-120.2260971069336,-120.1847229003906,-120.135009765625,-120.0519409179688,-120.0352783203125,-120],"lat":[33.98963165283203,33.99235534667969,33.96249008178711,33.91915893554688,33.90554809570312,33.90804290771484,33.91666412353516,33.92777252197266,33.93471527099609,33.95943450927734,34.006103515625,34.01583099365234,34.02610015869141,34.03610992431641,34.02388000488281,33.98963165283203]}],[{"lng":[-118.5166625976562,-118.4452667236328,-118.4033432006836,-118.3497314453125,-118.297233581543,-118.2931213378906,-118.3037414550781,-118.4496459960938,-118.5899276733398,-118.5811233520508,-118.5418014526367,-118.5288925170898,-118.5166625976562],"lat":[33.47776794433594,33.44276428222656,33.42804718017578,33.39833068847656,33.34609985351562,33.32867431640625,33.30985260009766,33.32860565185547,33.48381042480469,33.49082946777344,33.48943710327148,33.48624420166016,33.47776794433594]}],[{"lng":[-118.5302886962891,-118.5261077880859,-118.5202789306641,-118.504997253418,-118.4822235107422,-118.413330078125,-118.3691635131836,-118.3694534301758,-118.4086074829102,-118.477783203125,-118.4869384765625,-118.4938812255859,-118.5338897705078,-118.570556640625,-118.5948638916016,-118.5938949584961,-118.5544281005859,-118.5302886962891],"lat":[32.99332427978516,32.98360443115234,32.97499084472656,32.959716796875,32.93804168701172,32.88555145263672,32.85471343994141,32.83277130126953,32.81707763671875,32.85277557373047,32.85888671875,32.86666107177734,32.92721557617188,32.98416137695312,33.03305053710938,33.04458236694336,33.04305267333984,32.99332427978516]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"black","weight":2,"opacity":0.5,"fill":false,"fillColor":"black","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addCircleMarkers","args":[[38.34260600000001,38.69075700000001,39.76168000000005,39.32756000000001,38.20185000000005,39.18919000000001,38.94498000000002,36.70560000000001,36.78537999999999,36.84140000000003,36.63240000000004,36.71088000000002,36.59750000000002,36.81919899999994,39.53387000000001,37.360701,36.32610000000001,36.36629999999998,36.36190000000002,36.54319999999998,36.45810000000002,36.50920000000004,36.48779999999999,36.59749999999999,37.36669999999997,35.34560699999995,35.05439999999997,35.35661499999999,35.43803500000001,34.84160000000001,35.33129999999999,35.23917999999995,36.10221900000001,36.31439999999997,34.14389999999998,34.05109699999998,34.06642899999999,34.19919999999998,33.90140000000004,34.01028300000002,34.13262999999998,33.85966199999999,34.38329999999999,36.86690000000002,36.95329999999998,37.71329899999999,39.15047799999996,39.14573299999999,39.43733999999997,37.64571800000003,37.96206899999997,38.0697,36.48186999999999,36.20928599999997,36.69426099999999,39.23440199999994,39.33859999999996,33.83058599999998,33.81930500000004,33.92506199999995,38.74643000000005,39.9395,40.30189899999998,39.81340000000001,33.74719999999999,33.92075799999999,33.58309899999999,33.572019,33.85260499999997,33.99944899999999,33.99638699999999,33.67653500000001,38.61380400000001,38.56844000000002,38.302591,38.68330400000001,38.59332800000001,36.843425,36.48500100000003,34.89405399999998,34.24313200000001,34.06811400000003,34.03089999999997,34.51095500000002,35.77445499999997,34.10013200000002,34.41650599999995,34.05962600000004,34.07140000000003,34.10667800000002,37.80270000000006,37.68249999999996,35.61466800000001,34.42775000000001,34.72560000000001,34.54140000000001,34.40280199999997,34.48969999999999,34.63779800000002,34.44530100000001,36.98331999999998,37.06315,40.5403,37.64216499999998,37.48830000000003,39.13868000000002,36.48939899999998,36.03190000000004,34.21017,34.40428000000002,34.44806000000001,34.27631999999999,34.25239000000001,38.53454999999997,36.28059599999999,36.60721500000002,35.04944,33.79371299999998,34.18197699999998,39.39861000000002,36.84148800000003,32.72519000000005],[-120.764426,-120.072682,-121.84047,-121.66881,-120.680277,-121.99887,-119.97061,-119.7414,-119.77321,-119.8744,-120.3822,-119.77743,-119.5036,-119.7164,-122.190834,-118.330835,-117.9551,-117.8976,-118.0108,-117.9418,-117.8519,-116.8481,-117.871,-118.04,-118.4167,-118.851825,-119.4039,-119.062613,-119.016787,-118.8647,-119,-118.78863,-119.566002,-119.6436,-117.8508,-118.456386,-118.226755,-118.5331,-118.205,-118.068484,-118.127142,-118.200707,-118.5283,-120.01,-120.0341,-119.7061,-123.206528,-123.202995,-123.78766,-118.966515,-119.120278,-118.9477,-121.73333,-121.126371,-121.623271,-121.055603,-120.170303,-117.938509,-117.918759,-117.952586,-121.26498,-120.9443,-121.235001,-120.4707,-115.8201,-116.858419,-117.072197,-116.063823,-116.540965,-117.415831,-117.4925,-117.331027,-121.368007,-121.49311,-121.420838,-121.164457,-121.503728,-121.3621,-121.155602,-117.024756,-117.272275,-117.525796,-117.617403,-117.32555,-117.372109,-117.491982,-117.285602,-117.147347,-116.3906,-117.274063,-121.2208,-121.4406,-120.656912,-119.69091,-120.4278,-119.7906,-119.457497,-120.0458,-120.456703,-119.827797,-121.98822,-122.083092,-121.5764,-120.994212,-120.8358,-121.61884,-118.826897,-119.055,-118.87051,-118.80998,-119.2313,-118.68369,-119.14318,-121.7734,-118.011661,-118.05473,-118.18893,-118.171019,-118.363036,-123.35872,-121.533444,-116.36441],3,null,null,{"interactive":true,"className":"","stroke":true,"color":"black","weight":1,"opacity":0.5,"fill":true,"fillColor":["#20A386","#481467","#23A983","#1F9E89","#22A884","#22A884","#453581","#70CF57","#7DD24F","#72D056","#59C864","#96D83F","#67CC5C","#6CCD5A","#28AE80","#49C16E","#52C569","#52C569","#49C16E","#65CB5E","#4CC26C","#FDE725","#4EC36B","#65CB5E","#34B679","#72D056","#69CD5B","#92D742","#70CF57","#20928C","#8BD646","#7FD34E","#5DC863","#6ECE58","#3BBB75","#3DBC74","#41BE71","#3FBC73","#41BE71","#50C46A","#34B679","#56C667","#2AB07F","#67CC5C","#6ECE58","#32648E","#1F958B","#1F998A","#1F978B","#463480","#365C8D","#34618D","#33B67A","#36B779","#56C667","#2E6F8E","#472B7A","#4BC16D","#61CA60","#5DC863","#22A785","#2C728E","#38588C","#39568C","#4CC26C","#2CB17E","#3DBC74","#FDE725","#9CD93C","#59C864","#56C667","#3FBC73","#29AF7F","#2CB17E","#34B679","#20A486","#28AE80","#2EB37C","#23A983","#52C569","#2E6E8E","#50C46A","#59C864","#1FA088","#AADC32","#4EC36B","#1E9B8A","#40BD72","#1F948C","#56C667","#47C06F","#5BC863","#20A486","#3FBC73","#2CB17E","#21A585","#26AD81","#1FA188","#54C568","#49C16E","#1FA187","#440154","#2E6E8E","#45C06F","#38B977","#1FA188","#38B977","#6ECE58","#24AA83","#2CB17E","#26AD81","#23A983","#40BD72","#22A785","#40BD72","#65CB5E","#25AC82","#4CC26C","#38B977","#2E6F8E","#3FBC73","#26818E"],"fillOpacity":0.8},null,null,["Temp: 12.9 °C","Temp: -1.8 °C","Temp: 13.5 °C","Temp: 12.2 °C","Temp: 13.4 °C","Temp: 13.4 °C","Temp: 1 °C","Temp: 18.5 °C","Temp: 19.1 °C","Temp: 18.6 °C","Temp: 17.4 °C","Temp: 20.2 °C","Temp: 18.1 °C","Temp: 18.3 °C","Temp: 14.2 °C","Temp: 16.5 °C","Temp: 17 °C","Temp: 17 °C","Temp: 16.5 °C","Temp: 18 °C","Temp: 16.7 °C","Temp: 24.5 °C","Temp: 16.8 °C","Temp: 18 °C","Temp: 15.2 °C","Temp: 18.6 °C","Temp: 18.2 °C","Temp: 20 °C","Temp: 18.5 °C","Temp: 10.8 °C","Temp: 19.7 °C","Temp: 19.2 °C","Temp: 17.6 °C","Temp: 18.4 °C","Temp: 15.7 °C","Temp: 15.8 °C","Temp: 16.1 °C","Temp: 15.9 °C","Temp: 16.1 °C","Temp: 16.9 °C","Temp: 15.2 °C","Temp: 17.2 °C","Temp: 14.4 °C","Temp: 18.1 °C","Temp: 18.4 °C","Temp: 5.6 °C","Temp: 11.2 °C","Temp: 11.7 °C","Temp: 11.5 °C","Temp: 0.9 °C","Temp: 4.7 °C","Temp: 5.3 °C","Temp: 15.1 °C","Temp: 15.3 °C","Temp: 17.2 °C","Temp: 6.8 °C","Temp: 0.1 °C","Temp: 16.6 °C","Temp: 17.8 °C","Temp: 17.6 °C","Temp: 13.3 °C","Temp: 7.2 °C","Temp: 4.3 °C","Temp: 4.2 °C","Temp: 16.7 °C","Temp: 14.5 °C","Temp: 15.8 °C","Temp: 24.5 °C","Temp: 20.4 °C","Temp: 17.4 °C","Temp: 17.2 °C","Temp: 15.9 °C","Temp: 14.3 °C","Temp: 14.5 °C","Temp: 15.2 °C","Temp: 13 °C","Temp: 14.2 °C","Temp: 14.7 °C","Temp: 13.5 °C","Temp: 17 °C","Temp: 6.7 °C","Temp: 16.9 °C","Temp: 17.4 °C","Temp: 12.4 °C","Temp: 21 °C","Temp: 16.8 °C","Temp: 11.9 °C","Temp: 16 °C","Temp: 11.1 °C","Temp: 17.2 °C","Temp: 16.4 °C","Temp: 17.5 °C","Temp: 13 °C","Temp: 15.9 °C","Temp: 14.5 °C","Temp: 13.1 °C","Temp: 14 °C","Temp: 12.6 °C","Temp: 17.1 °C","Temp: 16.5 °C","Temp: 12.7 °C","Temp: -3.2 °C","Temp: 6.7 °C","Temp: 16.3 °C","Temp: 15.5 °C","Temp: 12.6 °C","Temp: 15.5 °C","Temp: 18.4 °C","Temp: 13.6 °C","Temp: 14.5 °C","Temp: 14 °C","Temp: 13.5 °C","Temp: 16 °C","Temp: 13.3 °C","Temp: 16 °C","Temp: 18 °C","Temp: 13.9 °C","Temp: 16.7 °C","Temp: 15.5 °C","Temp: 6.8 °C","Temp: 15.9 °C","Temp: 8.9 °C"],null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#440154 , #482979 11.5523465703971%, #355E8D 29.6028880866426%, #228B8D 47.6534296028881%, #32B67A 65.7039711191336%, #92D742 83.7545126353791%, #FDE725 "],"labels":["0","5","10","15","20"],"na_color":null,"na_label":"NA","opacity":0.5,"position":"topright","type":"numeric","title":"Temperatura (°C)","extra":{"p_1":0.1155234657039711,"p_n":0.8375451263537906},"layerId":null,"className":"info legend","group":null}]}],"limits":{"lat":[32.53533172607422,42],"lng":[-124.3758239746094,-114.1170120239258]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(temp))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <ul>
@@ -558,7 +624,31 @@ En desarrollo…
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(ws))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>datosWS_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(datosWS, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"Este"</span>, <span class="st">"Norte"</span>), <span class="at">crs =</span> <span class="dv">3310</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>datosWS_sf_wgs84 <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(datosWS_sf, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>palWS <span class="ot">&lt;-</span> <span class="fu">colorNumeric</span>(<span class="at">palette =</span> <span class="st">"viridis"</span>, <span class="at">domain =</span> datosWS_sf_wgs84<span class="sc">$</span>WindSpeed)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>CartoDB.Positron) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPolygons</span>(<span class="at">data =</span> sh_mundos_wgs84, <span class="at">fill =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">weight =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircleMarkers</span>(<span class="at">data =</span> datosWS_sf_wgs84,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">fillColor =</span> <span class="sc">~</span><span class="fu">palWS</span>(WindSpeed),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">fillOpacity =</span> <span class="fl">0.8</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">weight =</span> <span class="dv">1</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">radius =</span> <span class="dv">3</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                   <span class="at">popup =</span> <span class="sc">~</span><span class="fu">paste</span>(<span class="st">"WindSpeed:"</span>, WindSpeed, <span class="st">"m/s"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addLegend</span>(<span class="at">pal =</span> palWS, <span class="at">values =</span> datosWS_sf_wgs84<span class="sc">$</span>WindSpeed, <span class="at">title =</span> <span class="st">"WindSpeed (m/s)"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-ab48b39e48f31fd55947" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-ab48b39e48f31fd55947">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addPolygons","args":[[[[{"lng":[-117.1223754882812,-117.1333312988281,-117.1827087402344,-117.2129135131836,-117.2123794555664,-117.2005081176758,-117.1740798950195,-117.1472244262695,-117.1156234741211,-117.1166534423828,-117.1413879394531,-117.2021560668945,-117.2288131713867,-117.2405471801758,-117.2420425415039,-117.2549896240234,-117.2684783935547,-117.26611328125,-117.2587661743164,-117.2803421020508,-117.2529220581055,-117.2490615844727,-117.25,-117.2698593139648,-117.3197326660156,-117.3294525146484,-117.3402862548828,-117.4094390869141,-117.480827331543,-117.495002746582,-117.6319427490234,-117.6725006103516,-117.7744369506836,-117.8638916015625,-117.8840179443359,-117.9108276367188,-117.9361114501953,-117.9550018310547,-117.9736175537109,-117.9949951171875,-118.0270843505859,-118.0452728271484,-118.0830688476562,-118.1081848144531,-118.1347427368164,-118.2222213745117,-118.2671279907227,-118.272087097168,-118.2977752685547,-118.3180694580078,-118.400016784668,-118.4174652099609,-118.3986206054688,-118.3861846923828,-118.4211044311523,-118.432502746582,-118.4544525146484,-118.4711227416992,-118.508903503418,-118.5300064086914,-118.554443359375,-118.6549987792969,-118.6977691650391,-118.7525024414062,-118.7811126708984,-118.8364028930664,-118.9361114501953,-118.9614028930664,-118.9811096191406,-119.1291732788086,-119.1743011474609,-119.2196502685547,-119.2558441162109,-119.3124694824219,-119.4161071777344,-119.446662902832,-119.5416717529297,-119.5772171020508,-119.5997314453125,-119.6247100830078,-119.7986068725586,-120.0037460327148,-120.1308288574219,-120.245002746582,-120.3550033569336,-120.4241561889648,-120.4490280151367,-120.4819412231445,-120.4953460693359,-120.5583267211914,-120.5831909179688,-120.605827331543,-120.6259613037109,-120.6283264160156,-120.623893737793,-120.6033248901367,-120.5941696166992,-120.5913772583008,-120.5980606079102,-120.6247100830078,-120.6137466430664,-120.6000671386719,-120.6181945800781,-120.6805572509766,-120.7186813354492,-120.7385330200195,-120.8313903808594,-120.8567962646484,-120.8697280883789,-120.8681945800781,-120.8591613769531,-120.8411102294922,-120.9199981689453,-120.9770812988281,-120.9994506835938,-121.0477752685547,-121.1666564941406,-121.2687530517578,-121.29638671875,-121.3215408325195,-121.3680572509766,-121.4349899291992,-121.4418029785156,-121.4609680175781,-121.4720840454102,-121.6654205322266,-121.7580642700195,-121.7961044311523,-121.8676300048828,-121.8641662597656,-121.8734664916992,-121.8847427368164,-121.8976440429688,-121.9216613769531,-121.9432525634766,-121.8997955322266,-121.8656158447266,-121.8450012207031,-121.8255615234375,-121.8091506958008,-121.7993087768555,-121.7747192382812,-121.7639007568359,-121.7991638183594,-121.8511123657227,-121.8791656494141,-121.9135971069336,-121.9783325195312,-122.0202865600586,-122.0415191650391,-122.0709762573242,-122.1472320556641,-122.1795806884766,-122.379020690918,-122.3883438110352,-122.393684387207,-122.3844528198242,-122.3731918334961,-122.378044128418,-122.4259719848633,-122.4433288574219,-122.4806137084961,-122.4902801513672,-122.4958267211914,-122.4994430541992,-122.4905471801758,-122.4843063354492,-122.4481201171875,-122.379638671875,-122.359992980957,-122.3513870239258,-122.35693359375,-122.3673553466797,-122.3577728271484,-122.0643005371094,-122.0231857299805,-122.0058364868164,-122.0297164916992,-122.0808334350586,-122.1259689331055,-122.1308288574219,-122.1384811401367,-122.1572265625,-122.1747131347656,-122.2427673339844,-122.2999877929688,-122.3934097290039,-122.352783203125,-122.2252731323242,-122.1633224487305,-122.1277313232422,-122.0158386230469,-121.9894409179688,-121.9155578613281,-121.8572235107422,-121.8337554931641,-121.6848526000977,-121.6541976928711,-121.6434936523438,-121.5911102294922,-121.498046875,-121.4272155761719,-121.4705505371094,-121.5531921386719,-121.5850067138672,-121.6622161865234,-121.6852188110352,-121.7229156494141,-121.8186798095703,-121.9052734375,-121.977783203125,-122.0186233520508,-122.0500030517578,-122.109733581543,-122.2641830444336,-122.2920837402344,-122.311393737793,-122.3652801513672,-122.3908386230469,-122.4783248901367,-122.479866027832,-122.4433288574219,-122.4201354980469,-122.456672668457,-122.505485534668,-122.6566619873047,-122.7822875976562,-122.8169631958008,-122.8966674804688,-122.9283294677734,-122.9563903808594,-122.9269409179688,-122.8399963378906,-122.8030471801758,-122.8077697753906,-122.83056640625,-122.9586181640625,-123.1072235107422,-123.1290283203125,-123.1716613769531,-123.2372131347656,-123.2666625976562,-123.3130645751953,-123.3530578613281,-123.4475021362305,-123.5361175537109,-123.620002746582,-123.7015228271484,-123.7072601318359,-123.6745834350586,-123.6669387817383,-123.6861038208008,-123.712646484375,-123.7541809082031,-123.7957000732422,-123.7956924438477,-123.774169921875,-123.7630615234375,-123.7368698120117,-123.7723617553711,-123.8202819824219,-123.8674926757812,-123.9311065673828,-124.0623550415039,-124.0927734375,-124.1525726318359,-124.2022171020508,-124.297233581543,-124.331184387207,-124.3240356445312,-124.3233413696289,-124.3543090820312,-124.3758239746094,-124.3523559570312,-124.3319473266602,-124.2750091552734,-124.2529144287109,-124.2294464111328,-124.1994323730469,-124.14306640625,-124.0988922119141,-124.0993041992188,-124.1125030517578,-124.1222229003906,-124.0909729003906,-124.061393737793,-124.0458374023438,-124.0399932861328,-124.0467987060547,-124.063606262207,-124.1186065673828,-124.1813812255859,-124.2155609130859,-124.1973571777344,-124.1902770996094,-124.1752777099609,-124.1841583251953,-124.1858520507812,-123.9505615234375,-123.883903503418,-123.5336227416992,-123.4836120605469,-123.4169464111328,-123.366943359375,-123.3169631958008,-123.2669525146484,-123.2169494628906,-123.1669464111328,-123.116943359375,-123.0669631958008,-122.8999862670898,-122.8177795410156,-122.7508392333984,-122.6341705322266,-122.600830078125,-122.5175018310547,-122.2172164916992,-122.1505584716797,-122.1172180175781,-122.0005569458008,-121.9669494628906,-121.8836212158203,-121.8002777099609,-121.7169494628906,-121.6677703857422,-121.5341567993164,-121.4841613769531,-121.4341583251953,-121.3008270263672,-121.1838836669922,-121.133903503418,-121.0672302246094,-120.9169464111328,-120.8510971069336,-120.7677764892578,-120.6841583251953,-120.3208236694336,-120.0341567993164,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.0008392333984,-120.001106262207,-119.8197326660156,-119.5155563354492,-119.0130615234375,-118.8799896240234,-118.3752670288086,-118.2108306884766,-117.8919525146484,-117.7452697753906,-117.5747222900391,-117.4211120605469,-117.2677764892578,-117.1069488525391,-116.946662902832,-116.8027801513672,-116.6513977050781,-116.4924926757812,-116.1999969482422,-116.0269470214844,-115.8622131347656,-115.7527923583984,-115.5580368041992,-115.2555694580078,-115.1241607666016,-114.9933319091797,-114.6563873291016,-114.6219329833984,-114.6197128295898,-114.5563812255859,-114.4933319091797,-114.4561233520508,-114.4188766479492,-114.3781890869141,-114.3695068359375,-114.3358306884766,-114.2726440429688,-114.230827331543,-114.2005615234375,-114.1700668334961,-114.1516723632812,-114.1344528198242,-114.1170120239258,-114.2226409912109,-114.3141632080078,-114.3576278686523,-114.3834762573242,-114.4070892333984,-114.4207611083984,-114.4554061889648,-114.4755630493164,-114.5127868652344,-114.5233306884766,-114.510009765625,-114.4941635131836,-114.48388671875,-114.5275039672852,-114.6404876708984,-114.7255630493164,-114.7260971069336,-114.7038879394531,-114.6836090087891,-114.6681900024414,-114.6752777099609,-114.6965179443359,-114.6970748901367,-114.6788787841797,-114.6626281738281,-114.6029205322266,-114.5701370239258,-114.5452728271484,-114.5153503417969,-114.4644470214844,-114.4587478637695,-114.5352096557617,-114.5541687011719,-114.5844497680664,-114.6125030517578,-114.6526412963867,-114.6955490112305,-114.7190933227539,-114.7297973632812,-114.8713455200195,-115.0258941650391,-115.2024993896484,-115.404167175293,-115.6055603027344,-115.9077835083008,-116.2426376342773,-116.5081481933594,-116.7130584716797,-116.9141693115234,-117.0952911376953,-117.1223754882812],"lat":[32.53533172607422,32.56582641601562,32.65929412841797,32.68302917480469,32.69705581665039,32.69759368896484,32.6749382019043,32.61860275268555,32.62131118774414,32.64249420166016,32.68061447143555,32.72769546508789,32.71561431884766,32.68464279174805,32.66253280639648,32.65713882446289,32.68842315673828,32.70860290527344,32.77041625976562,32.82921600341797,32.86082458496094,32.87129211425781,32.88971710205078,32.97707366943359,33.10527038574219,33.12443542480469,33.14166259765625,33.24415588378906,33.32749176025391,33.34221649169922,33.44276428222656,33.47054290771484,33.53943634033203,33.59568405151367,33.60055160522461,33.60665893554688,33.62054443359375,33.63276672363281,33.64554595947266,33.66249084472656,33.69401931762695,33.70943450927734,33.73971557617188,33.75693893432617,33.76666259765625,33.78416442871094,33.75777435302734,33.72332000732422,33.71610260009766,33.7208251953125,33.74985504150391,33.78179931640625,33.80804443359375,33.84096527099609,33.92124557495117,33.93915557861328,33.96776580810547,33.98777008056641,34.03110504150391,34.04791259765625,34.05568695068359,34.0494384765625,34.04610443115234,34.03971862792969,34.03318786621094,34.03054809570312,34.05554962158203,34.06221008300781,34.06749725341797,34.11388397216797,34.1361083984375,34.16492080688477,34.22346115112305,34.28351593017578,34.35749816894531,34.37332153320312,34.41415405273438,34.42054748535156,34.42360687255859,34.42471313476562,34.42638397216797,34.4679069519043,34.47873687744141,34.47360229492188,34.46582794189453,34.45610046386719,34.4556884765625,34.50957489013672,34.53047561645508,34.56193542480469,34.56221389770508,34.55860137939453,34.58443832397461,34.62360382080078,34.64110565185547,34.66943740844727,34.69026947021484,34.71082305908203,34.8608283996582,34.89499664306641,35.01860427856445,35.10005950927734,35.13943862915039,35.17110443115234,35.18054580688477,35.16464233398438,35.20999145507812,35.22880935668945,35.25722122192383,35.27999496459961,35.3074951171875,35.35527038574219,35.44887542724609,35.46596145629883,35.47915649414062,35.52499008178711,35.64916229248047,35.70013046264648,35.76610565185547,35.79402542114258,35.82916259765625,35.8942985534668,35.92804718017578,35.97943496704102,35.99777221679688,36.18304443359375,36.22943496704102,36.24110412597656,36.31533813476562,36.3429069519043,36.39388656616211,36.43387603759766,36.46735382080078,36.51805114746094,36.59457397460938,36.64124298095703,36.61985397338867,36.61513137817383,36.6270751953125,36.64846420288086,36.66790771484375,36.75916290283203,36.81249237060547,36.88401794433594,36.95068740844727,36.97248840332031,36.9803352355957,36.96915435791016,36.95485305786133,36.95415878295898,36.96235275268555,36.99582672119141,37.01763153076172,37.19998931884766,37.22026824951172,37.25186538696289,37.28971862792969,37.32915878295898,37.37443542480469,37.48429489135742,37.50436782836914,37.5122184753418,37.52999114990234,37.56610107421875,37.58998870849609,37.75222015380859,37.78992462158203,37.81005859375,37.81381225585938,37.78693771362305,37.73165893554688,37.68762969970703,37.65443420410156,37.61582565307617,37.45929718017578,37.45790863037109,37.47137451171875,37.47943115234375,37.51027297973633,37.6027717590332,37.6322135925293,37.66221618652344,37.69470977783203,37.71471405029297,37.76666259765625,37.82638549804688,37.95915985107422,37.99082946777344,38.06415939331055,38.04743576049805,38.03526306152344,38.06610107421875,38.06554412841797,38.05416107177734,38.04305267333984,38.03666305541992,38.01811599731445,38.04861831665039,38.0789909362793,38.10464859008789,38.04888153076172,38.01290893554688,38.05499267578125,38.11041259765625,38.11568832397461,38.09658813476562,38.06646728515625,38.04746627807617,38.08115386962891,38.06610107421875,38.09721374511719,38.14811325073242,38.10877990722656,38.06137847900391,38.10999298095703,38.12693405151367,38.1361083984375,38.15554809570312,38.14749145507812,38.11957168579102,37.9366569519043,37.90693664550781,37.88318634033203,37.83346557617188,37.83103942871094,37.91054534912109,38.00131607055664,38.02027130126953,38.05443572998047,38.05360412597656,38.05804443359375,38.16249084472656,38.10777282714844,38.08193969726562,38.09498977661133,38.12748718261719,38.28527069091797,38.46277236938477,38.47290802001953,38.49193572998047,38.52276611328125,38.54083251953125,38.57388305664062,38.62443542480469,38.7340202331543,38.79610443115234,38.86082458496094,38.93041229248047,38.97109985351562,39.00458145141602,39.02554702758789,39.1219367980957,39.17804718017578,39.25943756103516,39.35332489013672,39.38582611083984,39.49652099609375,39.51915740966797,39.55499267578125,39.70971298217773,39.79166412353516,39.86915588378906,39.94971466064453,40.09165954589844,40.11631011962891,40.14790725708008,40.17416381835938,40.23804473876953,40.27245712280273,40.31193542480469,40.33624267578125,40.41526794433594,40.44769668579102,40.5322151184082,40.5816650390625,40.6947135925293,40.724365234375,40.74638366699219,40.74554443359375,40.81193542480469,40.99193572998047,41.03853607177734,41.0574951171875,41.15749359130859,41.24985504150391,41.34415435791016,41.39443969726562,41.42777252197266,41.46318435668945,41.51527404785156,41.68305206298828,41.75416564941406,41.81999206542969,41.84804916381836,41.86943817138672,41.94971466064453,41.99415588378906,41.99946594238281,42,42,42,42,42,42,42,42,42,42,42,42,42,42,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,42,42,42,42,42,42,42,42,42,42,42,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99943542480469,41.99964904785156,42,41.99943542480469,40.43305206298828,39.84943389892578,39.56610107421875,39.44971466064453,39.33332824707031,39.00721740722656,38.88276672363281,38.67276763916016,38.32054901123047,38.22609710693359,37.86527252197266,37.74638366699219,37.51416015625,37.40665435791016,37.28110504150391,37.16721343994141,37.05304718017578,36.93276977539062,36.81221008300781,36.70360565185547,36.58860015869141,36.46749114990234,36.24276733398438,36.10888671875,35.98081970214844,35.89499664306641,35.74221801757812,35.50277709960938,35.39804840087891,35.29332733154297,35.02165985107422,34.99214935302734,34.88193511962891,34.81666564941406,34.75833129882812,34.69860076904297,34.63166046142578,34.55082702636719,34.52193832397461,34.46415710449219,34.41582489013672,34.38999176025391,34.37276458740234,34.35867691040039,34.34276580810547,34.32332611083984,34.28804779052734,34.19624328613281,34.14665985107422,34.12568283081055,34.11429977416992,34.09207153320312,34.03013229370117,34.00124359130859,33.98721313476562,33.96152114868164,33.94415283203125,33.86888122558594,33.78305053710938,33.72193145751953,33.55929946899414,33.42033767700195,33.39916229248047,33.31888580322266,33.28054809570312,33.24638366699219,33.20901870727539,33.15541076660156,33.115478515625,33.08943557739258,33.06137847900391,33.04374313354492,33.02971267700195,33.03360748291016,33.03471755981445,33.02554702758789,32.97165679931641,32.86235046386719,32.73200607299805,32.72499084472656,32.72568511962891,32.73110198974609,32.74179840087891,32.74096298217773,32.71845626831055,32.71771240234375,32.70785140991211,32.69698715209961,32.68444061279297,32.66971588134766,32.65471649169922,32.63194274902344,32.60577011108398,32.58499908447266,32.568603515625,32.55221557617188,32.53665924072266,32.53533172607422]}],[{"lng":[-119.8680572509766,-119.6983337402344,-119.5936126708984,-119.5631866455078,-119.5527801513672,-119.5155639648438,-119.5329895019531,-119.5899963378906,-119.7133331298828,-119.7727813720703,-119.788330078125,-119.8369369506836,-119.8709716796875,-119.9177703857422,-119.9142303466797,-119.8680572509766],"lat":[34.08415985107422,34.04527282714844,34.05387878417969,34.06583023071289,34.06582641601562,34.04457855224609,34.01513290405273,33.99721527099609,33.97082138061523,33.96720886230469,33.96720886230469,33.97415924072266,33.99151992797852,34.06526947021484,34.0826301574707,34.08415985107422]}],[{"lng":[-120,-119.9694442749023,-119.9663925170898,-120.0365295410156,-120.1074981689453,-120.1216583251953,-120.1452789306641,-120.164436340332,-120.172233581543,-120.1922073364258,-120.2260971069336,-120.1847229003906,-120.135009765625,-120.0519409179688,-120.0352783203125,-120],"lat":[33.98963165283203,33.99235534667969,33.96249008178711,33.91915893554688,33.90554809570312,33.90804290771484,33.91666412353516,33.92777252197266,33.93471527099609,33.95943450927734,34.006103515625,34.01583099365234,34.02610015869141,34.03610992431641,34.02388000488281,33.98963165283203]}],[{"lng":[-118.5166625976562,-118.4452667236328,-118.4033432006836,-118.3497314453125,-118.297233581543,-118.2931213378906,-118.3037414550781,-118.4496459960938,-118.5899276733398,-118.5811233520508,-118.5418014526367,-118.5288925170898,-118.5166625976562],"lat":[33.47776794433594,33.44276428222656,33.42804718017578,33.39833068847656,33.34609985351562,33.32867431640625,33.30985260009766,33.32860565185547,33.48381042480469,33.49082946777344,33.48943710327148,33.48624420166016,33.47776794433594]}],[{"lng":[-118.5302886962891,-118.5261077880859,-118.5202789306641,-118.504997253418,-118.4822235107422,-118.413330078125,-118.3691635131836,-118.3694534301758,-118.4086074829102,-118.477783203125,-118.4869384765625,-118.4938812255859,-118.5338897705078,-118.570556640625,-118.5948638916016,-118.5938949584961,-118.5544281005859,-118.5302886962891],"lat":[32.99332427978516,32.98360443115234,32.97499084472656,32.959716796875,32.93804168701172,32.88555145263672,32.85471343994141,32.83277130126953,32.81707763671875,32.85277557373047,32.85888671875,32.86666107177734,32.92721557617188,32.98416137695312,33.03305053710938,33.04458236694336,33.04305267333984,32.99332427978516]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"black","weight":2,"opacity":0.5,"fill":false,"fillColor":"black","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addCircleMarkers","args":[[38.69075700000001,36.70560000000001,36.84140000000003,36.63240000000004,36.71088000000002,36.59750000000002,36.81919899999994,33.03249999999998,33.2136,37.360701,36.32610000000001,36.36629999999998,36.36190000000002,36.54319999999998,36.54223299999997,36.45810000000002,36.50920000000004,36.48779999999999,34.84160000000001,35.33129999999999,36.10221900000001,36.31439999999997,34.14389999999998,34.05109699999998,34.06642899999999,34.19919999999998,33.90140000000004,34.01028300000002,34.06670000000005,34.13262999999998,33.85966199999999,34.38329999999999,36.86690000000002,36.95329999999998,37.71329899999999,39.14573299999999,37.64571800000003,37.96206899999997,38.0697,36.48186999999999,36.20928599999997,36.69426099999999,33.83058599999998,33.81930500000004,33.92506199999995,33.74719999999999,33.92075799999999,33.58309899999999,33.572019,33.85260499999997,33.99944899999999,33.99638699999999,33.67653500000001,38.61380400000001,38.302591,38.68330400000001,38.59332800000001,38.49447499999999,36.843425,36.48500100000003,34.89405399999998,34.24313200000001,34.06811400000003,34.03089999999997,34.51095500000002,35.77445499999997,34.10013200000002,34.41650599999995,34.05962600000004,34.07140000000003,34.10667800000002,37.80270000000006,37.68249999999996,36.98331999999998,37.06315,40.5403,37.48830000000003,36.48939899999998,36.03190000000004,34.21017,34.40428000000002,34.44806000000001,34.27631999999999,34.25239000000001,36.28059599999999,36.60721500000002,33.79371299999998,34.18197699999998,36.84148800000003],[-120.072682,-119.7414,-119.8744,-120.3822,-119.77743,-119.5036,-119.7164,-115.6225,-115.5444,-118.330835,-117.9551,-117.8976,-118.0108,-117.9418,-117.990055,-117.8519,-116.8481,-117.871,-118.8647,-119,-119.566002,-119.6436,-117.8508,-118.456386,-118.226755,-118.5331,-118.205,-118.068484,-117.7506,-118.127142,-118.200707,-118.5283,-120.01,-120.0341,-119.7061,-123.202995,-118.966515,-119.120278,-118.9477,-121.73333,-121.126371,-121.623271,-117.938509,-117.918759,-117.952586,-115.8201,-116.858419,-117.072197,-116.063823,-116.540965,-117.415831,-117.4925,-117.331027,-121.368007,-121.420838,-121.164457,-121.503728,-121.211131,-121.3621,-121.155602,-117.024756,-117.272275,-117.525796,-117.617403,-117.32555,-117.372109,-117.491982,-117.285602,-117.147347,-116.3906,-117.274063,-121.2208,-121.4406,-121.98822,-122.083092,-121.5764,-120.8358,-118.826897,-119.055,-118.87051,-118.80998,-119.2313,-118.68369,-119.14318,-118.011661,-118.05473,-118.171019,-118.363036,-121.533444],3,null,null,{"interactive":true,"className":"","stroke":true,"color":"black","weight":1,"opacity":0.5,"fill":true,"fillColor":["#424086","#3E4B8A","#482979","#463480","#463480","#3B518B","#3A538B","#482979","#2E6D8E","#21908D","#1F9A8A","#94D840","#228C8D","#1FA088","#3E4B8A","#FDE725","#24AA83","#B8DE29","#482979","#34608D","#3C4F8A","#3C4F8A","#481A6C","#482173","#46327E","#46307E","#46307E","#443983","#472E7C","#46075A","#482979","#39558C","#472B7A","#443983","#1F968B","#440154","#3E4B8A","#21A685","#2CB17E","#472B7A","#3F4788","#32658E","#472E7C","#482677","#472B7A","#3C4F8A","#443983","#375A8C","#3F4788","#3D4D8A","#472B7A","#453781","#481F70","#3B518B","#1FA187","#3B518B","#3F4788","#2B748E","#440154","#3E4B8A","#25848E","#463480","#3D4D8A","#482677","#21A585","#46C06F","#433E85","#218E8D","#481567","#2D718E","#481C6E","#2E6F8E","#297B8E","#33628D","#3E4B8A","#38588C","#3F4788","#3D4D8A","#3C4F8A","#433E85","#3C4F8A","#482979","#3A538B","#472E7C","#2A768E","#2A788E","#482979","#472B7A","#481A6C"],"fillOpacity":0.8},null,null,["WindSpeed: 3.3 m/s","WindSpeed: 3.8 m/s","WindSpeed: 2.3 m/s","WindSpeed: 2.8 m/s","WindSpeed: 2.8 m/s","WindSpeed: 4.1 m/s","WindSpeed: 4.2 m/s","WindSpeed: 2.3 m/s","WindSpeed: 5.5 m/s","WindSpeed: 7.4 m/s","WindSpeed: 8 m/s","WindSpeed: 12 m/s","WindSpeed: 7.2 m/s","WindSpeed: 8.3 m/s","WindSpeed: 3.8 m/s","WindSpeed: 14.1 m/s","WindSpeed: 8.9 m/s","WindSpeed: 12.7 m/s","WindSpeed: 2.3 m/s","WindSpeed: 4.8 m/s","WindSpeed: 4 m/s","WindSpeed: 4 m/s","WindSpeed: 1.7 m/s","WindSpeed: 2 m/s","WindSpeed: 2.7 m/s","WindSpeed: 2.6 m/s","WindSpeed: 2.6 m/s","WindSpeed: 3 m/s","WindSpeed: 2.5 m/s","WindSpeed: 1 m/s","WindSpeed: 2.3 m/s","WindSpeed: 4.3 m/s","WindSpeed: 2.4 m/s","WindSpeed: 3 m/s","WindSpeed: 7.8 m/s","WindSpeed: 0.8 m/s","WindSpeed: 3.8 m/s","WindSpeed: 8.7 m/s","WindSpeed: 9.3 m/s","WindSpeed: 2.4 m/s","WindSpeed: 3.6 m/s","WindSpeed: 5.1 m/s","WindSpeed: 2.5 m/s","WindSpeed: 2.2 m/s","WindSpeed: 2.4 m/s","WindSpeed: 4 m/s","WindSpeed: 3 m/s","WindSpeed: 4.5 m/s","WindSpeed: 3.6 m/s","WindSpeed: 3.9 m/s","WindSpeed: 2.4 m/s","WindSpeed: 2.9 m/s","WindSpeed: 1.9 m/s","WindSpeed: 4.1 m/s","WindSpeed: 8.4 m/s","WindSpeed: 4.1 m/s","WindSpeed: 3.6 m/s","WindSpeed: 5.9 m/s","WindSpeed: 0.8 m/s","WindSpeed: 3.8 m/s","WindSpeed: 6.8 m/s","WindSpeed: 2.8 m/s","WindSpeed: 3.9 m/s","WindSpeed: 2.2 m/s","WindSpeed: 8.6 m/s","WindSpeed: 10.2 m/s","WindSpeed: 3.2 m/s","WindSpeed: 7.3 m/s","WindSpeed: 1.5 m/s","WindSpeed: 5.7 m/s","WindSpeed: 1.8 m/s","WindSpeed: 5.6 m/s","WindSpeed: 6.3 m/s","WindSpeed: 4.9 m/s","WindSpeed: 3.8 m/s","WindSpeed: 4.4 m/s","WindSpeed: 3.6 m/s","WindSpeed: 3.9 m/s","WindSpeed: 4 m/s","WindSpeed: 3.2 m/s","WindSpeed: 4 m/s","WindSpeed: 2.3 m/s","WindSpeed: 4.2 m/s","WindSpeed: 2.5 m/s","WindSpeed: 6 m/s","WindSpeed: 6.1 m/s","WindSpeed: 2.3 m/s","WindSpeed: 2.4 m/s","WindSpeed: 1.7 m/s"],null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#440154 , #482173 9.02255639097744%, #3C4F8A 24.0601503759399%, #2A768E 39.0977443609023%, #1F9A8A 54.1353383458647%, #3FBC73 69.1729323308271%, #94D840 84.2105263157895%, #F8E621 99.2481203007519%, #FDE725 "],"labels":["2","4","6","8","10","12","14"],"na_color":null,"na_label":"NA","opacity":0.5,"position":"topright","type":"numeric","title":"WindSpeed (m/s)","extra":{"p_1":0.09022556390977444,"p_n":0.9924812030075189},"layerId":null,"className":"info legend","group":null}]}],"limits":{"lat":[32.53533172607422,42],"lng":[-124.3758239746094,-114.1170120239258]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(ws))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <ul>
@@ -649,8 +739,9 @@ En desarrollo…
 </div>
 <section id="modelos-univariados" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="modelos-univariados"><span class="header-section-number">2.2.1</span> Modelos Univariados</h3>
-<section id="estacionariedad-en-media" class="level4" data-number="2.2.1.1">
-<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="estacionariedad-en-media"><span class="header-section-number">2.2.1.1</span> Estacionariedad en Media</h4>
+<section id="análisis-de-estacionariedad-en-media" class="level4" data-number="2.2.1.1">
+<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="análisis-de-estacionariedad-en-media"><span class="header-section-number">2.2.1.1</span> Análisis de Estacionariedad en Media</h4>
+<p>El estudio de la influencia de las coordenadas espaciales en la media de ambas variables ya se realizó en el <a href="Geo_uni.html">Análisis Univariado</a>. A continuación se presenta únicamente un resumen del ajuste.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Temperatura</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Velocidad del viento</a></li></ul>
 <div class="tab-content">
@@ -659,11 +750,13 @@ En desarrollo…
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(temp, <span class="at">qt.col =</span> <span class="fu">c</span>(<span class="st">"purple"</span>,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"pink"</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"green"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"yellow"</span>),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">scatter3d=</span>T, <span class="at">trend=</span><span class="sc">~</span>Norte<span class="sc">+</span><span class="fu">I</span>(Norte<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fitT <span class="ot">&lt;-</span> <span class="fu">lm</span>(Temperatura<span class="sc">~</span>Norte<span class="sc">+</span><span class="fu">I</span>(Norte<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> datosT) </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>datosT<span class="sc">$</span>Residuos <span class="ot">&lt;-</span> fitT<span class="sc">$</span>residuals</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>pT1 <span class="ot">&lt;-</span> <span class="fu">simple_scatter_plot</span>(datosT, <span class="st">"Este"</span>, <span class="st">"Residuos"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>pT2 <span class="ot">&lt;-</span> <span class="fu">simple_scatter_plot</span>(datosT, <span class="st">"Norte"</span>, <span class="st">"Residuos"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(pT1,pT2)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -674,8 +767,7 @@ En desarrollo…
 </div>
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fitT <span class="ot">&lt;-</span> <span class="fu">lm</span>(Temperatura<span class="sc">~</span>Norte<span class="sc">+</span><span class="fu">I</span>(Norte<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> datosT) </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(fitT))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(fitT))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -748,15 +840,17 @@ En desarrollo…
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<p>El modelo es: <span class="math display">WindSpeed = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte + + \beta_3 \times Este \times Norte</span></p>
+<p>El modelo es: <span class="math display">WindSpeed = \beta_0 + \beta_1 \times Este + \beta_2 \times Norte + \beta_3 \times Este \times Norte</span></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(temp, <span class="at">qt.col =</span> <span class="fu">c</span>(<span class="st">"purple"</span>,</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"pink"</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"green"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"yellow"</span>),</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">scatter3d=</span>T, <span class="at">trend=</span><span class="sc">~</span>Norte<span class="sc">*</span>Este)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fitWS <span class="ot">&lt;-</span> <span class="fu">lm</span>(WindSpeed<span class="sc">~</span>Este<span class="sc">*</span>Norte, <span class="at">data =</span> datosWS) </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>datosWS<span class="sc">$</span>Residuos <span class="ot">&lt;-</span> fitWS<span class="sc">$</span>residuals</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>pWS1 <span class="ot">&lt;-</span> <span class="fu">simple_scatter_plot</span>(datosWS, <span class="st">"Este"</span>, <span class="st">"Residuos"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>pWS2 <span class="ot">&lt;-</span> <span class="fu">simple_scatter_plot</span>(datosWS, <span class="st">"Norte"</span>, <span class="st">"Residuos"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(pWS1,pWS2)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -767,8 +861,7 @@ En desarrollo…
 </div>
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fitWS <span class="ot">&lt;-</span> <span class="fu">lm</span>(WindSpeed<span class="sc">~</span>Este<span class="sc">*</span>Norte, <span class="at">data =</span> datosWS) </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(fitWS))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(<span class="fu">summary</span>(fitWS))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -852,72 +945,96 @@ En desarrollo…
 </section>
 <section id="variogramas" class="level4" data-number="2.2.1.2">
 <h4 data-number="2.2.1.2" class="anchored" data-anchor-id="variogramas"><span class="header-section-number">2.2.1.2</span> Variogramas</h4>
-<section id="temperatura-2" class="level5" data-number="2.2.1.2.1">
-<h5 data-number="2.2.1.2.1" class="anchored" data-anchor-id="temperatura-2"><span class="header-section-number">2.2.1.2.1</span> Temperatura</h5>
-<p>Para esta variable ya se analizo y encontró un modelo apropiado en el <a href="Geo_uni.html">Capítulo 1</a>.</p>
-</section>
-<section id="velocidad-del-viento-2" class="level5" data-number="2.2.1.2.2">
-<h5 data-number="2.2.1.2.2" class="anchored" data-anchor-id="velocidad-del-viento-2"><span class="header-section-number">2.2.1.2.2</span> Velocidad del viento</h5>
-<p>Para esta variable ya se analizo y encontró un modelo apropiado en el <a href="Geo_uni.html">Capítulo 1</a>.</p>
-</section>
-</section>
-</section>
-<section id="modelo-cruzado-de-semivarianza" class="level3" data-number="2.2.2">
-<h3 data-number="2.2.2" class="anchored" data-anchor-id="modelo-cruzado-de-semivarianza"><span class="header-section-number">2.2.2</span> Modelo cruzado de semivarianza</h3>
-<p>Considerando un modelo esférico para Temperatura y un modelo Wave para WS, las matrices para el modelo de coregionalización son:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mat1 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">c</span>(<span class="dv">8</span>, <span class="fl">3.5</span>),</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">c</span>(<span class="fl">3.5</span>, <span class="dv">1</span>))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mat2 <span class="ot">&lt;-</span><span class="fu">cbind</span>(<span class="fu">c</span>(<span class="dv">8</span>, <span class="fl">3.5</span>),</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="fl">3.5</span>, <span class="dv">1</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>Dado que se hará uso de las herramientas del paquete <code>gstat</code> se consideró necesario revisar cuál de las estimaciones presentadas en el <a href="Geo_uni.html">Capítulo 1</a>, mediante <code>GeoR</code>, se ajustan mejor a este entorno.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Temperatura</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Velocidad del viento</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
 <details class="code-fold">
 <summary>Ver código</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>datosT1 <span class="ot">&lt;-</span> datosT</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>datosWS1 <span class="ot">&lt;-</span> datosWS</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">coordinates</span>(datosT1) <span class="ot">&lt;-</span> <span class="er">~</span> Este <span class="sc">+</span> Norte)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">coordinates</span>(datosWS1) <span class="ot">&lt;-</span> <span class="er">~</span> Este <span class="sc">+</span> Norte)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>vgmntemp <span class="ot">&lt;-</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat1[<span class="dv">1</span>, <span class="dv">1</span>],</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">model =</span> <span class="st">"Sph"</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">range =</span> <span class="fl">2e5</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">nugget =</span> .<span class="dv">5</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">add.to =</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat2[<span class="dv">1</span>, <span class="dv">1</span>],</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                           <span class="at">model =</span> <span class="st">"Wav"</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                           <span class="at">range =</span> .<span class="fl">5e5</span>, <span class="at">nugget =</span> <span class="dv">2</span>))</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>vgmws <span class="ot">&lt;-</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat1[<span class="dv">2</span>, <span class="dv">2</span>],</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">model =</span> <span class="st">"Sph"</span>,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">range =</span> <span class="fl">2e5</span>,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">nugget =</span> .<span class="dv">5</span>,</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">add.to =</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat2[<span class="dv">2</span>, <span class="dv">2</span>],</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                          <span class="at">model =</span> <span class="st">"Wav"</span>,</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>                          <span class="at">range =</span> .<span class="fl">5e5</span>, <span class="at">nugget =</span> <span class="dv">2</span>))</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>vgmntemp_sv <span class="ot">&lt;-</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat1[<span class="dv">1</span>, <span class="dv">2</span>], <span class="at">model =</span> <span class="st">"Sph"</span>,</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>                 <span class="at">range =</span> <span class="fl">2e5</span>,</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>                 <span class="at">nugget =</span> .<span class="dv">5</span>,</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>                 <span class="at">add.to =</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat2[<span class="dv">1</span>, <span class="dv">2</span>],</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>                              <span class="at">model =</span> <span class="st">"Wav"</span>,</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>                              <span class="at">range =</span> .<span class="fl">5e5</span>, <span class="at">nugget =</span> <span class="dv">2</span>))</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gstat</span>(<span class="cn">NULL</span>, <span class="at">id=</span><span class="st">"Temp"</span>, <span class="at">formula=</span>Temperatura<span class="sc">~</span>Norte<span class="sc">+</span><span class="fu">I</span>(Norte<span class="sc">^</span><span class="dv">2</span>),</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>           <span class="at">data=</span>datosT1, <span class="at">model =</span> vgmntemp)</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gstat</span>(g, <span class="at">id=</span><span class="st">"W_speed"</span>, <span class="at">formula=</span>WindSpeed<span class="sc">~</span>Norte<span class="sc">*</span>Este,</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>           <span class="at">data=</span>datosWS1, <span class="at">model =</span> vgmws)</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gstat</span>(g, <span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"W_speed"</span>), <span class="at">model =</span> vgmntemp_sv)</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">variogram</span>(g),</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>     <span class="at">model =</span> g<span class="sc">$</span>model,</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>     <span class="at">pl =</span> F,</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Distancias"</span>,</span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Semivarianza"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>datosT1 <span class="ot">&lt;-</span> datosT</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">coordinates</span>(datosT1) <span class="ot">&lt;-</span> <span class="er">~</span> Este <span class="sc">+</span> Norte)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>vg_T <span class="ot">&lt;-</span>  <span class="fu">variogram</span>(Temperatura<span class="sc">~</span>Norte<span class="sc">+</span><span class="fu">I</span>(Norte<span class="sc">^</span><span class="dv">2</span>), datosT1, <span class="at">cressie=</span>T)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>exp_T <span class="ot">&lt;-</span> <span class="fu">fit.variogram</span>(vg_T, <span class="fu">vgm</span>(<span class="st">"Exp"</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">fit.method =</span> <span class="dv">2</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vg_T, <span class="at">model =</span> exp_T)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Geo_bi_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(exp_T)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Exp</td>
+<td style="text-align: center;">12.88</td>
+<td style="text-align: center;">109814</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>datosWS1 <span class="ot">&lt;-</span> datosWS</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">coordinates</span>(datosWS1) <span class="ot">&lt;-</span> <span class="er">~</span> Este <span class="sc">+</span> Norte)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>vg_WS <span class="ot">&lt;-</span>  <span class="fu">variogram</span>(WindSpeed<span class="sc">~</span>Norte<span class="sc">*</span>Este, datosWS1,<span class="at">cressie=</span>T)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>exp_WS <span class="ot">&lt;-</span> <span class="fu">fit.variogram</span>(vg_WS, <span class="fu">vgm</span>(<span class="st">"Wav"</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">fit.method =</span> <span class="dv">7</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vg_WS, <span class="at">model =</span> exp_WS)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -925,6 +1042,681 @@ En desarrollo…
 <p><img src="Geo_bi_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(exp_WS)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">1.517</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Wav</td>
+<td style="text-align: center;">1.678</td>
+<td style="text-align: center;">115834</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="modelo-lineal-de-corregionalización" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="modelo-lineal-de-corregionalización"><span class="header-section-number">2.2.2</span> Modelo Lineal de Corregionalización</h3>
+<p>Considerando un modelo <strong>Exponencial</strong> para Temperatura y un modelo <strong>Wave</strong> para WS, se proponen los siguientes valores, ajustados por la función <code>nearPD</code> del paquete <code>Matrix</code> con el objetivo de garantizar un modelo válido de coregionalización, para las matrices:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mat1 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">4</span>),</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">0</span>))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>mat1 <span class="ot">&lt;-</span> <span class="fu">nearPD</span>(mat1)<span class="sc">$</span>mat</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>mat1 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(mat1)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mat1) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(mat1)<span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"WS"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>mat2 <span class="ot">&lt;-</span><span class="fu">cbind</span>(<span class="fu">c</span>(<span class="fl">4.5</span>, <span class="fl">4.2</span>),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="fl">4.2</span>, <span class="dv">0</span>))</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>mat2 <span class="ot">&lt;-</span> <span class="fu">nearPD</span>(mat2)<span class="sc">$</span>mat</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>mat2 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(mat2)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mat2) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(mat2)<span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"WS"</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>mat3 <span class="ot">&lt;-</span><span class="fu">cbind</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="dv">3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>mat3 <span class="ot">&lt;-</span> <span class="fu">nearPD</span>(mat3)<span class="sc">$</span>mat</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>mat3 <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(mat3)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mat3) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(mat3)<span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"WS"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Exponencial</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Wave</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false">Nugget</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(mat1, <span class="at">caption =</span> <span class="st">"Matriz para Temperatura"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Matriz para Temperatura</caption>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">&nbsp;</th>
+<th style="text-align: center;">Temp</th>
+<th style="text-align: center;">WS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Temp</strong></td>
+<td style="text-align: center;">6.4</td>
+<td style="text-align: center;">3.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>WS</strong></td>
+<td style="text-align: center;">3.2</td>
+<td style="text-align: center;">1.6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(mat2, <span class="at">caption =</span> <span class="st">"Matriz para Velocidad del viento"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Matriz para Velocidad del viento</caption>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">&nbsp;</th>
+<th style="text-align: center;">Temp</th>
+<th style="text-align: center;">WS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Temp</strong></td>
+<td style="text-align: center;">5.164</td>
+<td style="text-align: center;">3.092</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>WS</strong></td>
+<td style="text-align: center;">3.092</td>
+<td style="text-align: center;">1.851</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(mat3, <span class="at">caption =</span> <span class="st">"Matriz para Nugget"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Matriz para Nugget</caption>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">&nbsp;</th>
+<th style="text-align: center;">Temp</th>
+<th style="text-align: center;">WS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Temp</strong></td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">1.525</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>WS</strong></td>
+<td style="text-align: center;">1.525</td>
+<td style="text-align: center;">1.551</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Para los valores iniciales se tiene el siguiente ajuste:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>vgmntemp <span class="ot">&lt;-</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat1[<span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">model =</span> <span class="st">"Exp"</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">range =</span> exp_T<span class="sc">$</span>range[<span class="dv">2</span>],</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">nugget =</span> mat3[<span class="dv">1</span>,<span class="dv">1</span>],</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">add.to =</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat2[<span class="dv">1</span>, <span class="dv">1</span>],</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">model =</span> <span class="st">"Wav"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">range =</span> exp_WS<span class="sc">$</span>range[<span class="dv">2</span>]))</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>vgmws <span class="ot">&lt;-</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat1[<span class="dv">2</span>, <span class="dv">2</span>],</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">model =</span> <span class="st">"Exp"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">range =</span> exp_T<span class="sc">$</span>range[<span class="dv">2</span>],</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">nugget =</span> mat3[<span class="dv">2</span>,<span class="dv">2</span>],</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">add.to =</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat2[<span class="dv">2</span>, <span class="dv">2</span>],</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                          <span class="at">model =</span> <span class="st">"Wav"</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">range =</span> exp_WS<span class="sc">$</span>range[<span class="dv">2</span>]))</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>vgmntemp_sv <span class="ot">&lt;-</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat1[<span class="dv">1</span>, <span class="dv">2</span>],</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>                   <span class="at">model =</span> <span class="st">"Exp"</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">range =</span> exp_T<span class="sc">$</span>range[<span class="dv">2</span>],</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">nugget =</span> mat3[<span class="dv">1</span>,<span class="dv">2</span>],</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">add.to =</span> <span class="fu">vgm</span>(<span class="at">psill =</span> mat2[<span class="dv">1</span>, <span class="dv">2</span>],</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>                              <span class="at">model =</span> <span class="st">"Wav"</span>,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>                              <span class="at">range =</span> exp_WS<span class="sc">$</span>range[<span class="dv">2</span>]))</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gstat</span>(<span class="cn">NULL</span>, <span class="at">id=</span><span class="st">"Temp"</span>, <span class="at">formula=</span>Temperatura<span class="sc">~</span>Norte<span class="sc">+</span><span class="fu">I</span>(Norte<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>           <span class="at">data=</span>datosT1, <span class="at">model =</span> vgmntemp)</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gstat</span>(g, <span class="at">id=</span><span class="st">"W_speed"</span>, <span class="at">formula=</span>WindSpeed<span class="sc">~</span>Norte<span class="sc">*</span>Este,</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">data=</span>datosWS1, <span class="at">model =</span> vgmws)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">gstat</span>(g, <span class="fu">c</span>(<span class="st">"Temp"</span>,<span class="st">"W_speed"</span>), <span class="at">model =</span> vgmntemp_sv)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">variogram</span>(g, <span class="at">cressie=</span>T),</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>     <span class="at">model =</span> g<span class="sc">$</span>model,</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>     <span class="at">pl =</span> F,</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Distancias"</span>,</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Semivarianza"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Geo_bi_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(g<span class="sc">$</span>model)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<ul>
+<li><p><strong>Temp</strong>:</p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Wav</td>
+<td style="text-align: center;">5.164</td>
+<td style="text-align: center;">115834</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Exp</td>
+<td style="text-align: center;">6.4</td>
+<td style="text-align: center;">109814</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>W_speed</strong>:</p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Wav</td>
+<td style="text-align: center;">1.851</td>
+<td style="text-align: center;">115834</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">1.551</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Exp</td>
+<td style="text-align: center;">1.6</td>
+<td style="text-align: center;">109814</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>Temp.W_speed</strong>:</p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Wav</td>
+<td style="text-align: center;">3.092</td>
+<td style="text-align: center;">115834</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">1.525</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Exp</td>
+<td style="text-align: center;">3.2</td>
+<td style="text-align: center;">109814</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<!-- end of list -->
+</div>
+</div>
+<p>Ahora, realizando el ajuste mediante la función <code>fit.lmc</code> de `gstat:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>vgcross <span class="ot">&lt;-</span> <span class="fu">gstat</span>(<span class="cn">NULL</span>, <span class="at">id =</span> <span class="st">"Temp"</span>,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">form =</span> Temperatura<span class="sc">~</span>Norte<span class="sc">+</span><span class="fu">I</span>(Norte<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> datosT1)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>vgcross <span class="ot">&lt;-</span> <span class="fu">gstat</span>(vgcross, <span class="at">id =</span> <span class="st">"W_speed"</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">form =</span> WindSpeed<span class="sc">~</span>Norte<span class="sc">*</span>Este,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> datosWS1)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>vg <span class="ot">&lt;-</span> <span class="fu">variogram</span>(vgcross, <span class="at">cressie=</span>T)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">fit.lmc</span>(vg, g, <span class="at">fit.method=</span><span class="dv">6</span>, <span class="at">correct.diagonal=</span><span class="fl">1.01</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vg, <span class="at">model =</span> fit<span class="sc">$</span>model)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Geo_bi_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(fit<span class="sc">$</span>model)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<ul>
+<li><p><strong>Temp</strong>:</p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Wav</td>
+<td style="text-align: center;">7.231</td>
+<td style="text-align: center;">115834</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">2.782</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Exp</td>
+<td style="text-align: center;">4.2</td>
+<td style="text-align: center;">109814</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>W_speed</strong>:</p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Wav</td>
+<td style="text-align: center;">1.395</td>
+<td style="text-align: center;">115834</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">3.066</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Exp</td>
+<td style="text-align: center;">2.079</td>
+<td style="text-align: center;">109814</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>Temp.W_speed</strong>:</p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">model</th>
+<th style="text-align: center;">psill</th>
+<th style="text-align: center;">range</th>
+<th style="text-align: center;">kappa</th>
+<th style="text-align: center;">ang1</th>
+<th style="text-align: center;">ang2</th>
+<th style="text-align: center;">ang3</th>
+<th style="text-align: center;">anis1</th>
+<th style="text-align: center;">anis2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Wav</td>
+<td style="text-align: center;">3.145</td>
+<td style="text-align: center;">115834</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Nug</td>
+<td style="text-align: center;">2.892</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Exp</td>
+<td style="text-align: center;">0.6695</td>
+<td style="text-align: center;">109814</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<!-- end of list -->
 </div>
 </div>
 <div class="callout callout-style-simple callout-caution callout-titled">
@@ -958,8 +1750,24 @@ En desarrollo…
 </div>
 </section>
 </section>
-<section id="conclusiones" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="conclusiones"><span class="header-section-number">2.3</span> Conclusiones</h2>
+<section id="kriging-vs-cokriging" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="kriging-vs-cokriging"><span class="header-section-number">2.3</span> Kriging vs Cokriging</h2>
+<div class="callout callout-style-simple callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+En desarrollo…
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</section>
+<section id="conclusiones" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="conclusiones"><span class="header-section-number">2.4</span> Conclusiones</h2>
 <div class="callout callout-style-simple callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1611,6 +2419,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./Geo_esp_temp.html" class="pagination-link" aria-label="Análisis Geoestadístico Espacio Temporal">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Análisis Geoestadístico Espacio Temporal</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
